@@ -38,9 +38,9 @@ type OcservRuntimeConfig struct {
 }
 
 type OcservUserOrGroupConfigs struct {
-	DNS                  *string   `json:"dns" desc:"Comma-separated list of DNS servers to assign to the client. Example: '8.8.8.8,1.1.1.1'"`
-	NBNS                 *string   `json:"nbns" desc:"Comma-separated list of NetBIOS Name Servers (WINS) for Windows clients. Example: '192.168.1.1'"`
-	IPv4Netmask          *string   `json:"ipv4-netmask" desc:"Subnet mask for IPv4 network when not using CIDR. Example: '255.255.255.0'"`
+	DNS                  *[]string `json:"dns" desc:"Comma-separated list of DNS servers to assign to the client. Example: '8.8.8.8,1.1.1.1'"`
+	NBNS                 *string   `json:"nbns" desc:"NetBIOS Name Servers (WINS) for Windows clients. Example: '192.168.1.1'"`
+	IPv4Network          *string   `json:"ipv4-network" desc:"The pool of addresses that leases will be given from Example: '192.168.1.1'"`
 	RxDataPerSec         *string   `json:"rx-data-per-sec" desc:"Maximum receive bandwidth in bytes per second. Example: '100000' for 100 KB/s"`
 	TxDataPerSec         *string   `json:"tx-data-per-sec" desc:"Maximum transmit bandwidth in bytes per second. Example: '200000' for 200 KB/s"`
 	ExplicitIPv4         *string   `json:"explicit-ipv4" desc:"Static IPv4 address to assign to client. Example: '192.168.100.10'"`

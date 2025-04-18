@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref} from 'vue'
-import type {SetupRequestSetup, SetupRequestSetupConfig} from "@/api";
+import type {ModelsOcservUserOrGroupConfigs, SetupRequestSetup, SetupRequestSetupConfig} from "@/api";
 import {useLocale} from "vuetify/framework";
 
 const step = ref(1)
@@ -20,11 +20,66 @@ const finalize = () => {
 }
 
 
+const configHandler = (data: SetupRequestSetupConfig) => {
+  formIsValid.value = data?.valid
+  finalizeData.config = {...data.result}
+}
+
+const ocservDefaultGroupHandler = (result: ModelsOcservUserOrGroupConfigs) => {
+  formIsValid.value = result?.valid
+  delete result.valid
+  finalizeData.default_ocserv_group = {...result}
+}
+
+const steps = [
+  {
+    value: 1,
+    component: defineAsyncComponent(() => import("./Step1.vue")),
+    data: null,
+    handler: null,
+  },
+  {
+    value: 2,
+    component: defineAsyncComponent(() => import("./Step2.vue")),
+    data: "config",
+    handler: configHandler,
+  },
+  {
+    value: 3,
+    component: defineAsyncComponent(() => import("./Step3.vue")),
+    data: "default_ocserv_group",
+    handler: ocservDefaultGroupHandler,
+  },
+  {
+    value: 4,
+    component: defineAsyncComponent(() => import("./Step4.vue")),
+    data: "default_ocserv_group",
+    handler: ocservDefaultGroupHandler,
+  },
+  {
+    value: 5,
+    component: defineAsyncComponent(() => import("./Step5.vue")),
+    data: "default_ocserv_group",
+    handler: ocservDefaultGroupHandler,
+  },
+  {
+    value: 6,
+    component: defineAsyncComponent(() => import("./Step6.vue")),
+    data: "default_ocserv_group",
+    handler: ocservDefaultGroupHandler,
+  },
+  {
+    value: 7,
+    loading: false,
+    component: defineAsyncComponent(() => import("./Step7.vue")),
+    data: finalizeData,
+    handler: null,
+  },
+]
+
 function nextStep() {
   if (step.value < steps.length + 1) {
-    steps[step.value - 1].complete = true
     if (step.value === steps.length) {
-      steps[steps.length - 1].complete = true
       loading.value = true
       emit("finalize", finalize)
     }
@@ -34,59 +89,39 @@ function nextStep() {
 
 function prevStep() {
   if (step.value > 1) {
-    steps[step.value - 2].complete = false
     step.value--
   }
 }
 
-const configHandler = (data: SetupRequestSetupConfig) => {
-  console.log("data", data)
-  formIsValid.value = data?.valid
-  finalizeData.config = {...data.result}
-}
-
-const steps = [
-  {
-    value: 1,
-    complete: false,
-    title: t('SITE_CONFIG_SETUP'),
-    component: defineAsyncComponent(() => import("./Step1.vue")),
-    data: "admin",
-    handler: null,
-  },
-  {
-    value: 2,
-    complete: false,
-    title: t('SITE_CONFIG_SETUP'),
-    component: defineAsyncComponent(() => import("./Step2.vue")),
-    data: "admin",
-    handler: configHandler,
-  },
-  {
-    value: 3,
-    complete: false,
-    title: t('SITE_CONFIG_SETUP'),
-    component: defineAsyncComponent(() => import("./Step3.vue")),
-    data: "admin",
-    handler: configHandler,
-  },
-]
-
-
 const nextBtnDisable = computed(() => {
   if (step.value === 1) return false
-  console.log(step.value > steps.length + 1 )
+  console.log(step.value > steps.length + 1)
   console.log(!formIsValid)
   return step.value > steps.length + 1 || !formIsValid.value
 })
+
+const nextBtnText = computed(() => {
+  switch (step.value) {
+    case 1:
+      return t("START_BTN")
+    case steps.length :
+      return t("FINALIZATION_SETUP")
+    default:
+      return t("NEXT_BTN")
+  }
+})
+
+const skipBtn = () => {
+  console.log("steps.length: ", steps.length + 1)
+  step.value = steps.length
+}
+
 
 </script>
 
 <template>
   <v-card class="mx-auto d-flex flex-column" max-height="800" min-height="650" width="800">
-
     <v-card-text class="flex-grow-1 overflow-auto">
-
       <v-window
           v-for="(st, index) in steps"
           :key="`step-${index}`"
@@ -103,7 +138,6 @@ const nextBtnDisable = computed(() => {
     </v-card-text>
 
     <v-card-actions class="my-2 mx-2">
-
       <v-btn
           :disabled="step === 1 || loading"
           :hidden="[1,2].includes(step)"
@@ -114,9 +148,16 @@ const nextBtnDisable = computed(() => {
       >
         {{ t('PREV_BTN') }}
       </v-btn>
-
       <v-spacer></v-spacer>
-
+      <v-btn
+          v-if="[3,4,5,6].includes(step)"
+          :loading="loading"
+          color="primary"
+          variant="tonal"
+          @click="skipBtn"
+      >
+        {{ t("SKIP_GROUP_CONFIGURATION_BTN") }}
+      </v-btn>
       <v-btn
           :disabled="nextBtnDisable"
           :loading="loading"
@@ -124,11 +165,8 @@ const nextBtnDisable = computed(() => {
           variant="tonal"
           @click="nextStep"
       >
-        {{ step < steps.length ? t('Next_BTN') : t('FINALIZATION_CONFIG') }}
+        {{ nextBtnText }}
       </v-btn>
-
     </v-card-actions>
-
-
   </v-card>
 </template>

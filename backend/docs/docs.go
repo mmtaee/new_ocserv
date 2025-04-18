@@ -61,7 +61,10 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "dns": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "dpd": {
                     "type": "integer"

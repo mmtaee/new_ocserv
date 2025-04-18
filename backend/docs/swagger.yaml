@@ -7,7 +7,9 @@ definitions:
       deny-roaming:
         type: boolean
       dns:
-        type: string
+        items:
+          type: string
+        type: array
       dpd:
         type: integer
       explicit-ipv4:

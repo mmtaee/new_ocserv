@@ -34,10 +34,10 @@ export interface ModelsOcservUserOrGroupConfigs {
     'deny-roaming'?: boolean;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof ModelsOcservUserOrGroupConfigs
      */
-    'dns'?: string;
+    'dns'?: Array<string>;
     /**
      * 
      * @type {number}
