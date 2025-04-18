@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {defineAsyncComponent, ref} from 'vue'
+import {computed, defineAsyncComponent, ref} from 'vue'
 import type {SetupRequestSetup, SetupRequestSetupConfig} from "@/api";
 import {useLocale} from "vuetify/framework";
 
@@ -39,11 +39,10 @@ function prevStep() {
   }
 }
 
-const configHandler = (result: SetupRequestSetupConfig) => {
-  console.log(result)
-  formIsValid.value = result?.valid
-  delete result.valid
-  finalizeData.config = {...result}
+const configHandler = (data: SetupRequestSetupConfig) => {
+  console.log("data", data)
+  formIsValid.value = data?.valid
+  finalizeData.config = {...data.result}
 }
 
 const steps = [
@@ -51,17 +50,40 @@ const steps = [
     value: 1,
     complete: false,
     title: t('SITE_CONFIG_SETUP'),
-    component: defineAsyncComponent(() => import("./step1.vue")),
+    component: defineAsyncComponent(() => import("./Step1.vue")),
+    data: "admin",
+    handler: null,
+  },
+  {
+    value: 2,
+    complete: false,
+    title: t('SITE_CONFIG_SETUP'),
+    component: defineAsyncComponent(() => import("./Step2.vue")),
+    data: "admin",
+    handler: configHandler,
+  },
+  {
+    value: 3,
+    complete: false,
+    title: t('SITE_CONFIG_SETUP'),
+    component: defineAsyncComponent(() => import("./Step3.vue")),
     data: "admin",
     handler: configHandler,
   },
 ]
 
 
+const nextBtnDisable = computed(() => {
+  if (step.value === 1) return false
+  console.log(step.value > steps.length + 1 )
+  console.log(!formIsValid)
+  return step.value > steps.length + 1 || !formIsValid.value
+})
+
 </script>
 
 <template>
-  <v-card class="mx-auto d-flex flex-column" max-height="800" min-height="600" width="400">
+  <v-card class="mx-auto d-flex flex-column" max-height="800" min-height="650" width="800">
 
     <v-card-text class="flex-grow-1 overflow-auto">
 
@@ -84,7 +106,7 @@ const steps = [
 
       <v-btn
           :disabled="step === 1 || loading"
-          :hidden="step === 1"
+          :hidden="[1,2].includes(step)"
           :loading="false"
           color="primary"
           variant="tonal"
@@ -96,7 +118,7 @@ const steps = [
       <v-spacer></v-spacer>
 
       <v-btn
-          :disabled="step > steps.length + 1 || !formIsValid"
+          :disabled="nextBtnDisable"
           :loading="loading"
           color="primary"
           variant="tonal"

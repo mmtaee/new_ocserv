@@ -1,10 +1,9 @@
-import {createVuetify} from 'vuetify'
-
 import "vuetify/styles"
 import "@mdi/font/css/materialdesignicons.css"
 
+import {createVuetify} from 'vuetify'
+// import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import type {DisplayThresholds} from "vuetify"
-import {aliases, mdi} from 'vuetify/iconsets/mdi-svg'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import i18n from "./i18n.ts"
@@ -32,12 +31,15 @@ export default createVuetify({
         thresholds: breakpoints
     },
     icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi,
-        },
+        defaultSet: 'mdi', // This is already the default value - only for display purposes
     },
+    // icons: {
+    //     defaultSet: 'mdi',
+    //     // aliases,
+    //     sets: {
+    //         // mdi,
+    //     },
+    // },
     theme: {
         defaultTheme: 'light', // or 'dark' depending on your needs
         themes: {
