@@ -1,0 +1,160 @@
+basePath: /api
+definitions:
+  models.OcservUserOrGroupConfigs:
+    properties:
+      cgroup:
+        type: string
+      deny-roaming:
+        type: boolean
+      dns:
+        type: string
+      dpd:
+        type: integer
+      explicit-ipv4:
+        type: string
+      idle-timeout:
+        type: integer
+      ipv4-netmask:
+        type: string
+      iroute:
+        items:
+          type: string
+        type: array
+      keepalive:
+        type: integer
+      max-same-clients:
+        type: integer
+      mobile-dpd:
+        type: integer
+      mobile-idle-timeout:
+        type: integer
+      mtu:
+        type: integer
+      nbns:
+        type: string
+      net-priority:
+        type: integer
+      no-route:
+        type: string
+      no-udp:
+        type: boolean
+      restrict-user-to-ports:
+        type: string
+      restrict-user-to-routes:
+        type: boolean
+      route:
+        items:
+          type: string
+        type: array
+      rx-data-per-sec:
+        type: string
+      session-timeout:
+        type: integer
+      split-dns:
+        type: string
+      stats-report-time:
+        type: integer
+      tunnel-all-dns:
+        type: boolean
+      tx-data-per-sec:
+        type: string
+    type: object
+  models.Permission:
+    properties:
+      oc_group:
+        type: boolean
+      oc_user:
+        type: boolean
+      occtl:
+        type: boolean
+      see_server_log:
+        type: boolean
+      statistic:
+        type: boolean
+      system:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      is_admin:
+        type: boolean
+      last_login:
+        type: string
+      permission:
+        $ref: '#/definitions/models.Permission'
+      uid:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  setup.RequestSetup:
+    properties:
+      config:
+        properties:
+          admin_password:
+            example: doe123456
+            maxLength: 16
+            minLength: 2
+            type: string
+          admin_username:
+            example: john_doe
+            maxLength: 16
+            minLength: 2
+            type: string
+          google_captcha_secret_key:
+            type: string
+          google_captcha_site_key:
+            type: string
+        required:
+        - admin_password
+        - admin_username
+        type: object
+      default_ocserv_group:
+        $ref: '#/definitions/models.OcservUserOrGroupConfigs'
+    required:
+    - config
+    - default_ocserv_group
+    type: object
+  setup.ResponseSetup:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    required:
+    - token
+    - user
+    type: object
+info:
+  contact: {}
+  description: This is a sample Ocserv User management Api server.
+  title: Ocserv User management Example Api
+  version: "1.0"
+paths:
+  /panel/setup/:
+    post:
+      consumes:
+      - application/json
+      description: Setup panel with admin user and
+      parameters:
+      - description: setup config data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/setup.RequestSetup'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/setup.ResponseSetup'
+      summary: Setup panel with admin user
+      tags:
+      - Panel
+swagger: "2.0"

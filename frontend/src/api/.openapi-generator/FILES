@@ -1,0 +1,16 @@
+.gitignore
+.npmignore
+api.ts
+api/panel-api.ts
+base.ts
+common.ts
+configuration.ts
+git_push.sh
+index.ts
+models/index.ts
+models/models-ocserv-user-or-group-configs.ts
+models/models-permission.ts
+models/models-user.ts
+models/setup-request-setup-config.ts
+models/setup-request-setup.ts
+models/setup-response-setup.ts
