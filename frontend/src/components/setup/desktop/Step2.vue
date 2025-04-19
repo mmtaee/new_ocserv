@@ -57,31 +57,31 @@ if (props.data) {
       </v-col>
 
 
-      <v-col class="ma-0 pa-0" cols="" md="8" sm="12">
+      <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
         <v-text-field
             v-model="formValues.admin_username"
             :label="t('ADMIN_USERNAME')"
             :rules="[rules.required]"
             class="my-3"
             clearable
-            dense
+            density="comfortable"
             prepend-inner-icon="mdi-account"
-            variant="solo-filled"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
       </v-col>
 
-      <v-col class="ma-0 pa-0" cols="12" md="8" sm="12">
+      <v-col class="ma-0 pa-0 px-10" cols="12" md="8" sm="12">
         <v-text-field
             v-model="formValues.admin_password"
             :label="t('ADMIN_PASSWORD')"
             :rules="[rules.required]"
             class="my-3 mb-5"
             clearable
-            dense
+            density="comfortable"
             prepend-inner-icon="mdi-key"
-            variant="solo-filled"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
@@ -96,29 +96,29 @@ if (props.data) {
         </p>
       </v-col>
 
-      <v-col class="ma-0 pa-0" cols="" md="8" sm="12">
+      <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
         <v-text-field
             v-model="formValues.googleCaptchaSiteKey"
             :label="t('GOOGLE_CAPTCHA_SITE_KEY')"
             class="mt-5 mb-1"
             clearable
-            dense
+            density="comfortable"
             prepend-inner-icon="mdi-key"
-            variant="solo-filled"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
       </v-col>
 
-      <v-col class="ma-0 pa-0" cols="" md="8" sm="12">
+      <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
 
         <v-text-field
             v-model="formValues.googleCaptchaSecretKey"
             :label="t('GOOGLE_CAPTCHA_SECRET_KEY')"
             clearable
-            dense
+            density="comfortable"
             prepend-inner-icon="mdi-key"
-            variant="solo-filled"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />

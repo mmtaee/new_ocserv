@@ -75,14 +75,11 @@ const docTemplate = `{
                 "idle-timeout": {
                     "type": "integer"
                 },
-                "ipv4-netmask": {
+                "ipv4-network": {
                     "type": "string"
                 },
                 "iroute": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "string"
                 },
                 "keepalive": {
                     "type": "integer"
@@ -106,7 +103,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "no-route": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "no-udp": {
                     "type": "boolean"
@@ -130,7 +130,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "split-dns": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "stats-report-time": {
                     "type": "integer"

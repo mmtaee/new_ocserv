@@ -61,13 +61,13 @@ export interface ModelsOcservUserOrGroupConfigs {
      * @type {string}
      * @memberof ModelsOcservUserOrGroupConfigs
      */
-    'ipv4-netmask'?: string;
+    'ipv4-network'?: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof ModelsOcservUserOrGroupConfigs
      */
-    'iroute'?: Array<string>;
+    'iroute'?: string;
     /**
      * 
      * @type {number}
@@ -112,10 +112,10 @@ export interface ModelsOcservUserOrGroupConfigs {
     'net-priority'?: number;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof ModelsOcservUserOrGroupConfigs
      */
-    'no-route'?: string;
+    'no-route'?: Array<string>;
     /**
      * 
      * @type {boolean}
@@ -154,10 +154,10 @@ export interface ModelsOcservUserOrGroupConfigs {
     'session-timeout'?: number;
     /**
      * 
-     * @type {string}
+     * @type {Array<string>}
      * @memberof ModelsOcservUserOrGroupConfigs
      */
-    'split-dns'?: string;
+    'split-dns'?: Array<string>;
     /**
      * 
      * @type {number}

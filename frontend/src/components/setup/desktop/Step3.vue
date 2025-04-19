@@ -57,7 +57,7 @@ if (props.data) {
         </p>
       </v-col>
 
-      <v-col cols="12" md="8" sm="12">
+      <v-col class="ma-0 pa-1 px-10" cols="12" md="8" sm="12">
         <v-number-input
             v-model="formValues['rx-data-per-sec']"
             :hint="t('BANDWIDTH_RESTRICTIONS_(IN_BYTES/SECOND)')"
@@ -65,13 +65,13 @@ if (props.data) {
             :min="0"
             clearable
             controlVariant="hidden"
-            dense
-            variant="solo-filled"
+            density="comfortable"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
       </v-col>
-      <v-col cols="12" md="8" sm="12">
+      <v-col class="ma-0 pa-1 px-10" cols="12" md="8" sm="12">
         <v-number-input
             v-model="formValues['tx-data-per-sec']"
             :hint="t('BANDWIDTH_RESTRICTIONS_(IN_BYTES/SECOND)')"
@@ -79,14 +79,13 @@ if (props.data) {
             :min="0"
             clearable
             controlVariant="hidden"
-            dense
-            variant="solo-filled"
+            density="comfortable"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
       </v-col>
-
-      <v-col cols="12" md="8" sm="12">
+      <v-col class="ma-0 pa-1 px-10" cols="12" md="8" sm="12">
         <v-number-input
             v-model="formValues.maxSameClient"
             :hint="t('LIMIT_THE_NUMBER_OF_IDENTICAL_CLIENTS')"
@@ -94,13 +93,13 @@ if (props.data) {
             :min="0"
             clearable
             controlVariant="hidden"
-            dense
-            variant="solo-filled"
+            density="comfortable"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />
       </v-col>
-      <v-col cols="12" md="8" sm="12">
+      <v-col class="ma-0 pa-1 pb-3 px-10" cols="12" md="8" sm="12">
         <v-number-input
             v-model="formValues.sessionTimeout"
             :hint="t('MAX_SESSION_TIME_IN_SECONDS_BEFORE_FORCED_DISCONNECT')"
@@ -108,8 +107,8 @@ if (props.data) {
             :min="0"
             clearable
             controlVariant="hidden"
-            dense
-            variant="solo-filled"
+            density="comfortable"
+            variant="underlined"
             @keyup="sendResult"
             @click:clear="sendResult"
         />

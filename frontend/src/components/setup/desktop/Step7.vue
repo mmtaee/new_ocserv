@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  finalize ste[
+  finalize ste
 </template>
 
 <style scoped>

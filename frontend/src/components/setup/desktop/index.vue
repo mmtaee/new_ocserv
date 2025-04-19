@@ -9,6 +9,8 @@ const loading = ref(false)
 const formIsValid = ref(false)
 const emit = defineEmits(["finalize"])
 
+const skipStep = ref(0)
+
 const finalizeData: SetupRequestSetup = {
   admin: null,
   config: null,
@@ -88,15 +90,19 @@ function nextStep() {
 }
 
 function prevStep() {
-  if (step.value > 1) {
-    step.value--
+  if (skipStep.value != 0) {
+    step.value = skipStep.value
+    skipStep.value = 0
+  } else {
+    if (step.value > 1) {
+      step.value--
+    }
   }
+
 }
 
 const nextBtnDisable = computed(() => {
   if (step.value === 1) return false
-  console.log(step.value > steps.length + 1)
-  console.log(!formIsValid)
   return step.value > steps.length + 1 || !formIsValid.value
 })
 
@@ -112,7 +118,7 @@ const nextBtnText = computed(() => {
 })
 
 const skipBtn = () => {
-  console.log("steps.length: ", steps.length + 1)
+  skipStep.value = step.value
   step.value = steps.length
 }
 
@@ -120,7 +126,7 @@ const skipBtn = () => {
 </script>
 
 <template>
-  <v-card class="mx-auto d-flex flex-column" max-height="800" min-height="650" width="800">
+  <v-card class="mx-auto d-flex flex-column" height="800" width="800">
     <v-card-text class="flex-grow-1 overflow-auto">
       <v-window
           v-for="(st, index) in steps"

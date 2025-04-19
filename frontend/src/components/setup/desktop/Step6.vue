@@ -1,49 +1,184 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
 import type {ModelsOcservUserOrGroupConfigs} from "@/api";
-import {reactive} from "vue";
+import {reactive, ref, toRaw} from "vue";
 
+const emit = defineEmits(['sendResult'])
+const valid = ref(true)
 const {t} = useLocale()
 
+const props = defineProps({
+  data: {
+    type: Object as ModelsOcservUserOrGroupConfigs,
+    required: true,
+  },
+})
+
 const formValues: ModelsOcservUserOrGroupConfigs = reactive<ModelsOcservUserOrGroupConfigs>({})
+
+const sendResult = () => {
+  emit('sendResult', {
+    valid: valid.value,
+    result: toRaw(formValues)
+  })
+}
+
+if (props.data) {
+  Object.assign(formValues, structuredClone(props.data))
+}
 
 </script>
 
 <template>
-  <v-row align="center" justify="center">
-    <v-col class="mt-5 ma-0 pa-0" cols="12" md="12" sm="12">
-      <div style="text-align: center;">
-        <span class="text-h5">
-          {{ t('DEFAULT_OCSERV_GROUP_CONFIGURATION') }}
-        </span>
+  <v-form v-model="valid">
+    <v-row align="center" justify="center">
+      <v-col class="mt-5 ma-0 pa-0" cols="12" md="12" sm="12">
+        <div style="text-align: center;">
+          <span class="text-h5">
+            {{ t('DEFAULT_OCSERV_GROUP_CONFIGURATION') }}
+          </span>
+        </div>
+      </v-col>
 
-      </div>
-    </v-col>
+      <v-divider class="mt-5 mb-2"/>
 
-    <v-divider class="mt-5 mb-2"/>
+      <v-col class="ma-0 px-5" cols="12" md="12" sm="12">
+        <div class="text-subtitle-2  mx-2">{{ t('Connection Behavior & Timeouts') }}</div>
+      </v-col>
 
-    <div class="text-subtitle-2 mt-2">{{ t('IP_&_DNS_CONFIGURATION') }}</div>
+      <v-col class="ma-0 pa-0" cols="12" md="12" sm="12">
+        <p class="mx-8 mb-4 text-grey-darken-1">
+          <v-icon color="primary">mdi-bullhorn-outline</v-icon>
+          {{ t('These settings improve stability and automatically handle idle or disconnected clients') }}.
+        </p>
+      </v-col>
 
-    <blockquote>
-      <p class="mx-8 my-4 text-grey-darken-1">
-        <v-icon color="primary">mdi-bullhorn-outline</v-icon>
-        {{ t('These settings control how clients receive IP addresses and resolve domain names while connected') }}.
-      </p>
-    </blockquote>
+      <v-col class="ma-0 pa-0 px-10 mb-2 mt-5" cols="12" md="12" sm="12">
+        <v-row align="center" justify="center">
+          <v-col class="ma-0 pa-1  px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues.keepalive"
+                :hint="t('Interval in seconds to send keep-alive pings')"
+                :label="t('keepalive')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1  px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues.dpd"
+                :hint="t('Dead Peer Detection timeout in seconds')"
+                :label="t('DPD')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1 px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues['mobile-dpd']"
+                :hint="t('DPD timeout specifically for mobile clients')"
+                :label="t('mobile DPD')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1 pb-3 px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues['idle-timeout']"
+                :hint="t('Time in seconds before disconnecting idle clients')"
+                :label="t('IDLE timeout')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1 pb-3 px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues['mobile-idle-timeout']"
+                :hint="t('Idle timeout for mobile clients')"
+                :label="t('mobile IDLE timeout')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1 pb-3 px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues['stats-report-time']"
+                :hint="t('Interval in seconds for stats reporting')"
+                :label="t('stats report time')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+          <v-col class="ma-0 pa-1 pb-3 px-3" cols="12" md="6" sm="12">
+            <v-number-input
+                v-model="formValues.mtu"
+                :hint="t('Tunnel interface MTU to avoid fragmentation')"
+                :label="t('MTU')"
+                :min="0"
+                clearable
+                controlVariant="hidden"
+                density="comfortable"
+                placeholder="1400"
+                variant="underlined"
+                @keyup="sendResult"
+                @click:clear="sendResult"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
 
 
-    <v-col cols="12" md="6" sm="12"></v-col>
-    <v-col cols="12" md="6" sm="12"></v-col>
-    <v-col cols="12" md="6" sm="12"></v-col>
-    <v-col cols="12" md="6" sm="12"></v-col>
-    <v-col cols="12" md="6" sm="12"></v-col>
+      <v-col class="ma-0 pa-0 px-10" cols="12" md="12" sm="12">
+        <v-checkbox
+            v-model="formValues['tunnel-all-dns']"
+            :label="t('Force all DNS traffic through the VPN tunnel (tunnel-all-dns)')"
+            density="comfortable"
+            hide-details
+            @click="sendResult"
+        />
+      </v-col>
 
+      <v-col class="ma-0 pa-0 px-10" cols="12" md="12" sm="12">
+        <v-checkbox
+            v-model="formValues['deny-roaming']"
+            :label="t('Disconnect client if its IP changes (deny-roaming)')"
+            density="comfortable"
+            hide-details
+            @click="sendResult"
+        />
+      </v-col>
 
-  </v-row>
-
+    </v-row>
+  </v-form>
 
 </template>
-
-<style scoped>
-
-</style>

@@ -31,9 +31,10 @@
   "DNS": "DNS",
   "THE_ADVERTISED_DNS_SERVER": "the advertised dns server",
   "NBNS": "NBNS",
-  "NETBIOS_NAME_SERVERS_(WINS)_FOR_WINDOWS_CLIENTS": "NetBIOS name servers (WINS) for Windows clients",
+  "NETBIOS_NAME_SERVERS_(WINS)_FOR_WINDOWS_CLIENTS": "NetBIOS name servers for Windows clients",
   "IPV4NETWORK": "IPv4 network",
-  "THE_POOL_OF_ADDRESSES_THAT_LEASES_WILL_BE_GIVEN_FROM": "the pool of addresses that leases will be given from",
+  "Address pool for client IP leases": "Address pool for client IP leases",
   "EXPLICIT_IPV4": "explicit IPv4",
-  "STATIC_IPV4_ADDRESS_TO_ASSIGN_TO_CLIENT": "Static IPv4 address to assign to client"
+  "STATIC_IPV4_ADDRESS_TO_ASSIGN_TO_CLIENT": "Static IPv4 address to assign to client",
+  "ROUTING_&_ACCESS_CONTROL": "Routing & Access Control"
 }

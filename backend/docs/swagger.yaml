@@ -16,12 +16,10 @@ definitions:
         type: string
       idle-timeout:
         type: integer
-      ipv4-netmask:
+      ipv4-network:
         type: string
       iroute:
-        items:
-          type: string
-        type: array
+        type: string
       keepalive:
         type: integer
       max-same-clients:
@@ -37,7 +35,9 @@ definitions:
       net-priority:
         type: integer
       no-route:
-        type: string
+        items:
+          type: string
+        type: array
       no-udp:
         type: boolean
       restrict-user-to-ports:
@@ -53,7 +53,9 @@ definitions:
       session-timeout:
         type: integer
       split-dns:
-        type: string
+        items:
+          type: string
+        type: array
       stats-report-time:
         type: integer
       tunnel-all-dns:
