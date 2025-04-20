@@ -132,6 +132,7 @@ function removeDomain(d: string) {
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
+                placeholder="192.168.1.0/24"
                 variant="underlined"
                 @keydown.enter="addRoute"
             />
@@ -145,6 +146,7 @@ function removeDomain(d: string) {
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
+                placeholder="192.168.1.0/24"
                 variant="underlined"
                 @keydown.enter="addNoRoute"
 
@@ -193,6 +195,7 @@ function removeDomain(d: string) {
                 :rules="[rules.domain]"
                 clearable
                 density="comfortable"
+                placeholder="example.com"
                 variant="underlined"
                 @keydown.enter="addDomain"
             />
@@ -205,6 +208,7 @@ function removeDomain(d: string) {
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
+                placeholder="192.168.2.0/24"
                 variant="underlined"
                 @keyup="sendResult"
                 @click:clear="sendResult"

@@ -90,7 +90,13 @@ function keyTransform(key: string): string {
       </v-card>
     </v-col>
 
-    <v-col v-if="data.default_ocserv_group" class="ma-0" cols="12" md="11" sm="12">
+    <v-col
+        v-if="Boolean(data.default_ocserv_group)"
+        class="ma-0"
+        cols="12"
+        md="11"
+        sm="12"
+    >
       <v-card
           :subtitle="t('Ocserv Default Group Configuration')"
           class="py-5 px-2"

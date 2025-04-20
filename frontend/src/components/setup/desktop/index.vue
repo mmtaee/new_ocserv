@@ -155,7 +155,7 @@ const skipBtn = () => {
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn
-          v-if="[3,4,5,6].includes(step)"
+          v-if="[3,4,5].includes(step)"
           :loading="loading"
           class="mx-2"
           color="warning"

@@ -39,7 +39,6 @@ if (props.data) {
 
 
 function addDNS() {
-  console.log("192.168.10.2: ", dnsInput.value)
   let r = dnsInput.value.trim()
   if (r && !formValues.dns?.includes(r)) {
     if (!formValues.dns) {
@@ -167,6 +166,7 @@ function removeDNS(r: string) {
                     :rules="[rules.ip]"
                     clearable
                     density="comfortable"
+                    placeholder="cpuset,cpu:test"
                     variant="underlined"
                     @keyup="sendResult"
                     @click:clear="sendResult"
