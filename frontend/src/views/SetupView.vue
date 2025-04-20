@@ -23,24 +23,22 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', checkIsMobile)
 })
 
-
 function finalize(data: SetupRequestSetup) {
   const userStore = useUserStore()
   const configStore = useConfigStore()
   const api = new PanelApi()
 
   api.panelSetupPost({request: data}).then((res: SetupResponseSetup) => {
-    configStore.setSetupComplete()
     localStorage.setItem("token", res.token)
     if (res.user) {
       userStore.setUser(...res.user)
     }
+    configStore.setSetupComplete()
     router.push({name: "HomePage"})
   }).catch((err: AxiosError) => {
     console.log(err)
   })
 }
-
 
 </script>
 

@@ -12,7 +12,6 @@ const emit = defineEmits(["finalize"])
 const skipStep = ref(0)
 
 const finalizeData: SetupRequestSetup = {
-  admin: null,
   config: null,
   default_ocserv_group: null,
 }
@@ -27,10 +26,10 @@ const configHandler = (data: SetupRequestSetupConfig) => {
   finalizeData.config = {...data.result}
 }
 
-const ocservDefaultGroupHandler = (result: ModelsOcservUserOrGroupConfigs) => {
-  formIsValid.value = result?.valid
-  delete result.valid
-  finalizeData.default_ocserv_group = {...result}
+const ocservDefaultGroupHandler = (data: ModelsOcservUserOrGroupConfigs) => {
+  formIsValid.value = data?.valid
+  delete data.valid
+  finalizeData.default_ocserv_group = {...data.result}
 }
 
 const steps = [
@@ -74,7 +73,7 @@ const steps = [
     value: 7,
     loading: false,
     component: defineAsyncComponent(() => import("./Step7.vue")),
-    data: finalizeData,
+    data: null,
     handler: null,
   },
 ]
@@ -148,8 +147,8 @@ const skipBtn = () => {
           :disabled="step === 1 || loading"
           :hidden="[1,2].includes(step)"
           :loading="false"
-          color="primary"
-          variant="tonal"
+          color="grey"
+          variant="outlined"
           @click="prevStep"
       >
         {{ t('PREV_BTN') }}
@@ -158,8 +157,9 @@ const skipBtn = () => {
       <v-btn
           v-if="[3,4,5,6].includes(step)"
           :loading="loading"
-          color="primary"
-          variant="tonal"
+          class="mx-2"
+          color="warning"
+          variant="outlined"
           @click="skipBtn"
       >
         {{ t("SKIP_GROUP_CONFIGURATION_BTN") }}
@@ -168,7 +168,7 @@ const skipBtn = () => {
           :disabled="nextBtnDisable"
           :loading="loading"
           color="primary"
-          variant="tonal"
+          variant="outlined"
           @click="nextStep"
       >
         {{ nextBtnText }}
