@@ -1,4 +1,4 @@
-package models
+package oc
 
 import (
 	"fmt"
@@ -37,7 +37,7 @@ type OcservRuntimeConfig struct {
 	DenyRoaming     *bool   `json:"deny-roaming" desc:"Disconnect clients if their IP address changes. Example: false"`
 }
 
-type OcservUserOrGroupConfigs struct {
+type OcservDefaultConfigs struct {
 	DNS                  *[]string `json:"dns" desc:"Comma-separated list of DNS servers to assign to the client. Example: '8.8.8.8,1.1.1.1'"`
 	NBNS                 *string   `json:"nbns" desc:"NetBIOS Name Servers (WINS) for Windows clients. Example: '192.168.1.1'"`
 	IPv4Network          *string   `json:"ipv4-network" desc:"The pool of addresses that leases will be given from Example: '192.168.1.0/24'"`
@@ -85,7 +85,7 @@ type OcservUser struct {
 	IsOnline      bool       `json:"is_online" gorm:"-:migration;->"`
 }
 
-type OcUserActivity struct {
+type OcservUserActivity struct {
 	ID        uint      `json:"-" gorm:"primaryKey;autoIncrement"`
 	OcUserID  uint      `json:"-" gorm:"index;constraint:OnDelete:CASCADE;"`
 	Type      string    `json:"type" gorm:"type:varchar(32);not null;default:1" enums:"Connected,Disconnected,Failed"`
@@ -93,7 +93,7 @@ type OcUserActivity struct {
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
-type OcUserTrafficStatistics struct {
+type OcservUserTrafficStatistics struct {
 	ID        uint      `json:"-" gorm:"primaryKey;autoIncrement"`
 	OcUserID  uint      `json:"-" gorm:"index;constraint:OnDelete:CASCADE"`
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
@@ -116,7 +116,7 @@ func (o *OcservUser) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-func (a *OcUserActivity) BeforeSave(tx *gorm.DB) (err error) {
+func (a *OcservUserActivity) BeforeSave(tx *gorm.DB) (err error) {
 	if !validateActivityType(a.Type) {
 		return fmt.Errorf("invalid Type: %s", a.Type)
 	}

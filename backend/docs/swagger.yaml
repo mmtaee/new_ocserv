@@ -1,6 +1,38 @@
 basePath: /api
 definitions:
-  models.OcservUserOrGroupConfigs:
+  models.Permission:
+    properties:
+      oc_group:
+        type: boolean
+      oc_user:
+        type: boolean
+      occtl:
+        type: boolean
+      see_server_log:
+        type: boolean
+      statistic:
+        type: boolean
+      system:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      is_admin:
+        type: boolean
+      last_login:
+        type: string
+      permission:
+        $ref: '#/definitions/models.Permission'
+      uid:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  oc.OcservDefaultConfigs:
     properties:
       cgroup:
         type: string
@@ -63,39 +95,16 @@ definitions:
       tx-data-per-sec:
         type: string
     type: object
-  models.Permission:
+  panel.ConfigResponse:
     properties:
-      oc_group:
+      google_captcha_secret_key:
+        type: string
+      setup:
         type: boolean
-      oc_user:
-        type: boolean
-      occtl:
-        type: boolean
-      see_server_log:
-        type: boolean
-      statistic:
-        type: boolean
-      system:
-        type: boolean
+    required:
+    - setup
     type: object
-  models.User:
-    properties:
-      createdAt:
-        type: string
-      is_admin:
-        type: boolean
-      last_login:
-        type: string
-      permission:
-        $ref: '#/definitions/models.Permission'
-      uid:
-        type: string
-      updatedAt:
-        type: string
-      username:
-        type: string
-    type: object
-  setup.RequestSetup:
+  panel.RequestSetup:
     properties:
       config:
         properties:
@@ -118,12 +127,12 @@ definitions:
         - admin_username
         type: object
       default_ocserv_group:
-        $ref: '#/definitions/models.OcservUserOrGroupConfigs'
+        $ref: '#/definitions/oc.OcservDefaultConfigs'
     required:
     - config
     - default_ocserv_group
     type: object
-  setup.ResponseSetup:
+  panel.ResponseSetup:
     properties:
       token:
         type: string
@@ -139,25 +148,40 @@ info:
   title: Ocserv User management Example Api
   version: "1.0"
 paths:
+  /panel:
+    get:
+      consumes:
+      - application/json
+      description: Get panel Config
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/panel.ConfigResponse'
+      summary: Get panel Config
+      tags:
+      - Panel
   /panel/setup/:
     post:
       consumes:
       - application/json
-      description: Setup panel with admin user and
+      description: Setup panel with admin user, captcha and ocserv default group configs
       parameters:
       - description: setup config data
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/setup.RequestSetup'
+          $ref: '#/definitions/panel.RequestSetup'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/setup.ResponseSetup'
+            $ref: '#/definitions/panel.ResponseSetup'
       summary: Setup panel with admin user
       tags:
       - Panel

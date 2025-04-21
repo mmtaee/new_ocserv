@@ -33,13 +33,13 @@ type User struct {
 }
 
 type UserToken struct {
-	ID        uint       `json:"-" gorm:"primaryKey;autoIncrement"`
-	UserID    uint       `json:"-" gorm:"index"`
-	UID       string     `json:"uid" gorm:"type:varchar(26);not null;unique"`
-	Token     string     `json:"token" gorm:"type:varchar(128)"`
-	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
-	ExpireAt  *time.Time `json:"expire_at"`
-	User      User       `json:"user"`
+	ID        uint      `json:"-" gorm:"primaryKey;autoIncrement"`
+	UserID    uint      `json:"-" gorm:"index"`
+	UID       string    `json:"uid" gorm:"type:varchar(26);not null;unique"`
+	Token     string    `json:"token" gorm:"type:varchar(128)"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	ExpireAt  time.Time `json:"expire_at"`
+	User      User      `json:"user"`
 }
 
 func (p *Permission) Value() (driver.Value, error) {
@@ -74,6 +74,8 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 func (t *UserToken) BeforeCreate(tx *gorm.DB) (err error) {
-	t.UID = ulid.Make().String()
+	if t.UID == "" {
+		t.UID = ulid.Make().String()
+	}
 	return
 }

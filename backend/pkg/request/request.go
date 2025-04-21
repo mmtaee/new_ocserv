@@ -11,7 +11,7 @@ type Request struct {
 
 type CustomRequestInterface interface {
 	DoValidate(echo.Context, interface{}) interface{}
-	BadRequest(c echo.Context, err interface{}) error
+	BadRequest(c echo.Context, err interface{}, msg ...string) error
 	Pagination() *Pagination
 	Response(c echo.Context, p *Pagination, total int, result interface{}) error
 }

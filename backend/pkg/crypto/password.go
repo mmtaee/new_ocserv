@@ -19,19 +19,19 @@ type CustomPasswordInterface interface {
 	Check(passwd, hashedPassword, salt string) bool
 }
 
-func NewPassword(passwd string, saltLength ...int) *CustomPassword {
+func CreatePassword(passwd string, saltLength ...int) *CustomPassword {
 	length := 6
 	if len(saltLength) > 0 {
 		length = saltLength[0]
 	}
-	salt := createSalt(length)
+	salt := salt(length)
 	return &CustomPassword{
 		Salt: salt,
 		Hash: create(passwd, salt),
 	}
 }
 
-func Check(passwd, hashedPassword, salt string) bool {
+func CheckPassword(passwd, hashedPassword, salt string) bool {
 	hash := create(passwd, salt)
 	if hashedPassword == hash {
 		return true
@@ -39,7 +39,7 @@ func Check(passwd, hashedPassword, salt string) bool {
 	return false
 }
 
-func createSalt(length int) string {
+func salt(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	result := make([]byte, length)
 	for i := range result {

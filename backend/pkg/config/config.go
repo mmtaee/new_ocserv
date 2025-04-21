@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	Debug        bool
 	Host         string
 	Port         string
 	SecretKey    string
@@ -54,6 +55,7 @@ func Init(debug bool) {
 	}
 
 	cfg = &Config{
+		Debug:        debug,
 		Host:         host,
 		Port:         port,
 		SecretKey:    secretKey,

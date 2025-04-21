@@ -1,6 +1,9 @@
-package setup
+package panel
 
-import "ocserv/internal/models"
+import (
+	"ocserv/internal/models"
+	"ocserv/pkg/oc"
+)
 
 type RequestSetup struct {
 	Config struct {
@@ -9,11 +12,15 @@ type RequestSetup struct {
 		GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 		GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"omitempty"`
 	} `json:"config" validate:"required"`
-
-	DefaultOcservGroup models.OcservUserOrGroupConfigs `json:"default_ocserv_group" validate:"required"`
+	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"required"`
 }
 
 type ResponseSetup struct {
-	User  models.User `json:"user" validate:"required"`
-	Token string      `json:"token" validate:"required"`
+	User  *models.User `json:"user" validate:"required"`
+	Token string       `json:"token" validate:"required"`
+}
+
+type ConfigResponse struct {
+	Setup                bool   `json:"setup" validate:"required"`
+	GoogleCaptchaSiteKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 }

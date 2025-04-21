@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, ref} from 'vue'
-import type {ModelsOcservUserOrGroupConfigs, SetupRequestSetup, SetupRequestSetupConfig} from "@/api";
+import type {OcOcservDefaultConfigs, PanelRequestSetup, PanelRequestSetupConfig} from "@/api";
 import {useLocale} from "vuetify/framework";
 
 const step = ref(1)
@@ -11,7 +11,7 @@ const emit = defineEmits(["finalize"])
 
 const skipStep = ref(0)
 
-const finalizeData: SetupRequestSetup = {
+const finalizeData: PanelRequestSetup = {
   config: null,
   default_ocserv_group: null,
 }
@@ -21,12 +21,12 @@ const finalize = () => {
 }
 
 
-const configHandler = (data: SetupRequestSetupConfig) => {
+const configHandler = (data: PanelRequestSetupConfig) => {
   formIsValid.value = data?.valid
   finalizeData.config = {...data.result}
 }
 
-const ocservDefaultGroupHandler = (data: ModelsOcservUserOrGroupConfigs) => {
+const ocservDefaultGroupHandler = (data: OcOcservDefaultConfigs) => {
   formIsValid.value = data?.valid
   delete data.valid
   finalizeData.default_ocserv_group = {...data.result}
@@ -144,8 +144,8 @@ const skipBtn = () => {
 
     <v-card-actions class="my-2 mx-2">
       <v-btn
+          v-if="![1,2].includes(step)"
           :disabled="step === 1 || loading"
-          :hidden="[1,2].includes(step)"
           :loading="false"
           color="grey"
           variant="outlined"

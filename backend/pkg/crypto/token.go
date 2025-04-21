@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func GenerateAccessToken(userID string) (string, error) {
+func GenerateAccessToken(userID string, expire int64) (string, error) {
 	cfg := config.Get()
 	claims := jwt.MapClaims{
 		"sub": userID,
 		"jti": ulid.Make().String(),
-		"exp": time.Now().Add(24 * time.Hour).Unix(),
+		"exp": expire,
 		"iat": time.Now().Unix(),
 	}
 

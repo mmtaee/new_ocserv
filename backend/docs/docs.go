@@ -15,9 +15,32 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/panel": {
+            "get": {
+                "description": "Get panel Config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Panel"
+                ],
+                "summary": "Get panel Config",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/panel.ConfigResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/setup/": {
             "post": {
-                "description": "Setup panel with admin user and",
+                "description": "Setup panel with admin user, captcha and ocserv default group configs",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,7 +58,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/setup.RequestSetup"
+                            "$ref": "#/definitions/panel.RequestSetup"
                         }
                     }
                 ],
@@ -43,7 +66,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/setup.ResponseSetup"
+                            "$ref": "#/definitions/panel.ResponseSetup"
                         }
                     }
                 }
@@ -51,7 +74,56 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.OcservUserOrGroupConfigs": {
+        "models.Permission": {
+            "type": "object",
+            "properties": {
+                "oc_group": {
+                    "type": "boolean"
+                },
+                "oc_user": {
+                    "type": "boolean"
+                },
+                "occtl": {
+                    "type": "boolean"
+                },
+                "see_server_log": {
+                    "type": "boolean"
+                },
+                "statistic": {
+                    "type": "boolean"
+                },
+                "system": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "is_admin": {
+                    "type": "boolean"
+                },
+                "last_login": {
+                    "type": "string"
+                },
+                "permission": {
+                    "$ref": "#/definitions/models.Permission"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "oc.OcservDefaultConfigs": {
             "type": "object",
             "properties": {
                 "cgroup": {
@@ -146,56 +218,21 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Permission": {
+        "panel.ConfigResponse": {
             "type": "object",
+            "required": [
+                "setup"
+            ],
             "properties": {
-                "oc_group": {
-                    "type": "boolean"
+                "google_captcha_secret_key": {
+                    "type": "string"
                 },
-                "oc_user": {
-                    "type": "boolean"
-                },
-                "occtl": {
-                    "type": "boolean"
-                },
-                "see_server_log": {
-                    "type": "boolean"
-                },
-                "statistic": {
-                    "type": "boolean"
-                },
-                "system": {
+                "setup": {
                     "type": "boolean"
                 }
             }
         },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "is_admin": {
-                    "type": "boolean"
-                },
-                "last_login": {
-                    "type": "string"
-                },
-                "permission": {
-                    "$ref": "#/definitions/models.Permission"
-                },
-                "uid": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "setup.RequestSetup": {
+        "panel.RequestSetup": {
             "type": "object",
             "required": [
                 "config",
@@ -230,11 +267,11 @@ const docTemplate = `{
                     }
                 },
                 "default_ocserv_group": {
-                    "$ref": "#/definitions/models.OcservUserOrGroupConfigs"
+                    "$ref": "#/definitions/oc.OcservDefaultConfigs"
                 }
             }
         },
-        "setup.ResponseSetup": {
+        "panel.ResponseSetup": {
             "type": "object",
             "required": [
                 "token",
