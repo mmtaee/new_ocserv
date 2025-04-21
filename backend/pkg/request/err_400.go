@@ -11,7 +11,7 @@ type ErrorResponse struct {
 	Error string `json:"error" validate:"required"`
 }
 
-func BadRequest(c echo.Context, err interface{}) error {
+func (r *Request) BadRequest(c echo.Context, err interface{}) error {
 	switch err.(type) {
 	case error:
 		var pqErr *pgconn.PgError

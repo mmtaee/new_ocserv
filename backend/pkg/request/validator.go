@@ -9,25 +9,11 @@ import (
 	"unicode"
 )
 
-type Validator struct {
-	validator *validator.Validate
-}
-
-type ValidatorInterface interface {
-	Validate(echo.Context, interface{}) interface{}
-}
-
-func NewRequestValidator() *Validator {
-	return &Validator{
-		validator: validator.New(),
-	}
-}
-
-func (v *Validator) Validate(c echo.Context, data interface{}) interface{} {
+func (r *Request) DoValidate(c echo.Context, data interface{}) interface{} {
 	if err := c.Bind(&data); err != nil {
 		return errorWrapper(err)
 	}
-	if err := v.validator.Struct(data); err != nil {
+	if err := r.validator.Struct(data); err != nil {
 		return errorWrapper(err)
 	}
 	return nil

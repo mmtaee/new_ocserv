@@ -1,5 +1,10 @@
 package request
 
+import (
+	"github.com/labstack/echo/v4"
+	"net/http"
+)
+
 // Pagination defines pagination query parameters for the API.
 // @Param page query int false "Page number, starting from 1" minimum(1)
 // @Param page_size query int false "Number of items per page" minimum(1) maximum(100)
@@ -14,13 +19,14 @@ type Pagination struct {
 }
 
 type ResponseWithPagination struct {
-	Page         int `json:"page"`
-	PageSize     int `json:"page_size"`
-	TotalRecords int `json:"total_records"`
+	Page         int         `json:"page"`
+	PageSize     int         `json:"page_size"`
+	TotalRecords int         `json:"total_records"`
+	Result       interface{} `json:"result"`
 }
 
-func NewPagination() Pagination {
-	return Pagination{
+func (r *Request) Pagination() *Pagination {
+	return &Pagination{
 		Page:     1,
 		PageSize: 50,
 		Order:    "id",
@@ -28,10 +34,11 @@ func NewPagination() Pagination {
 	}
 }
 
-func NewResponseWithPagination() *ResponseWithPagination {
-	return &ResponseWithPagination{
-		Page:         1,
-		PageSize:     50,
-		TotalRecords: 0,
-	}
+func (r *Request) Response(c echo.Context, p *Pagination, total int, result interface{}) error {
+	return c.JSON(http.StatusOK, ResponseWithPagination{
+		Page:         p.Page,
+		PageSize:     p.PageSize,
+		TotalRecords: total,
+		Result:       result,
+	})
 }
