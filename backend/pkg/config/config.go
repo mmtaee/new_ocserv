@@ -11,6 +11,7 @@ type Config struct {
 	Host         string
 	Port         string
 	SecretKey    string
+	JWTSecret    string
 	AllowOrigins []string
 	Databases    string
 }
@@ -47,10 +48,16 @@ func Init(debug bool) {
 		databases = "ocserv.db"
 	}
 
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = secretKey
+	}
+
 	cfg = &Config{
 		Host:         host,
 		Port:         port,
 		SecretKey:    secretKey,
+		JWTSecret:    jwtSecret,
 		AllowOrigins: strings.Split(allowOrigins, ","),
 		Databases:    databases,
 	}
