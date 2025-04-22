@@ -46,9 +46,11 @@ router.beforeEach((to, _from, next) => {
     }
 
     if (!configStore.setup && to.path !== "/setup") {
+        localStorage.removeItem("token")
         next("/setup")
         return;
     }
+
     if (configStore.setup && to.path === "/setup") {
         next("/")
         return

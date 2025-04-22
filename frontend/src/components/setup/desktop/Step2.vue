@@ -98,7 +98,7 @@ if (props.data) {
 
       <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
         <v-text-field
-            v-model="formValues.googleCaptchaSiteKey"
+            v-model="formValues.google_captcha_site_key"
             :label="t('GOOGLE_CAPTCHA_SITE_KEY')"
             class="mt-5 mb-1"
             clearable
@@ -113,7 +113,7 @@ if (props.data) {
       <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
 
         <v-text-field
-            v-model="formValues.googleCaptchaSecretKey"
+            v-model="formValues.google_captcha_secret_key"
             :label="t('GOOGLE_CAPTCHA_SECRET_KEY')"
             clearable
             density="comfortable"

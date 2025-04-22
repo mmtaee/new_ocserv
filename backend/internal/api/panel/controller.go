@@ -74,6 +74,8 @@ func (ctrl *Controller) Config(c echo.Context) error {
 // @Success      201  {object}  ResponseSetup
 // @Router       /panel/setup/ [post]
 func (ctrl *Controller) Setup(c echo.Context) error {
+	// TODO: check config ok or not
+
 	var data RequestSetup
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)

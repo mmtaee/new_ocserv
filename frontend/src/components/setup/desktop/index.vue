@@ -151,7 +151,7 @@ const skipBtn = () => {
     <v-card-actions class="my-2 mx-2">
       <v-btn
           v-if="![1,2].includes(step)"
-          :disabled="step === 1"
+          :disabled="step === 1 || loading"
           color="grey"
           variant="outlined"
           @click="prevStep"
@@ -171,6 +171,7 @@ const skipBtn = () => {
       </v-btn>
       <v-btn
           :disabled="nextBtnDisable"
+          :loading="loading"
           color="primary"
           variant="outlined"
           @click="nextStep"

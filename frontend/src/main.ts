@@ -9,14 +9,13 @@ import {useConfigStore} from "./stores/config.ts";
 const app = createApp(App)
 
 app.use(createPinia())
+app.use(vuetify)
+app.use(i18n)
+
 
 ;(async () => {
     const configStore = useConfigStore()
     await configStore.fetchConfig()
-
     app.use(router)
-    app.use(vuetify)
-    app.use(i18n)
-
     app.mount('#app')
 })()
