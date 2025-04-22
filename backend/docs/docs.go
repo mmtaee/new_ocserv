@@ -196,7 +196,7 @@ const docTemplate = `{
                     }
                 },
                 "rx-data-per-sec": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "session-timeout": {
                     "type": "integer"
@@ -214,7 +214,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "tx-data-per-sec": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -235,8 +235,7 @@ const docTemplate = `{
         "panel.RequestSetup": {
             "type": "object",
             "required": [
-                "config",
-                "default_ocserv_group"
+                "config"
             ],
             "properties": {
                 "config": {

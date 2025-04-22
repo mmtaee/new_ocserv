@@ -81,7 +81,7 @@ definitions:
           type: string
         type: array
       rx-data-per-sec:
-        type: string
+        type: integer
       session-timeout:
         type: integer
       split-dns:
@@ -93,7 +93,7 @@ definitions:
       tunnel-all-dns:
         type: boolean
       tx-data-per-sec:
-        type: string
+        type: integer
     type: object
   panel.ConfigResponse:
     properties:
@@ -130,7 +130,6 @@ definitions:
         $ref: '#/definitions/oc.OcservDefaultConfigs'
     required:
     - config
-    - default_ocserv_group
     type: object
   panel.ResponseSetup:
     properties:

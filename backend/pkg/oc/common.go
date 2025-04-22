@@ -141,9 +141,11 @@ func parseConfigFile(filename string) (*OcservDefaultConfigs, error) {
 
 		switch key {
 		case "rx-data-per-sec":
-			config.RxDataPerSec = &value
+			vInt, _ := strconv.Atoi(value)
+			config.RxDataPerSec = &vInt
 		case "tx-data-per-sec":
-			config.TxDataPerSec = &value
+			vInt, _ := strconv.Atoi(value)
+			config.TxDataPerSec = &vInt
 		case "max-same-clients":
 			if val, err := strconv.Atoi(value); err == nil {
 				config.MaxSameClients = &val

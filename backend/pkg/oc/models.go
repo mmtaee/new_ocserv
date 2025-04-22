@@ -41,8 +41,8 @@ type OcservDefaultConfigs struct {
 	DNS                  *[]string `json:"dns" desc:"Comma-separated list of DNS servers to assign to the client. Example: '8.8.8.8,1.1.1.1'"`
 	NBNS                 *string   `json:"nbns" desc:"NetBIOS Name Servers (WINS) for Windows clients. Example: '192.168.1.1'"`
 	IPv4Network          *string   `json:"ipv4-network" desc:"The pool of addresses that leases will be given from Example: '192.168.1.0/24'"`
-	RxDataPerSec         *string   `json:"rx-data-per-sec" desc:"Maximum receive bandwidth in bytes per second. Example: '100000' for 100 KB/s"`
-	TxDataPerSec         *string   `json:"tx-data-per-sec" desc:"Maximum transmit bandwidth in bytes per second. Example: '200000' for 200 KB/s"`
+	RxDataPerSec         *int      `json:"rx-data-per-sec" desc:"Maximum receive bandwidth in bytes per second. Example: '100000' for 100 KB/s"`
+	TxDataPerSec         *int      `json:"tx-data-per-sec" desc:"Maximum transmit bandwidth in bytes per second. Example: '200000' for 200 KB/s"`
 	ExplicitIPv4         *string   `json:"explicit-ipv4" desc:"Static IPv4 address to assign to client. Example: '192.168.100.10'"`
 	CGroup               *string   `json:"cgroup" desc:"Linux control group to assign the VPN worker process to. Format: 'controller,subsystem:name'. Multiple controllers can be comma-separated. Example: 'cpuset,cpu:test' to assign to the 'test' cgroup under 'cpuset' and 'cpu' subsystems."`
 	IRoute               *string   `json:"iroute" desc:"Internal route available only via VPN. Format: 'IP/prefix'. Example: '10.0.0.0/8'"`

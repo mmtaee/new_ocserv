@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import type {SetupRequestSetup} from "@/api";
+import type {PanelRequestSetup} from "@/api";
 import {useLocale} from "vuetify/framework";
-import {ref} from "vue";
 
 const {t} = useLocale()
-const showPassword = ref(false)
 
 
-const prop = defineProps({
+defineProps({
   data: {
-    type: Object as SetupRequestSetup,
+    type: Object as PanelRequestSetup,
     required: true,
   },
 })

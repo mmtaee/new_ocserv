@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {ModelsOcservUserOrGroupConfigs} from "@/api";
+import type {OcOcservDefaultConfigs} from "@/api";
 import {reactive, ref, toRaw} from "vue";
 
 const emit = defineEmits(['sendResult'])
@@ -9,12 +9,12 @@ const {t} = useLocale()
 
 const props = defineProps({
   data: {
-    type: Object as ModelsOcservUserOrGroupConfigs,
+    type: Object as OcOcservDefaultConfigs,
     required: true,
   },
 })
 
-const formValues: ModelsOcservUserOrGroupConfigs = reactive<ModelsOcservUserOrGroupConfigs>({})
+const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 
 const sendResult = () => {
   emit('sendResult', {

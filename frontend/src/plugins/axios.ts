@@ -33,10 +33,12 @@ api.interceptors.response.use(
     (error) => {
         const {response} = error
         if (response) {
-            if (response.status === 400 || response.status === 401) {
+            if (response.status === 401) {
                 localStorage.removeItem('token')
                 return Promise.resolve(response) // still return response so caller can handle it
             }
+            // if (response.status === 400) {
+            // }
         }
         return Promise.reject(error)
     }

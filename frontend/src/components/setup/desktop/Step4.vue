@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {ModelsOcservUserOrGroupConfigs} from "@/api";
+import type {OcOcservDefaultConfigs} from "@/api";
 import {reactive, ref, toRaw} from "vue";
-import {ipOrRangeRule, ipRule, ipWithNetmaskRule} from "@/utils/rules.ts";
+import {domainRule, ipOrRangeRule, ipRule, ipWithNetmaskRule} from "@/utils/rules.ts";
 
 const emit = defineEmits(['sendResult'])
 const valid = ref(true)
@@ -10,12 +10,12 @@ const {t} = useLocale()
 
 const props = defineProps({
   data: {
-    type: Object as ModelsOcservUserOrGroupConfigs,
+    type: Object as OcOcservDefaultConfigs,
     required: true,
   },
 })
 
-const formValues: ModelsOcservUserOrGroupConfigs = reactive<ModelsOcservUserOrGroupConfigs>({})
+const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 const dnsInput = ref("")
 
 
@@ -31,6 +31,7 @@ const rules = {
   ip: (v: string) => ipRule(v, t),
   ipOrRange: (v: string) => ipOrRangeRule(v, t),
   ipWithNetmask: (v: string) => ipWithNetmaskRule(v, t),
+  domain: (v: string) => domainRule(v, t)
 }
 
 if (props.data) {
@@ -90,7 +91,7 @@ function removeDNS(r: string) {
                 v-model="dnsInput"
                 :hint="t('THE_ADVERTISED_DNS_SERVER')"
                 :label="t('DNS')"
-                :rules="[rules.ip]"
+                :rules="[rules.domain]"
                 clearable
                 density="comfortable"
                 placeholder="8.8.8.8"
@@ -163,7 +164,6 @@ function removeDNS(r: string) {
                     v-model="formValues.cgroup"
                     :hint="t('Linux control group')"
                     :label="t('CGroup')"
-                    :rules="[rules.ip]"
                     clearable
                     density="comfortable"
                     placeholder="cpuset,cpu:test"

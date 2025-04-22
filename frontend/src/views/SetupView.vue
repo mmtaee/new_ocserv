@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {PanelApi, type SetupRequestSetup, type SetupResponseSetup} from "@/api";
+import {PanelApi, type PanelRequestSetup, type PanelResponseSetup} from "@/api";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import DesktopView from "../components/setup/desktop/index.vue"
 import {useUserStore} from "@/stores/user.ts";
@@ -23,12 +23,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', checkIsMobile)
 })
 
-function finalize(data: SetupRequestSetup) {
+function finalize(data: PanelRequestSetup) {
+  console.log("data in send: ", data.config)
+  console.log("data in send: ", data.default_ocserv_group)
   const userStore = useUserStore()
   const configStore = useConfigStore()
   const api = new PanelApi()
 
-  api.panelSetupPost({request: data}).then((res: SetupResponseSetup) => {
+  api.panelSetupPost({request: data}).then((res: PanelResponseSetup) => {
     localStorage.setItem("token", res.token)
     if (res.user) {
       userStore.setUser(...res.user)
@@ -36,7 +38,7 @@ function finalize(data: SetupRequestSetup) {
     configStore.setSetupComplete()
     router.push({name: "HomePage"})
   }).catch((err: AxiosError) => {
-    console.log(err)
+    console.log(err.response?.data)
   })
 }
 

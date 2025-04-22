@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {ModelsOcservUserOrGroupConfigs} from "@/api";
+import type {OcOcservDefaultConfigs} from "@/api";
 import {reactive, ref, toRaw} from "vue";
 import {domainRule, ipOrRangeRule, ipRule} from "@/utils/rules.ts";
 
@@ -10,12 +10,12 @@ const {t} = useLocale()
 
 const props = defineProps({
   data: {
-    type: Object as ModelsOcservUserOrGroupConfigs,
+    type: Object as OcOcservDefaultConfigs,
     required: true,
   },
 })
 
-const formValues: ModelsOcservUserOrGroupConfigs = reactive<ModelsOcservUserOrGroupConfigs>({})
+const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 
 const routeInput = ref("")
 const noRouteInput = ref("")
@@ -23,7 +23,6 @@ const splitDNSInput = ref("")
 
 
 const sendResult = () => {
-  console.log("aaaaaaaaaa")
   emit('sendResult', {
     valid: valid.value,
     result: toRaw(formValues)

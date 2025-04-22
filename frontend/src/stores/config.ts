@@ -8,15 +8,12 @@ export const useConfigStore = defineStore('config', {
     }),
 
     actions: {
-        fetchConfig: function () {
+        fetchConfig: async function () {
             const api = new PanelApi()
-            api.panelGet().then((res) => {
-                this.setup = res.data.setup
-                this.googleCaptchaSiteKey = res.data?.google_captcha_secret_key || ""
-            })
+            const res = await api.panelGet()
+            this.setup = res.data.setup
+            this.googleCaptchaSiteKey = res.data?.google_captcha_secret_key || ""
+            console.log(res.data)
         },
-        setSetupComplete: async function () {
-            this.setup = true;
-        }
     },
 })

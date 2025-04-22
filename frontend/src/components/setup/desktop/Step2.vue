@@ -2,7 +2,7 @@
 import {useLocale} from 'vuetify/framework'
 import {reactive, ref, toRaw} from 'vue'
 import {requiredRule} from '@/utils/rules'
-import type {SetupRequestSetupConfig} from "@/api";
+import type {PanelRequestSetupConfig} from "@/api";
 
 const emit = defineEmits(['sendResult'])
 const valid = ref(true)
@@ -10,7 +10,7 @@ const {t} = useLocale()
 
 const props = defineProps({
   data: {
-    type: Object as SetupRequestSetupConfig,
+    type: Object as PanelRequestSetupConfig,
     required: true,
   },
 })
@@ -19,7 +19,7 @@ const rules = {
   required: (v: string) => requiredRule(v, t),
 }
 
-const formValues: SetupRequestSetupConfig = reactive<SetupRequestSetupConfig>({})
+const formValues: PanelRequestSetupConfig = reactive<PanelRequestSetupConfig>({})
 
 const sendResult = () => {
   valid.value = !(!formValues.admin_username || !formValues.admin_password);

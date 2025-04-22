@@ -17,5 +17,5 @@ func GenerateAccessToken(userID string, expire int64) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(cfg.JWTSecret)
+	return token.SignedString([]byte(cfg.JWTSecret))
 }

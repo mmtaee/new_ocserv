@@ -22,7 +22,7 @@ func NewPanelRepository() *PanelRepository {
 
 func (p *PanelRepository) GetConfig(ctx context.Context) (*models.Panel, error) {
 	panel := &models.Panel{}
-	if err := p.db.WithContext(ctx).Where(panel).First(panel).Error; err != nil {
+	if err := p.db.WithContext(ctx).First(panel).Error; err != nil {
 		return nil, err
 	}
 	return panel, nil

@@ -53,5 +53,6 @@ func main() {
 		log.Println("initiating shutdown...")
 
 		routing.Shutdown()
+
 	}
 }

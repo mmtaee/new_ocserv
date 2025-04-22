@@ -1,6 +1,7 @@
 package panel
 
 import (
+	"context"
 	"errors"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -46,6 +47,7 @@ func New() *Controller {
 func (ctrl *Controller) Config(c echo.Context) error {
 	config, err := ctrl.panelRepo.GetConfig(c.Request().Context())
 	if err != nil {
+		log.Println("cache db: ", err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.JSON(http.StatusOK, ConfigResponse{
 				Setup:                false,
@@ -54,7 +56,11 @@ func (ctrl *Controller) Config(c echo.Context) error {
 		}
 		return ctrl.request.BadRequest(c, err)
 	}
-	return c.JSON(http.StatusOK, config)
+	log.Println("config:", config)
+	return c.JSON(http.StatusOK, ConfigResponse{
+		Setup:                true,
+		GoogleCaptchaSiteKey: config.GoogleCaptchaSiteKey,
+	})
 }
 
 // Setup		 Initializing and setup panel
@@ -73,8 +79,10 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 
+	ctx := context.Background()
+
 	go func() {
-		_, err := ctrl.panelRepo.Create(c.Request().Context(), &models.Panel{
+		_, err := ctrl.panelRepo.Create(ctx, &models.Panel{
 			Setup:                  true,
 			GoogleCaptchaSiteKey:   data.Config.GoogleCaptchaSiteKey,
 			GoogleCaptchaSecretKey: data.Config.GoogleCaptchaSecretKey,
@@ -83,7 +91,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 	}()
 
 	go func() {
-		err := ctrl.ocservGroupRepo.WithContext(c.Request().Context()).UpdateDefaultGroup(data.DefaultOcservGroup)
+		err := ctrl.ocservGroupRepo.WithContext(ctx).UpdateDefaultGroup(data.DefaultOcservGroup)
 		if err != nil {
 			log.Println("update default group:", err)
 		}

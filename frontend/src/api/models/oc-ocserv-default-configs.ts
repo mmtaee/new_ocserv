@@ -142,10 +142,10 @@ export interface OcOcservDefaultConfigs {
     'route'?: Array<string>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof OcOcservDefaultConfigs
      */
-    'rx-data-per-sec'?: string;
+    'rx-data-per-sec'?: number;
     /**
      * 
      * @type {number}
@@ -172,9 +172,9 @@ export interface OcOcservDefaultConfigs {
     'tunnel-all-dns'?: boolean;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof OcOcservDefaultConfigs
      */
-    'tx-data-per-sec'?: string;
+    'tx-data-per-sec'?: number;
 }
 

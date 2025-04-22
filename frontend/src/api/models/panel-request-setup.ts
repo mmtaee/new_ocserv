@@ -37,6 +37,6 @@ export interface PanelRequestSetup {
      * @type {OcOcservDefaultConfigs}
      * @memberof PanelRequestSetup
      */
-    'default_ocserv_group': OcOcservDefaultConfigs;
+    'default_ocserv_group'?: OcOcservDefaultConfigs;
 }
 

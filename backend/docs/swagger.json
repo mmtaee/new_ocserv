@@ -189,7 +189,7 @@
                     }
                 },
                 "rx-data-per-sec": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "session-timeout": {
                     "type": "integer"
@@ -207,7 +207,7 @@
                     "type": "boolean"
                 },
                 "tx-data-per-sec": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -228,8 +228,7 @@
         "panel.RequestSetup": {
             "type": "object",
             "required": [
-                "config",
-                "default_ocserv_group"
+                "config"
             ],
             "properties": {
                 "config": {

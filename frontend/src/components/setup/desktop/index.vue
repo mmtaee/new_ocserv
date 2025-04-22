@@ -16,10 +16,6 @@ const finalizeData: PanelRequestSetup = {
   default_ocserv_group: null,
 }
 
-const finalize = () => {
-  emit("finalize", finalizeData)
-}
-
 
 const configHandler = (data: PanelRequestSetupConfig) => {
   formIsValid.value = data?.valid
@@ -32,47 +28,57 @@ const ocservDefaultGroupHandler = (data: OcOcservDefaultConfigs) => {
   finalizeData.default_ocserv_group = {...data.result}
 }
 
+
+const Step1 = defineAsyncComponent(() => import("./Step1.vue"));
+const Step2 = defineAsyncComponent(() => import("./Step2.vue"));
+const Step3 = defineAsyncComponent(() => import("./Step3.vue"));
+const Step4 = defineAsyncComponent(() => import("./Step4.vue"));
+const Step5 = defineAsyncComponent(() => import("./Step5.vue"));
+const Step6 = defineAsyncComponent(() => import("./Step6.vue"));
+const Step7 = defineAsyncComponent(() => import("./Step7.vue"));
+
+
 const steps = [
   {
     value: 1,
-    component: defineAsyncComponent(() => import("./Step1.vue")),
+    component: Step1,
     data: null,
     handler: null,
   },
   {
     value: 2,
-    component: defineAsyncComponent(() => import("./Step2.vue")),
+    component: Step2,
     data: "config",
     handler: configHandler,
   },
   {
     value: 3,
-    component: defineAsyncComponent(() => import("./Step3.vue")),
+    component: Step3,
     data: "default_ocserv_group",
     handler: ocservDefaultGroupHandler,
   },
   {
     value: 4,
-    component: defineAsyncComponent(() => import("./Step4.vue")),
+    component: Step4,
     data: "default_ocserv_group",
     handler: ocservDefaultGroupHandler,
   },
   {
     value: 5,
-    component: defineAsyncComponent(() => import("./Step5.vue")),
+    component: Step5,
     data: "default_ocserv_group",
     handler: ocservDefaultGroupHandler,
   },
   {
     value: 6,
-    component: defineAsyncComponent(() => import("./Step6.vue")),
+    component: Step6,
     data: "default_ocserv_group",
     handler: ocservDefaultGroupHandler,
   },
   {
     value: 7,
     loading: false,
-    component: defineAsyncComponent(() => import("./Step7.vue")),
+    component: Step7,
     data: null,
     handler: null,
   },
@@ -82,7 +88,7 @@ function nextStep() {
   if (step.value < steps.length + 1) {
     if (step.value === steps.length) {
       loading.value = true
-      emit("finalize", finalize)
+      emit("finalize", finalizeData)
     }
     step.value++
   }
@@ -145,8 +151,7 @@ const skipBtn = () => {
     <v-card-actions class="my-2 mx-2">
       <v-btn
           v-if="![1,2].includes(step)"
-          :disabled="step === 1 || loading"
-          :loading="false"
+          :disabled="step === 1"
           color="grey"
           variant="outlined"
           @click="prevStep"
@@ -166,7 +171,6 @@ const skipBtn = () => {
       </v-btn>
       <v-btn
           :disabled="nextBtnDisable"
-          :loading="loading"
           color="primary"
           variant="outlined"
           @click="nextStep"

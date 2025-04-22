@@ -12,7 +12,7 @@ type RequestSetup struct {
 		GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 		GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"omitempty"`
 	} `json:"config" validate:"required"`
-	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"required"`
+	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"omitempty"`
 }
 
 type ResponseSetup struct {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"log"
 	"unicode"
 )
 
@@ -13,6 +14,9 @@ func (r *Request) DoValidate(c echo.Context, data interface{}) interface{} {
 	if err := c.Bind(&data); err != nil {
 		return errorWrapper(err)
 	}
+
+	log.Println(data)
+
 	if err := r.validator.Struct(data); err != nil {
 		return errorWrapper(err)
 	}
