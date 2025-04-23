@@ -104,6 +104,36 @@ definitions:
     required:
     - setup
     type: object
+  panel.Login:
+    properties:
+      password:
+        example: doe123456
+        maxLength: 16
+        minLength: 2
+        type: string
+      remember_me:
+        type: boolean
+      token:
+        type: string
+      username:
+        example: john_doe
+        maxLength: 16
+        minLength: 2
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  panel.LoginResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    required:
+    - token
+    - user
+    type: object
   panel.RequestSetup:
     properties:
       config:
@@ -160,6 +190,29 @@ paths:
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
       summary: Get panel Config
+      tags:
+      - Panel
+  /panel/login/:
+    post:
+      consumes:
+      - application/json
+      description: Admin and Staff users login with Google captcha(captcha site key
+        required in get config api)
+      parameters:
+      - description: setup config data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/panel.Login'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/panel.LoginResponse'
+      summary: Admin and Staff users login
       tags:
       - Panel
   /panel/setup/:

@@ -20,11 +20,11 @@ const routes: Array<RouteRecordRaw> = [
             title: "Setup",
         }
     },
-    // {
-    //     path: '/login',
-    //     name: 'LoginPage',
-    //     component: () => import('../views/LoginView.vue'),
-    // },
+    {
+        path: '/login',
+        name: 'LoginPage',
+        component: () => import('../views/LoginView.vue'),
+    },
     // {
     //     path: '/error',
     //     name: 'ErrorPage',

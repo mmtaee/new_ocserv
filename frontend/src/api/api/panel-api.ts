@@ -24,6 +24,10 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { PanelConfigResponse } from '../models';
 // @ts-ignore
+import type { PanelLogin } from '../models';
+// @ts-ignore
+import type { PanelLoginResponse } from '../models';
+// @ts-ignore
 import type { PanelRequestSetup } from '../models';
 // @ts-ignore
 import type { PanelResponseSetup } from '../models';
@@ -57,6 +61,42 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Admin and Staff users login with Google captcha(captcha site key required in get config api)
+         * @summary Admin and Staff users login
+         * @param {PanelLogin} request setup config data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelLoginPost: async (request: PanelLogin, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('panelLoginPost', 'request', request)
+            const localVarPath = `/panel/login/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -122,6 +162,19 @@ export const PanelApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Admin and Staff users login with Google captcha(captcha site key required in get config api)
+         * @summary Admin and Staff users login
+         * @param {PanelLogin} request setup config data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async panelLoginPost(request: PanelLogin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelLoginResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelLoginPost(request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PanelApi.panelLoginPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Setup panel with admin user, captcha and ocserv default group configs
          * @summary Setup panel with admin user
          * @param {PanelRequestSetup} request setup config data
@@ -154,6 +207,16 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.panelGet(options).then((request) => request(axios, basePath));
         },
         /**
+         * Admin and Staff users login with Google captcha(captcha site key required in get config api)
+         * @summary Admin and Staff users login
+         * @param {PanelApiPanelLoginPostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelLoginPost(requestParameters: PanelApiPanelLoginPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelLoginResponse> {
+            return localVarFp.panelLoginPost(requestParameters.request, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Setup panel with admin user, captcha and ocserv default group configs
          * @summary Setup panel with admin user
          * @param {PanelApiPanelSetupPostRequest} requestParameters Request parameters.
@@ -165,6 +228,20 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
         },
     };
 };
+
+/**
+ * Request parameters for panelLoginPost operation in PanelApi.
+ * @export
+ * @interface PanelApiPanelLoginPostRequest
+ */
+export interface PanelApiPanelLoginPostRequest {
+    /**
+     * setup config data
+     * @type {PanelLogin}
+     * @memberof PanelApiPanelLoginPost
+     */
+    readonly request: PanelLogin
+}
 
 /**
  * Request parameters for panelSetupPost operation in PanelApi.
@@ -196,6 +273,18 @@ export class PanelApi extends BaseAPI {
      */
     public panelGet(options?: RawAxiosRequestConfig) {
         return PanelApiFp(this.configuration).panelGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Admin and Staff users login with Google captcha(captcha site key required in get config api)
+     * @summary Admin and Staff users login
+     * @param {PanelApiPanelLoginPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PanelApi
+     */
+    public panelLoginPost(requestParameters: PanelApiPanelLoginPostRequest, options?: RawAxiosRequestConfig) {
+        return PanelApiFp(this.configuration).panelLoginPost(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

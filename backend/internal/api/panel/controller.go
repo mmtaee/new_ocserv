@@ -123,3 +123,20 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		},
 	)
 }
+
+// Login		 Admin and Staff users login
+//
+// @Summary      Admin and Staff users login
+// @Description  Admin and Staff users login with Google captcha(captcha site key required in get config api)
+// @Tags         Panel
+// @Accept       json
+// @Produce      json
+// @Param        request    body  Login   true "setup config data"
+// @Success      201  {object}  LoginResponse
+// @Router       /panel/login/ [post]
+func (ctrl *Controller) Login(c echo.Context) error {
+	return c.JSON(http.StatusOK, LoginResponse{
+		User:  nil,
+		Token: "",
+	})
+}

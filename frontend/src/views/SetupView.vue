@@ -4,6 +4,7 @@ import {onBeforeUnmount, onMounted, ref} from "vue";
 import DesktopView from "../components/setup/desktop/index.vue"
 import router from "@/plugins/router.ts";
 import {useConfigStore} from "@/stores/config.ts";
+import {useUserStore} from "@/stores/user.ts";
 
 const MobileView = null
 const isMobile = ref(false)
@@ -29,6 +30,9 @@ async function finalize(data: PanelRequestSetup) {
     console.error(res.status)
     return
   }
+  
+  const userStore = useUserStore()
+  await userStore.setUser(res.data.user)
   const configStore = useConfigStore()
   await configStore.setSetup(true)
   localStorage.setItem("token", res.data.token)

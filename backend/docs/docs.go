@@ -38,6 +38,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/panel/login/": {
+            "post": {
+                "description": "Admin and Staff users login with Google captcha(captcha site key required in get config api)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Panel"
+                ],
+                "summary": "Admin and Staff users login",
+                "parameters": [
+                    {
+                        "description": "setup config data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/panel.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/panel.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/setup/": {
             "post": {
                 "description": "Setup panel with admin user, captcha and ocserv default group configs",
@@ -229,6 +263,48 @@ const docTemplate = `{
                 },
                 "setup": {
                     "type": "boolean"
+                }
+            }
+        },
+        "panel.Login": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 2,
+                    "example": "doe123456"
+                },
+                "remember_me": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 2,
+                    "example": "john_doe"
+                }
+            }
+        },
+        "panel.LoginResponse": {
+            "type": "object",
+            "required": [
+                "token",
+                "user"
+            ],
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.User"
                 }
             }
         },
