@@ -13,6 +13,7 @@ import (
 	"ocserv/pkg/database"
 	"ocserv/pkg/oc"
 	"ocserv/pkg/request"
+	"ocserv/pkg/utils/captcha"
 )
 
 type Controller struct {
@@ -135,8 +136,35 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 // @Success      201  {object}  LoginResponse
 // @Router       /panel/login/ [post]
 func (ctrl *Controller) Login(c echo.Context) error {
+	var data Login
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	config, err := ctrl.panelRepo.GetConfig(c.Request().Context())
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	if secretKey := config.GoogleCaptchaSecretKey; secretKey != "" {
+		res := captcha.Verify(secretKey, data.Token)
+		if !res {
+			return ctrl.request.BadRequest(c, errors.New("captcha challenge failed"))
+		}
+	}
+
+	user, err := ctrl.userRepo.GetUserByUsername(c.Request().Context(), data.Username)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err, "user created")
+	}
+
 	return c.JSON(http.StatusOK, LoginResponse{
-		User:  nil,
-		Token: "",
+		User:  user,
+		Token: token,
 	})
 }

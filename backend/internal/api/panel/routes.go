@@ -8,4 +8,5 @@ func Routes(e *echo.Group) {
 
 	e.GET("", controller.Config)
 	e.POST("/setup", controller.Setup)
+	e.POST("/login", controller.Login)
 }

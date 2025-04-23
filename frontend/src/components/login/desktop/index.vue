@@ -13,6 +13,14 @@ const loginData: PanelLogin = reactive<PanelLogin>({})
 const configStore = useConfigStore()
 const {config} = storeToRefs(configStore)
 
+
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const Captcha = defineAsyncComponent(() => import("../Captcha.vue"));
 
 const rules = {
@@ -33,7 +41,7 @@ const btnDisable = computed(() => {
 </script>
 
 <template>
-  <v-card class="mx-auto d-flex flex-column" max-height="800" min-width="450">
+  <v-card class="mx-auto d-flex flex-column" max-height="800" min-width="500">
     <v-card-text class="flex-grow-1 overflow-auto">
 
       <v-row align="center" justify="center">
@@ -46,36 +54,38 @@ const btnDisable = computed(() => {
           </div>
         </v-col>
 
-        <v-divider class="mt-5"/>
+      </v-row>
 
-        <v-form v-model="valid">
-          <v-col class="ma-0 pa-0 mt-5" cols="12" md="12" sm="12">
+      <v-divider class="mt-5"/>
+      <v-form v-model="valid">
+        <v-row align="center" justify="center">
+          <v-col class="ma-0 pa-0 mt-5" cols="12" md="7" sm="12">
             <v-text-field
                 v-model="loginData.username"
                 :label="t('ADMIN_USERNAME')"
                 :rules="[rules.required]"
-                clearable
-                density="comfortable"
-                prepend-inner-icon="mdi-account"
-                variant="underlined"
-            />
-          </v-col>
-
-          <v-col class="ma-0 pa-0" cols="12" md="12" sm="12">
-            <v-text-field
-                v-model="loginData.password"
-                :class="config.googleCaptchaSiteKey != null ? 'my-3': 'my-1'"
-                :label="t('ADMIN_PASSWORD')"
-                :rules="[rules.required]"
-                class="my-3"
-                clearable
                 density="comfortable"
                 prepend-inner-icon="mdi-key"
                 variant="underlined"
             />
           </v-col>
 
-          <v-col class="ma-0 pa-0" cols="12" md="12" sm="12">
+          <v-col class="ma-0 pa-0" cols="12" md="7" sm="12">
+            <v-text-field
+                v-model="loginData.password"
+                :class="config?.googleCaptchaSiteKey != null ? 'my-3': 'my-0'"
+                :label="t('ADMIN_PASSWORD')"
+                :rules="[rules.required]"
+                density="comfortable"
+                prepend-inner-icon="mdi-key"
+                variant="underlined"
+            />
+          </v-col>
+
+          <v-col
+              class="ma-0 pa-0" cols="12" md="7"
+              sm="12"
+          >
             <Captcha
                 v-if="config.googleCaptchaSiteKey"
                 v-model="loginData.token"
@@ -84,30 +94,31 @@ const btnDisable = computed(() => {
           </v-col>
 
           <v-col
-              :class="config.googleCaptchaSiteKey != null ? 'mt-5': 'mt-1'"
+              :class="config?.googleCaptchaSiteKey != null ? 'mt-5': ''"
               class="ma-0 pa-0"
               cols="12"
-              md="12"
+              md="7"
               sm="12"
           >
             <v-checkbox
                 v-model="loginData.remember_me"
                 :label="t('REMEMBER_ME')"
+                class="pa-0 ma-0"
                 density="compact"
                 hide-details
                 name="remember_me"
             />
           </v-col>
-        </v-form>
-
-      </v-row>
+        </v-row>
+      </v-form>
 
     </v-card-text>
 
     <v-card-actions class="my-2 mx-2">
       <v-spacer/>
       <v-btn
-          :disabled="btnDisable" color="grey"
+          :disabled="btnDisable"
+          :loading="loading" color="grey"
           variant="outlined"
           @click="login"
       >
