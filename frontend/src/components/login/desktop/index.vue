@@ -25,7 +25,7 @@ defineProps({
   },
 });
 
-const Captcha = defineAsyncComponent(() => import("../Captcha.vue"));
+const Captcha = defineAsyncComponent(() => import("@/components/login/Captcha.vue"));
 
 const rules = {
   required: (v: string) => requiredRule(v, t),

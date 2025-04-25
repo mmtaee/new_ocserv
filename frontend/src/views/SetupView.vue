@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import {PanelApi, type PanelSetupData} from "@/api";
-import {onBeforeUnmount, onMounted, ref} from "vue";
-import DesktopView from "../components/setup/desktop/index.vue"
+import {defineAsyncComponent, onBeforeUnmount, onMounted, ref} from "vue";
+
 import router from "@/plugins/router.ts";
 import {useConfigStore} from "@/stores/config.ts";
 import {useUserStore} from "@/stores/user.ts";
 
+const DesktopView = defineAsyncComponent(() => import("@/components/setup/desktop/index.vue"))
 
 const MobileView = null
 const isMobile = ref(false)
@@ -34,7 +35,7 @@ async function finalize(data: PanelSetupData) {
 
   const userStore = useUserStore()
   const configStore = useConfigStore()
-  
+
   userStore.setUser(res.data.user)
   configStore.setSetup(true)
   localStorage.setItem("token", res.data.token)

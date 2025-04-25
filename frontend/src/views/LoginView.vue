@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
-import {onBeforeUnmount, onMounted, ref} from "vue";
-import DesktopView from "@/components/login/desktop/index.vue";
-import MobileView from "@/components/login/mobile/index.vue";
+import {defineAsyncComponent, onBeforeUnmount, onMounted, ref} from "vue";
 import {PanelApi, type PanelLogin} from "@/api";
 import {useUserStore} from "@/stores/user.ts";
 import {useConfigStore} from "@/stores/config.ts";
 import router from "@/plugins/router.ts";
 
+const DesktopView = defineAsyncComponent(() => import("@/components/login/desktop/index.vue"))
+const MobileView = defineAsyncComponent(() => import("@/components/login/mobile/index.vue"))
 
 const isMobile = ref(false)
 const loading = ref(false)
@@ -34,10 +34,13 @@ const login = async (data: PanelLogin) => {
   if (res.status !== 200) {
     console.error(res.status)
   } else {
+
     const userStore = useUserStore()
-    await userStore.setUser(res.data.user)
     const configStore = useConfigStore()
-    await configStore.setSetup(true)
+
+    userStore.setUser(res.data.user)
+    configStore.setSetup(true)
+
     localStorage.setItem("token", res.data.token)
     await router.push("/")
   }

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import {useTheme} from 'vuetify'
-import CenterLayout from "@/components/layouts/CenterLayout.vue";
+import {defineAsyncComponent} from "vue";
+
+
+const CenterLayout = defineAsyncComponent(() => import("@/components/layouts/CenterLayout.vue"))
 
 const theme = useTheme()
 theme.global.name.value = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'
