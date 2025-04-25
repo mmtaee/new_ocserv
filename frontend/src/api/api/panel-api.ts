@@ -26,11 +26,9 @@ import type { PanelConfigResponse } from '../models';
 // @ts-ignore
 import type { PanelLogin } from '../models';
 // @ts-ignore
-import type { PanelLoginResponse } from '../models';
+import type { PanelSetupData } from '../models';
 // @ts-ignore
-import type { PanelRequestSetup } from '../models';
-// @ts-ignore
-import type { PanelResponseSetup } from '../models';
+import type { PanelUserResponse } from '../models';
 /**
  * PanelApi - axios parameter creator
  * @export
@@ -106,11 +104,11 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Setup panel with admin user, captcha and ocserv default group configs
          * @summary Setup panel with admin user
-         * @param {PanelRequestSetup} request setup config data
+         * @param {PanelSetupData} request setup config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelSetupPost: async (request: PanelRequestSetup, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        panelSetupPost: async (request: PanelSetupData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'request' is not null or undefined
             assertParamExists('panelSetupPost', 'request', request)
             const localVarPath = `/panel/setup/`;
@@ -168,7 +166,7 @@ export const PanelApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelLoginPost(request: PanelLogin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelLoginResponse>> {
+        async panelLoginPost(request: PanelLogin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.panelLoginPost(request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PanelApi.panelLoginPost']?.[localVarOperationServerIndex]?.url;
@@ -177,11 +175,11 @@ export const PanelApiFp = function(configuration?: Configuration) {
         /**
          * Setup panel with admin user, captcha and ocserv default group configs
          * @summary Setup panel with admin user
-         * @param {PanelRequestSetup} request setup config data
+         * @param {PanelSetupData} request setup config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelSetupPost(request: PanelRequestSetup, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelResponseSetup>> {
+        async panelSetupPost(request: PanelSetupData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.panelSetupPost(request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PanelApi.panelSetupPost']?.[localVarOperationServerIndex]?.url;
@@ -213,7 +211,7 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelLoginPost(requestParameters: PanelApiPanelLoginPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelLoginResponse> {
+        panelLoginPost(requestParameters: PanelApiPanelLoginPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelUserResponse> {
             return localVarFp.panelLoginPost(requestParameters.request, options).then((request) => request(axios, basePath));
         },
         /**
@@ -223,7 +221,7 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelSetupPost(requestParameters: PanelApiPanelSetupPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelResponseSetup> {
+        panelSetupPost(requestParameters: PanelApiPanelSetupPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelUserResponse> {
             return localVarFp.panelSetupPost(requestParameters.request, options).then((request) => request(axios, basePath));
         },
     };
@@ -251,10 +249,10 @@ export interface PanelApiPanelLoginPostRequest {
 export interface PanelApiPanelSetupPostRequest {
     /**
      * setup config data
-     * @type {PanelRequestSetup}
+     * @type {PanelSetupData}
      * @memberof PanelApiPanelSetupPost
      */
-    readonly request: PanelRequestSetup
+    readonly request: PanelSetupData
 }
 
 /**

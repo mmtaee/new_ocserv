@@ -1,32 +1,30 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {OcOcservDefaultConfigs} from "@/api";
+import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {reactive, ref, toRaw} from "vue";
 
-const emit = defineEmits(['sendResult'])
+const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
 const {t} = useLocale()
 
-const props = defineProps({
-  data: {
-    type: Object as OcOcservDefaultConfigs,
-    required: true,
-  },
-})
+const props = defineProps<{
+  data: PanelSetupData;
+}>();
 
 const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 
 const sendResult = () => {
-  emit('sendResult', {
-    valid: valid.value,
-    result: toRaw(formValues)
-  })
+  emit("validate", valid.value)
+  console.log("formValues: ", formValues)
+  emit('result', toRaw(formValues))
 }
 
 if (props.data) {
-  Object.assign(formValues, structuredClone(props.data))
+  const combined = {
+    ...toRaw(props.data.default_ocserv_group),
+  }
+  Object.assign(formValues, combined)
 }
-
 </script>
 
 <template>
@@ -161,20 +159,24 @@ if (props.data) {
       <v-col class="ma-0 pa-0 px-10" cols="12" md="12" sm="12">
         <v-checkbox
             v-model="formValues['tunnel-all-dns']"
+            :false-value="false"
             :label="t('Force all DNS traffic through the VPN tunnel (tunnel-all-dns)')"
+            :true-value="true"
             density="comfortable"
             hide-details
-            @click="sendResult"
+            @change="sendResult"
         />
       </v-col>
 
       <v-col class="ma-0 pa-0 px-10" cols="12" md="12" sm="12">
         <v-checkbox
             v-model="formValues['deny-roaming']"
+            :false-value="false"
             :label="t('Disconnect client if its IP changes (deny-roaming)')"
+            :true-value="true"
             density="comfortable"
             hide-details
-            @click="sendResult"
+            @change="sendResult"
         />
       </v-col>
 

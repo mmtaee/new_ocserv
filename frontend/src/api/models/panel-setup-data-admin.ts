@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+/* eslint-disable */
 /**
  * Ocserv User management Example Api
  * This is a sample Ocserv User management Api server.
@@ -14,5 +14,23 @@
 
 
 
-export * from './api/panel-api';
+/**
+ * 
+ * @export
+ * @interface PanelSetupDataAdmin
+ */
+export interface PanelSetupDataAdmin {
+    /**
+     * 
+     * @type {string}
+     * @memberof PanelSetupDataAdmin
+     */
+    'password': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PanelSetupDataAdmin
+     */
+    'username': string;
+}
 

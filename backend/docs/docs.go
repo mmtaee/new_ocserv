@@ -66,7 +66,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/panel.LoginResponse"
+                            "$ref": "#/definitions/panel.UserResponse"
                         }
                     }
                 }
@@ -92,7 +92,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/panel.RequestSetup"
+                            "$ref": "#/definitions/panel.SetupData"
                         }
                     }
                 ],
@@ -100,7 +100,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/panel.ResponseSetup"
+                            "$ref": "#/definitions/panel.UserResponse"
                         }
                     }
                 }
@@ -293,46 +293,42 @@ const docTemplate = `{
                 }
             }
         },
-        "panel.LoginResponse": {
+        "panel.SetupData": {
             "type": "object",
             "required": [
-                "token",
-                "user"
+                "admin",
+                "config",
+                "default_ocserv_group"
             ],
             "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/models.User"
-                }
-            }
-        },
-        "panel.RequestSetup": {
-            "type": "object",
-            "required": [
-                "config"
-            ],
-            "properties": {
-                "config": {
+                "admin": {
                     "type": "object",
                     "required": [
-                        "admin_password",
-                        "admin_username"
+                        "password",
+                        "username"
                     ],
                     "properties": {
-                        "admin_password": {
+                        "password": {
                             "type": "string",
                             "maxLength": 16,
                             "minLength": 2,
                             "example": "doe123456"
                         },
-                        "admin_username": {
+                        "username": {
                             "type": "string",
                             "maxLength": 16,
                             "minLength": 2,
                             "example": "john_doe"
-                        },
+                        }
+                    }
+                },
+                "config": {
+                    "type": "object",
+                    "required": [
+                        "google_captcha_secret_key",
+                        "google_captcha_site_key"
+                    ],
+                    "properties": {
                         "google_captcha_secret_key": {
                             "type": "string"
                         },
@@ -346,7 +342,7 @@ const docTemplate = `{
                 }
             }
         },
-        "panel.ResponseSetup": {
+        "panel.UserResponse": {
             "type": "object",
             "required": [
                 "token",

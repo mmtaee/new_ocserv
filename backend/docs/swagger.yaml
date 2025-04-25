@@ -124,44 +124,42 @@ definitions:
     - password
     - username
     type: object
-  panel.LoginResponse:
+  panel.SetupData:
     properties:
-      token:
-        type: string
-      user:
-        $ref: '#/definitions/models.User'
-    required:
-    - token
-    - user
-    type: object
-  panel.RequestSetup:
-    properties:
-      config:
+      admin:
         properties:
-          admin_password:
+          password:
             example: doe123456
             maxLength: 16
             minLength: 2
             type: string
-          admin_username:
+          username:
             example: john_doe
             maxLength: 16
             minLength: 2
             type: string
+        required:
+        - password
+        - username
+        type: object
+      config:
+        properties:
           google_captcha_secret_key:
             type: string
           google_captcha_site_key:
             type: string
         required:
-        - admin_password
-        - admin_username
+        - google_captcha_secret_key
+        - google_captcha_site_key
         type: object
       default_ocserv_group:
         $ref: '#/definitions/oc.OcservDefaultConfigs'
     required:
+    - admin
     - config
+    - default_ocserv_group
     type: object
-  panel.ResponseSetup:
+  panel.UserResponse:
     properties:
       token:
         type: string
@@ -211,7 +209,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/panel.LoginResponse'
+            $ref: '#/definitions/panel.UserResponse'
       summary: Admin and Staff users login
       tags:
       - Panel
@@ -226,14 +224,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/panel.RequestSetup'
+          $ref: '#/definitions/panel.SetupData'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/panel.ResponseSetup'
+            $ref: '#/definitions/panel.UserResponse'
       summary: Setup panel with admin user
       tags:
       - Panel

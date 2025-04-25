@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import type {PanelRequestSetup} from "@/api";
+import type {PanelSetupData} from "@/api";
 import {useLocale} from "vuetify/framework";
 
 const {t} = useLocale()
 
 
-defineProps({
-  data: {
-    type: Object as PanelRequestSetup,
-    required: true,
-  },
-})
+const props = defineProps<{
+  data: PanelSetupData;
+}>();
 
 function keyTransform(key: string): string {
   return key
@@ -20,6 +17,7 @@ function keyTransform(key: string): string {
       .trim()
 }
 
+console.log("aa: ", props.data)
 
 </script>
 
@@ -49,7 +47,7 @@ function keyTransform(key: string): string {
               {{ t('Admin Username') }}:
             </span>
             <span class="text-grey mx-3">
-              {{ data.config.admin_username }}
+              {{ data.admin.username }}
             </span>
           </v-col>
           <v-col class="px-5 mx-5" cols="12" md="12" sm="12">
@@ -57,10 +55,10 @@ function keyTransform(key: string): string {
             <span class="text-primary">
               {{ t('Admin Password') }}:
             </span>
-            <v-tooltip :text="data.config.admin_password">
+            <v-tooltip :text="data.admin.password">
               <template v-slot:activator="{ props }">
                 <span class="text-grey mx-3" v-bind="props">
-                  {{ '*'.repeat(data.config.admin_password.length * 2) }}
+                  {{ '*'.repeat(data.admin.password.length * 2) }}
                 </span>
               </template>
             </v-tooltip>
@@ -115,8 +113,11 @@ function keyTransform(key: string): string {
               <span class="text-capitalize text-primary">
               {{ keyTransform(key.toString()) }}:
                 </span>
-              <span class="text-justify">
+              <span v-if="!Array.isArray(val)" class="text-justify">
                 {{ val || "undefined" }}
+              </span>
+              <span v-else>
+                {{ val.join(",") }}
               </span>
             </p>
           </v-col>

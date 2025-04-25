@@ -71,13 +71,13 @@ func (ctrl *Controller) Config(c echo.Context) error {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
-// @Param        request    body  RequestSetup   true "setup config data"
-// @Success      201  {object}  ResponseSetup
+// @Param        request    body  SetupData   true "setup config data"
+// @Success      201  {object}  UserResponse
 // @Router       /panel/setup/ [post]
 func (ctrl *Controller) Setup(c echo.Context) error {
 	// TODO: check config ok or not
 
-	var data RequestSetup
+	var data SetupData
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -100,9 +100,9 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		}
 	}()
 
-	passwordPKG := crypto.CreatePassword(data.Config.AdminPassword)
+	passwordPKG := crypto.CreatePassword(data.Admin.Password)
 	user, err := ctrl.userRepo.CreateAdmin(c.Request().Context(), &models.User{
-		Username: data.Config.AdminUsername,
+		Username: data.Admin.Username,
 		Password: passwordPKG.Hash,
 		Salt:     passwordPKG.Salt,
 		IsAdmin:  true,
@@ -118,7 +118,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 
 	return c.JSON(
 		http.StatusCreated,
-		ResponseSetup{
+		UserResponse{
 			User:  user,
 			Token: token,
 		},
@@ -133,7 +133,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param        request    body  Login   true "setup config data"
-// @Success      201  {object}  LoginResponse
+// @Success      201  {object}  UserResponse
 // @Router       /panel/login/ [post]
 func (ctrl *Controller) Login(c echo.Context) error {
 	var data Login
@@ -163,7 +163,7 @@ func (ctrl *Controller) Login(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err, "user created")
 	}
 
-	return c.JSON(http.StatusOK, LoginResponse{
+	return c.JSON(http.StatusOK, UserResponse{
 		User:  user,
 		Token: token,
 	})

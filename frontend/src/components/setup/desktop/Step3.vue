@@ -1,34 +1,30 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {OcOcservDefaultConfigs} from "@/api";
+import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {reactive, ref, toRaw} from "vue";
 
-const emit = defineEmits(['sendResult'])
+const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
 const {t} = useLocale()
 
-const props = defineProps({
-  data: {
-    type: Object as OcOcservDefaultConfigs,
-    required: true,
-  },
-})
+
+const props = defineProps<{
+  data: PanelSetupData;
+}>();
 
 const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 
 const sendResult = () => {
-  emit('sendResult', {
-    valid: valid.value,
-    result: toRaw(formValues)
-  })
+  emit("validate", valid.value)
+  emit('result', toRaw(formValues))
 }
 
-// const rules = {
-// required: (v: string) => requiredRule(v, t),
-// }
 
 if (props.data) {
-  Object.assign(formValues, structuredClone(props.data))
+  const combined = {
+    ...toRaw(props.data.default_ocserv_group),
+  }
+  Object.assign(formValues, combined)
 }
 
 </script>
@@ -87,7 +83,7 @@ if (props.data) {
       </v-col>
       <v-col class="ma-0 pa-1 px-10" cols="12" md="8" sm="12">
         <v-number-input
-            v-model="formValues.maxSameClient"
+            v-model="formValues['max-same-clients']"
             :hint="t('LIMIT_THE_NUMBER_OF_IDENTICAL_CLIENTS')"
             :label="t('MAX_SAME_CLIENT')"
             :min="0"
@@ -101,7 +97,7 @@ if (props.data) {
       </v-col>
       <v-col class="ma-0 pa-1 pb-3 px-10" cols="12" md="8" sm="12">
         <v-number-input
-            v-model="formValues.sessionTimeout"
+            v-model="formValues['session-timeout']"
             :hint="t('MAX_SESSION_TIME_IN_SECONDS_BEFORE_FORCED_DISCONNECT')"
             :label="t('SESSION_TIMEOUT')"
             :min="0"
@@ -115,7 +111,4 @@ if (props.data) {
       </v-col>
     </v-row>
   </v-form>
-
 </template>
-
-<!--https://chatgpt.com/c/6802383a-1398-8005-99c1-02e5fdd3c858-->

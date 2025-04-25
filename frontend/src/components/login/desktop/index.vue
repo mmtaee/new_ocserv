@@ -9,7 +9,11 @@ import {storeToRefs} from "pinia";
 const emit = defineEmits(['login'])
 const {t} = useLocale()
 const valid = ref(true)
-const loginData: PanelLogin = reactive<PanelLogin>({})
+const loginData: PanelLogin = reactive<PanelLogin>({
+  username: "",
+  password: "",
+  remember_me: false,
+})
 const configStore = useConfigStore()
 const {config} = storeToRefs(configStore)
 
@@ -27,12 +31,12 @@ const rules = {
   required: (v: string) => requiredRule(v, t),
 }
 
-const login = (): PanelLogin => {
+const login = () => {
   emit("login", loginData)
 }
 
 const btnDisable = computed(() => {
-  if (config.googleCaptchaSiteKey !== null) {
+  if (config.value.googleCaptchaSiteKey != null) {
     return !(loginData.token != null && valid.value);
   }
   return !valid.value;

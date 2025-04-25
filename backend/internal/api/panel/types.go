@@ -5,17 +5,19 @@ import (
 	"ocserv/pkg/oc"
 )
 
-type RequestSetup struct {
+type SetupData struct {
+	Admin struct {
+		Username string `json:"username" validate:"required,min=2,max=16" example:"john_doe" `
+		Password string `json:"password" validate:"required,min=2,max=16" example:"doe123456"`
+	} `json:"admin" validate:"required"`
 	Config struct {
-		AdminUsername          string `json:"admin_username" validate:"required,min=2,max=16" example:"john_doe" `
-		AdminPassword          string `json:"admin_password" validate:"required,min=2,max=16" example:"doe123456"`
-		GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"omitempty"`
-		GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"omitempty"`
+		GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"required"`
+		GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"required"`
 	} `json:"config" validate:"required"`
-	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"omitempty"`
+	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"required"`
 }
 
-type ResponseSetup struct {
+type UserResponse struct {
 	User  *models.User `json:"user" validate:"required"`
 	Token string       `json:"token" validate:"required"`
 }
@@ -30,9 +32,4 @@ type Login struct {
 	Password   string `json:"password" validate:"required,min=2,max=16" example:"doe123456"`
 	RememberMe bool   `json:"remember_me" desc:"remember for a month"`
 	Token      string `json:"token" desc:"captcha v2 token"`
-}
-
-type LoginResponse struct {
-	User  *models.User `json:"user" validate:"required"`
-	Token string       `json:"token" validate:"required"`
 }

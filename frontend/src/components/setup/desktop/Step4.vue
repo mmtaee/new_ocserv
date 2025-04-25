@@ -1,29 +1,24 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {OcOcservDefaultConfigs} from "@/api";
+import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {reactive, ref, toRaw} from "vue";
-import {domainRule, ipOrRangeRule, ipRule, ipWithNetmaskRule} from "@/utils/rules.ts";
+import {domainRule, ipOrRangeRule, ipRule, ipWithNetmaskRule, ipWithRangeRule} from "@/utils/rules.ts";
 
-const emit = defineEmits(['sendResult'])
+const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
 const {t} = useLocale()
 
-const props = defineProps({
-  data: {
-    type: Object as OcOcservDefaultConfigs,
-    required: true,
-  },
-})
+const props = defineProps<{
+  data: PanelSetupData;
+}>();
 
 const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
 const dnsInput = ref("")
 
 
 const sendResult = () => {
-  emit('sendResult', {
-    valid: valid.value,
-    result: toRaw(formValues)
-  })
+  emit("validate", valid.value)
+  emit('result', toRaw(formValues))
 }
 
 
@@ -31,13 +26,9 @@ const rules = {
   ip: (v: string) => ipRule(v, t),
   ipOrRange: (v: string) => ipOrRangeRule(v, t),
   ipWithNetmask: (v: string) => ipWithNetmaskRule(v, t),
-  domain: (v: string) => domainRule(v, t)
+  domain: (v: string) => domainRule(v, t),
+  ipWithRange: (v: string) => ipWithRangeRule(v, t)
 }
-
-if (props.data) {
-  Object.assign(formValues, structuredClone(props.data))
-}
-
 
 function addDNS() {
   let r = dnsInput.value.trim()
@@ -52,9 +43,18 @@ function addDNS() {
 }
 
 function removeDNS(r: string) {
-  let index = formValues.dns.findIndex((route: string) => route === r)
-  formValues.dns.splice(index, 1)
-  sendResult()
+  if (formValues.dns) {
+    let index = formValues.dns.findIndex((route: string) => route === r)
+    formValues.dns.splice(index, 1)
+    sendResult()
+  }
+}
+
+if (props.data) {
+  const combined = {
+    ...toRaw(props.data.default_ocserv_group),
+  }
+  Object.assign(formValues, combined)
 }
 
 </script>
@@ -101,13 +101,13 @@ function removeDNS(r: string) {
           </v-col>
           <v-col class="ma-0 pa-0 px-3" cols="12" md="6" sm="12">
             <v-text-field
-                v-model="formValues.ipv4Network"
+                v-model="formValues['ipv4-network']"
                 :hint="t('Address pool for client IP leases')"
                 :label="t('IPV4NETWORK')"
-                :rules="[rules.ipWithNetmask]"
+                :rules="[rules.ipWithRange]"
                 clearable
                 density="comfortable"
-                placeholder="192.168.1.0/255.255.255.0"
+                placeholder="192.168.1.0/24(or 255.255.255.0)"
                 variant="underlined"
                 @keyup="sendResult"
                 @click:clear="sendResult"
@@ -172,13 +172,26 @@ function removeDNS(r: string) {
                     @click:clear="sendResult"
                 />
               </v-col>
+              <v-col class="ma-0 pa-0 px-3" cols="12" md="12" sm="12">
+                <v-checkbox
+                    v-model="formValues['no-udp']"
+                    :false-value="false"
+                    :label="t('prevent a UDP session (no-udp)')"
+                    :true-value="true"
+                    base-color="grey"
+                    density="comfortable"
+                    hide-details
+                    @change="sendResult"
+                />
+              </v-col>
             </v-row>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
+
+
   </v-form>
 
-</template>
 
-<!--https://chatgpt.com/c/6802383a-1398-8005-99c1-02e5fdd3c858-->
+</template>

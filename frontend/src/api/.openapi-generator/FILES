@@ -11,8 +11,8 @@ models/models-permission.ts
 models/models-user.ts
 models/oc-ocserv-default-configs.ts
 models/panel-config-response.ts
-models/panel-login-response.ts
 models/panel-login.ts
-models/panel-request-setup-config.ts
-models/panel-request-setup.ts
-models/panel-response-setup.ts
+models/panel-setup-data-admin.ts
+models/panel-setup-data-config.ts
+models/panel-setup-data.ts
+models/panel-user-response.ts

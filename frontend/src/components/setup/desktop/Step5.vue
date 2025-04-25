@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
-import type {OcOcservDefaultConfigs} from "@/api";
+import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {reactive, ref, toRaw} from "vue";
 import {domainRule, ipOrRangeRule, ipRule} from "@/utils/rules.ts";
 
-const emit = defineEmits(['sendResult'])
+const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
 const {t} = useLocale()
 
-const props = defineProps({
-  data: {
-    type: Object as OcOcservDefaultConfigs,
-    required: true,
-  },
-})
+const props = defineProps<{
+  data: PanelSetupData;
+}>();
 
-const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({})
+
+const formValues: OcOcservDefaultConfigs = reactive<OcOcservDefaultConfigs>({
+  "restrict-user-to-routes": false
+})
 
 const routeInput = ref("")
 const noRouteInput = ref("")
@@ -23,10 +23,8 @@ const splitDNSInput = ref("")
 
 
 const sendResult = () => {
-  emit('sendResult', {
-    valid: valid.value,
-    result: toRaw(formValues)
-  })
+  emit("validate", valid.value)
+  emit('result', toRaw(formValues))
 }
 
 
@@ -36,9 +34,6 @@ const rules = {
   domain: (v: string) => domainRule(v, t)
 }
 
-if (props.data) {
-  Object.assign(formValues, structuredClone(props.data))
-}
 
 function addRoute() {
   let r = routeInput.value.trim()
@@ -53,9 +48,11 @@ function addRoute() {
 }
 
 function removeRoute(r: string) {
-  let index = formValues.route.findIndex((route: string) => route === r)
-  formValues.route.splice(index, 1)
-  sendResult()
+  if (formValues.route) {
+    let index = formValues.route.findIndex((route: string) => route === r)
+    formValues.route.splice(index, 1)
+    sendResult()
+  }
 }
 
 function addNoRoute() {
@@ -71,11 +68,12 @@ function addNoRoute() {
 }
 
 function removeNoRoute(r: string) {
-  let index = formValues["no-route"].findIndex((route: string) => route === r)
-  formValues["no-route"].splice(index, 1)
-  sendResult()
+  if (formValues["no-route"]) {
+    let index = formValues["no-route"].findIndex((route: string) => route === r)
+    formValues["no-route"].splice(index, 1)
+    sendResult()
+  }
 }
-
 
 function addDomain() {
   let r = splitDNSInput.value.trim()
@@ -90,12 +88,19 @@ function addDomain() {
 }
 
 function removeDomain(d: string) {
-  let index = formValues["split-dns"].findIndex((domain: string) => domain === d)
-  formValues["split-dns"].splice(index, 1)
-  sendResult()
+  if (formValues["split-dns"]) {
+    let index = formValues["split-dns"].findIndex((domain: string) => domain === d)
+    formValues["split-dns"].splice(index, 1)
+    sendResult()
+  }
 }
 
-
+if (props.data) {
+  const combined = {
+    ...toRaw(props.data.default_ocserv_group),
+  }
+  Object.assign(formValues, combined)
+}
 </script>
 
 <template>
@@ -265,11 +270,13 @@ function removeDomain(d: string) {
               <v-col class="ma-0 pa-0 px-3 mb-1" cols="12" md="12" sm="12">
                 <v-checkbox
                     v-model="formValues['restrict-user-to-routes']"
+                    :false-value="false"
                     :label="t('Allow client access only to defined routes (restrict-user-to-routes)')"
+                    :true-value="true"
                     base-color="grey"
                     density="comfortable"
                     hide-details
-                    @click="sendResult"
+                    @change="sendResult"
                 />
               </v-col>
             </v-row>
@@ -282,5 +289,3 @@ function removeDomain(d: string) {
   </v-form>
 
 </template>
-
-<!--https://chatgpt.com/c/6802383a-1398-8005-99c1-02e5fdd3c858-->

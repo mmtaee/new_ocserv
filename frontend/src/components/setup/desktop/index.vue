@@ -1,33 +1,18 @@
 <script lang="ts" setup>
-import {computed, defineAsyncComponent, ref} from 'vue'
-import type {OcOcservDefaultConfigs, PanelRequestSetup, PanelRequestSetupConfig} from "@/api";
+import {computed, defineAsyncComponent, reactive, ref, toRaw} from 'vue'
+import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {useLocale} from "vuetify/framework";
+import {panelSetupDefault} from "@/utils/defaults.ts";
+import type {AdminConfigurations} from "@/components/setup/types.ts";
 
 const step = ref(1)
 const {t} = useLocale()
 const loading = ref(false)
-const formIsValid = ref(false)
 const emit = defineEmits(["finalize"])
-
 const skipStep = ref(0)
 
-const finalizeData: PanelRequestSetup = {
-  config: null,
-  default_ocserv_group: null,
-}
-
-
-const configHandler = (data: PanelRequestSetupConfig) => {
-  formIsValid.value = data?.valid
-  finalizeData.config = {...data.result}
-}
-
-const ocservDefaultGroupHandler = (data: OcOcservDefaultConfigs) => {
-  formIsValid.value = data?.valid
-  delete data.valid
-  finalizeData.default_ocserv_group = {...data.result}
-}
-
+const formIsValid = ref(false)
+const finalizeData = reactive<PanelSetupData>(panelSetupDefault)
 
 const Step1 = defineAsyncComponent(() => import("./Step1.vue"));
 const Step2 = defineAsyncComponent(() => import("./Step2.vue"));
@@ -38,48 +23,60 @@ const Step6 = defineAsyncComponent(() => import("./Step6.vue"));
 const Step7 = defineAsyncComponent(() => import("./Step7.vue"));
 
 
+const validate = (v: boolean) => {
+  formIsValid.value = v
+}
+
+const configHandler = (data: AdminConfigurations) => {
+  finalizeData.admin.username = data.username;
+  finalizeData.admin.password = data.password;
+  finalizeData.config.google_captcha_site_key = data.google_captcha_site_key || ""
+  finalizeData.config.google_captcha_secret_key = data.google_captcha_secret_key || ""
+}
+
+const groupHandler = (data: OcOcservDefaultConfigs) => {
+  const combined = {
+    ...structuredClone(toRaw(data))
+  }
+  Object.assign(finalizeData.default_ocserv_group, combined)
+}
+
+
 const steps = [
   {
     value: 1,
     component: Step1,
-    data: null,
     handler: null,
   },
   {
     value: 2,
     component: Step2,
-    data: "config",
     handler: configHandler,
   },
   {
     value: 3,
     component: Step3,
-    data: "default_ocserv_group",
-    handler: ocservDefaultGroupHandler,
+    handler: groupHandler,
   },
   {
     value: 4,
     component: Step4,
-    data: "default_ocserv_group",
-    handler: ocservDefaultGroupHandler,
+    handler: groupHandler,
   },
   {
     value: 5,
     component: Step5,
-    data: "default_ocserv_group",
-    handler: ocservDefaultGroupHandler,
+    handler: groupHandler,
   },
   {
     value: 6,
     component: Step6,
-    data: "default_ocserv_group",
-    handler: ocservDefaultGroupHandler,
+    handler: groupHandler,
   },
   {
     value: 7,
     loading: false,
     component: Step7,
-    data: null,
     handler: null,
   },
 ]
@@ -141,8 +138,9 @@ const skipBtn = () => {
           <component
               :is="st.component"
               v-if="Boolean(st.component) && step === index + 1"
-              :data="st.data ? finalizeData[st.data] : finalizeData "
-              @sendResult="st.handler"
+              :data="finalizeData"
+              @result="st.handler"
+              @validate="validate"
           />
         </v-window-item>
       </v-window>

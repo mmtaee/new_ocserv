@@ -2,35 +2,42 @@
 import {useLocale} from 'vuetify/framework'
 import {reactive, ref, toRaw} from 'vue'
 import {requiredRule} from '@/utils/rules'
-import type {PanelRequestSetupConfig} from "@/api";
+import type {AdminConfigurations} from "@/components/setup/types.ts";
+import type {PanelSetupData} from "@/api";
 
-const emit = defineEmits(['sendResult'])
+const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
 const {t} = useLocale()
-
-const props = defineProps({
-  data: {
-    type: Object as PanelRequestSetupConfig,
-    required: true,
-  },
-})
 
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
 
-const formValues: PanelRequestSetupConfig = reactive<PanelRequestSetupConfig>({})
+const props = defineProps<{
+  data?: PanelSetupData;
+}>();
+
+const formValues = reactive<AdminConfigurations>({
+  username: "",
+  password: "",
+  google_captcha_site_key: "",
+  google_captcha_secret_key: ""
+})
 
 const sendResult = () => {
-  valid.value = !(!formValues.admin_username || !formValues.admin_password);
-  emit('sendResult', {
-    valid: valid.value,
-    result: toRaw(formValues)
-  })
+  valid.value = !(!formValues.username || !formValues.password);
+
+  emit("validate", valid.value)
+  emit('result', toRaw(formValues))
 }
 
 if (props.data) {
-  Object.assign(formValues, structuredClone(props.data))
+  const combined = {
+    ...structuredClone(toRaw(props.data.admin)),
+    ...structuredClone(toRaw(props.data.config)),
+  };
+
+  Object.assign(formValues, combined);
 }
 </script>
 
@@ -59,7 +66,7 @@ if (props.data) {
 
       <v-col class="ma-0 pa-0 px-10" cols="" md="8" sm="12">
         <v-text-field
-            v-model="formValues.admin_username"
+            v-model="formValues.username"
             :label="t('ADMIN_USERNAME')"
             :rules="[rules.required]"
             class="my-3"
@@ -74,7 +81,7 @@ if (props.data) {
 
       <v-col class="ma-0 pa-0 px-10" cols="12" md="8" sm="12">
         <v-text-field
-            v-model="formValues.admin_password"
+            v-model="formValues.password"
             :label="t('ADMIN_PASSWORD')"
             :rules="[rules.required]"
             class="my-3 mb-5"

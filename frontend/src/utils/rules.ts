@@ -36,5 +36,20 @@ const domainRule: Validator = (v, t) => {
         : true
 }
 
+const ipWithRangeRule: Validator = (v, t) => {
+    if (!v) return true; // Allow empty if not required
 
-export {ipOrRangeRule, requiredRule, numberRule, ipRule, ipWithNetmaskRule, domainRule}
+    const ipSegment = '(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)';
+    const ipPattern = `(${ipSegment}\\.){3}${ipSegment}`;
+
+    const cidrRegex = new RegExp(`^${ipPattern}/([0-9]|[1-2][0-9]|3[0-2])$`);
+    const netmaskRegex = new RegExp(`^${ipPattern}/${ipPattern}$`);
+
+    if (cidrRegex.test(v) || netmaskRegex.test(v)) {
+        return true;
+    }
+
+    return t?.('Invalid IP/subnet format') || 'Invalid IP/subnet format';
+};
+
+export {ipOrRangeRule, requiredRule, numberRule, ipRule, ipWithNetmaskRule, domainRule, ipWithRangeRule}
