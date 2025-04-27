@@ -86,10 +86,10 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		return ctrl.request.BadRequest(c, errors.New("config db exists"))
 	}
 
+	ctx1, cancel1 := context.WithTimeout(c.Request().Context(), 10*time.Second)
 	go func() {
-		log.Println("start create panel repo")
-		ctx1, cancel1 := context.WithTimeout(c.Request().Context(), 10*time.Second)
 		defer cancel1()
+
 		_, err = ctrl.panelRepo.Create(ctx1, &models.Panel{
 			Setup:                  true,
 			GoogleCaptchaSiteKey:   data.Config.GoogleCaptchaSiteKey,
@@ -98,21 +98,16 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		if err != nil {
 			log.Println("setup err:", err)
 		}
-		time.Sleep(time.Minute * 10)
-		log.Println("setup success")
 	}()
 
+	ctx2, cancel2 := context.WithTimeout(c.Request().Context(), 10*time.Second)
 	go func() {
-		log.Println("start create DefaultOcservGroup")
-		ctx2, cancel2 := context.WithTimeout(c.Request().Context(), 10*time.Second)
 		defer cancel2()
 
 		err = ctrl.ocservGroupRepo.WithContext(ctx2).UpdateDefaultGroup(data.DefaultOcservGroup)
 		if err != nil {
 			log.Println("update default group:", err)
 		}
-		time.Sleep(time.Minute * 10)
-		log.Println("update group panel")
 	}()
 
 	passwordPKG := crypto.CreatePassword(data.Admin.Password)
