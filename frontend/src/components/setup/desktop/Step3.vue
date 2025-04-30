@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
 import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
-import {reactive, ref, toRaw} from "vue";
+import {onMounted, reactive, ref, toRaw} from "vue";
 
 const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
@@ -19,13 +19,14 @@ const sendResult = () => {
   emit('result', toRaw(formValues))
 }
 
-
-if (props.data) {
-  const combined = {
-    ...toRaw(props.data.default_ocserv_group),
+onMounted(()=>{
+  if (props.data) {
+    const combined = {
+      ...toRaw(props.data.default_ocserv_group),
+    }
+    Object.assign(formValues, combined)
   }
-  Object.assign(formValues, combined)
-}
+})
 
 </script>
 

@@ -14,7 +14,7 @@ type ErrorResponse struct {
 
 func (r *Request) BadRequest(c echo.Context, err interface{}, msg ...string) error {
 	var response struct {
-		Error   string
+		Error   []string
 		Message []string
 	}
 
@@ -22,9 +22,9 @@ func (r *Request) BadRequest(c echo.Context, err interface{}, msg ...string) err
 	case error:
 		var pqErr *pgconn.PgError
 		if errors.As(err.(error), &pqErr) {
-			response.Error = err.(*pgconn.PgError).Detail
+			response.Error = append(response.Error, pqErr.Code)
 		} else {
-			response.Error = err.(error).Error()
+			response.Error = append(err.(error).Error())
 		}
 	case string:
 		response.Error = err.(string)

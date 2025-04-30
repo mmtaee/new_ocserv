@@ -1,5 +1,5 @@
 /* tslint:disable */
- 
+/* eslint-disable */
 /**
  * Ocserv User management Example Api
  * This is a sample Ocserv User management Api server.

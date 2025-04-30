@@ -1,4 +1,7 @@
-import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from 'axios'
+import axios, {
+    type AxiosInstance,
+    type AxiosRequestConfig, type AxiosResponse
+} from 'axios'
 
 const config: AxiosRequestConfig = {
     baseURL: `${import.meta.env.VITE_API_BASE_URL}` || 'http://localhost:8080'
@@ -37,8 +40,9 @@ api.interceptors.response.use(
                 localStorage.removeItem('token')
                 return Promise.resolve(response) // still return response so caller can handle it
             }
-            // if (response.status === 400) {
-            // }
+            if (response.status === 400) {
+                console.error('Unable to connect to the server')
+            }
         }
         return Promise.reject(error)
     }

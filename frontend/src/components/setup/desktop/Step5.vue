@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useLocale} from "vuetify/framework";
 import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
-import {reactive, ref, toRaw} from "vue";
+import {onMounted, reactive, ref, toRaw} from "vue";
 import {domainRule, ipOrRangeRule, ipRule} from "@/utils/rules.ts";
 
 const emit = defineEmits(['result', "validate"])
@@ -95,12 +95,13 @@ function removeDomain(d: string) {
   }
 }
 
+onMounted(()=>{
 if (props.data) {
   const combined = {
     ...toRaw(props.data.default_ocserv_group),
   }
   Object.assign(formValues, combined)
-}
+}})
 </script>
 
 <template>

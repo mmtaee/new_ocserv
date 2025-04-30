@@ -7,9 +7,12 @@ import type {AdminConfigurations} from "@/components/setup/types.ts";
 
 const step = ref(1)
 const {t} = useLocale()
-const loading = ref(false)
 const emit = defineEmits(["finalize"])
 const skipStep = ref(0)
+
+const props = defineProps<{
+  loading: boolean,
+}>();
 
 const formIsValid = ref(false)
 const finalizeData = reactive<PanelSetupData>(panelSetupDefault)
@@ -75,7 +78,7 @@ const steps = [
   },
   {
     value: 7,
-    loading: false,
+    loading: props.loading,
     component: Step7,
     handler: null,
   },
@@ -84,8 +87,8 @@ const steps = [
 function nextStep() {
   if (step.value < steps.length + 1) {
     if (step.value === steps.length) {
-      loading.value = true
       emit("finalize", finalizeData)
+      return
     }
     step.value++
   }

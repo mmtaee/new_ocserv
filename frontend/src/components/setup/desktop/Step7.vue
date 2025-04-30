@@ -4,8 +4,7 @@ import {useLocale} from "vuetify/framework";
 
 const {t} = useLocale()
 
-
-const props = defineProps<{
+defineProps<{
   data: PanelSetupData;
 }>();
 
@@ -16,8 +15,6 @@ function keyTransform(key: string): string {
       .replace(/\s+/g, ' ')
       .trim()
 }
-
-console.log("aa: ", props.data)
 
 </script>
 

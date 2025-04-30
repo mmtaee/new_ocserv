@@ -49,7 +49,6 @@ func New() *Controller {
 func (ctrl *Controller) Config(c echo.Context) error {
 	config, err := ctrl.panelRepo.GetConfig(c.Request().Context())
 	if err != nil {
-		log.Println("config db: ", err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.JSON(http.StatusOK, ConfigResponse{
 				Setup:                false,
@@ -58,7 +57,6 @@ func (ctrl *Controller) Config(c echo.Context) error {
 		}
 		return ctrl.request.BadRequest(c, err)
 	}
-	log.Println("config:", config)
 	return c.JSON(http.StatusOK, ConfigResponse{
 		Setup:                true,
 		GoogleCaptchaSiteKey: config.GoogleCaptchaSiteKey,

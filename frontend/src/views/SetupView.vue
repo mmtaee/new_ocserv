@@ -6,6 +6,8 @@ import router from "@/plugins/router.ts";
 import {useConfigStore} from "@/stores/config.ts";
 import {useUserStore} from "@/stores/user.ts";
 
+
+const loading = ref(false);
 const DesktopView = defineAsyncComponent(() => import("@/components/setup/desktop/index.vue"))
 
 const MobileView = null
@@ -25,25 +27,28 @@ onBeforeUnmount(() => {
 })
 
 async function finalize(data: PanelSetupData) {
+  loading.value = true
   const api = new PanelApi()
-  const res = await api.panelSetupPost({request: data})
-
-  if (res.status !== 201) {
-    console.error(res.status)
-    return
-  }
-
   const userStore = useUserStore()
   const configStore = useConfigStore()
 
-  userStore.setUser(res.data.user)
-  configStore.setSetup(true)
-  localStorage.setItem("token", res.data.token)
-  await router.push("/")
+  api.panelSetupPost({request: data}).then((res) => {
+    userStore.setUser(res.data.user)
+    configStore.setSetup(true)
+    localStorage.setItem("token", res.data.token)
+    router.push("/")
+  }).finally(()=>{
+    loading.value = false
+  })
+
 }
 
 </script>
 
 <template>
-  <component :is="isMobile ? MobileView : DesktopView" @finalize="finalize"/>
+  <component :is="isMobile ? MobileView : DesktopView" @finalize="finalize" :loading="loading" />
 </template>
+
+<style scoped>
+
+</style>

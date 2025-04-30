@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useLocale} from 'vuetify/framework'
-import {reactive, ref, toRaw} from 'vue'
+import {onMounted, reactive, ref, toRaw} from 'vue'
 import {requiredRule} from '@/utils/rules'
 import type {AdminConfigurations} from "@/components/setup/types.ts";
 import type {PanelSetupData} from "@/api";
@@ -31,14 +31,17 @@ const sendResult = () => {
   emit('result', toRaw(formValues))
 }
 
-if (props.data) {
-  const combined = {
-    ...structuredClone(toRaw(props.data.admin)),
-    ...structuredClone(toRaw(props.data.config)),
-  };
+onMounted(()=>{
+  if (props.data) {
+    const combined = {
+      ...structuredClone(toRaw(props.data.admin)),
+      ...structuredClone(toRaw(props.data.config)),
+    };
 
-  Object.assign(formValues, combined);
-}
+    Object.assign(formValues, combined);
+  }
+})
+
 </script>
 
 <template>
