@@ -14,6 +14,7 @@ var tables = []interface{}{
 }
 
 func Migrate() {
+	log.Println("starting migrations...")
 	engine := database.Get()
 	err := engine.AutoMigrate(tables...)
 	if err != nil {

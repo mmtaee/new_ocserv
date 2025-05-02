@@ -40,7 +40,7 @@ export interface PanelSetupData {
      * @type {PanelSetupDataConfig}
      * @memberof PanelSetupData
      */
-    'config': PanelSetupDataConfig;
+    'config'?: PanelSetupDataConfig;
     /**
      * 
      * @type {OcOcservDefaultConfigs}

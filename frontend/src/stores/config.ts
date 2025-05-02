@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {PanelApi} from "../api";
+import {PanelApi} from "@/api";
 import router from "../plugins/router.ts";
 
 
@@ -17,18 +17,13 @@ export const useConfigStore = defineStore('config', {
     actions: {
         async fetchConfig() {
             const api = new PanelApi()
-            try {
-                const res = await api.panelGet()
-                this.setup = res.data.setup
-                this.googleCaptchaSiteKey = res.data?.google_captcha_secret_key || ''
-                console.log('setup:', this.setup)
-
+            api.panelGet().then((response) => {
+                this.setup = response.data.setup
+                this.googleCaptchaSiteKey = response.data?.google_captcha_secret_key || ''
                 if (!this.setup) {
-                    await router.push('/setup')
+                    router.push('/setup')
                 }
-            } catch (error) {
-                console.error('Failed to fetch config:', error)
-            }
+            })
         },
         setSetup: function (bool: boolean) {
             this.setup = bool

@@ -61,13 +61,19 @@ function keyTransform(key: string): string {
             </v-tooltip>
 
           </v-col>
-          <v-col class="px-5 mx-5" cols="12" md="12" sm="12">
+
+          <v-col
+              class="px-5 mx-5"
+              cols="12"
+              md="12"
+              sm="12"
+          >
             <p>
               <span class="text-primary">
                 {{ t('Google Captcha Site Key') }}:
               </span>
               <span class="text-justify text-grey mx-3">
-                {{ data.config.google_captcha_site_key || "undefined" }}
+                {{ data.config?.google_captcha_site_key }}
               </span>
             </p>
           </v-col>
@@ -76,7 +82,7 @@ function keyTransform(key: string): string {
               {{ t('Google Captcha Secret Key') }}:
             </span>
             <span class="text-justify text-grey mx-3">
-            {{ data.config.google_captcha_secret_key || "undefined" }}
+            {{ data.config?.google_captcha_secret_key }}
           </span>
           </v-col>
         </v-row>

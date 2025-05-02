@@ -297,7 +297,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "admin",
-                "config",
                 "default_ocserv_group"
             ],
             "properties": {

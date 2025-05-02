@@ -5,7 +5,6 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strings"
 )
 
 type ErrorResponse struct {
@@ -24,17 +23,17 @@ func (r *Request) BadRequest(c echo.Context, err interface{}, msg ...string) err
 		if errors.As(err.(error), &pqErr) {
 			response.Error = append(response.Error, pqErr.Code)
 		} else {
-			response.Error = append(err.(error).Error())
+			response.Error = append(response.Error, err.(error).Error())
 		}
 	case string:
-		response.Error = err.(string)
+		response.Error = append(response.Error, err.(string))
 	case map[string]interface{}:
 		errs := err.(map[string]interface{})["error"]
 		if errSlice, ok := errs.([]string); ok && len(errSlice) > 0 {
-			response.Error = strings.Join(errSlice, ", ")
+			response.Error = append(response.Error, errSlice...)
 		}
 	default:
-		response.Error = "unknown error"
+		response.Error = append(response.Error, err.(string))
 	}
 	response.Message = append(response.Message, msg...)
 	return c.JSON(http.StatusBadRequest, response)

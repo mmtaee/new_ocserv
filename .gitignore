@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 *.db
+
+.env
+env
+.venv
+venv

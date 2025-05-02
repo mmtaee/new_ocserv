@@ -28,12 +28,9 @@ onBeforeUnmount(() => {
 const login = async (data: PanelLogin) => {
   loading.value = true
   const api = new PanelApi()
-  const res = await api.panelLoginPost({
+  api.panelLoginPost({
     request: data,
-  })
-  if (res.status !== 200) {
-    console.error(res.status)
-  } else {
+  }).then((res) => {
 
     const userStore = useUserStore()
     const configStore = useConfigStore()
@@ -42,9 +39,11 @@ const login = async (data: PanelLogin) => {
     configStore.setSetup(true)
 
     localStorage.setItem("token", res.data.token)
-    await router.push("/")
-  }
-  loading.value = false
+    router.push("/")
+  }).finally(() => {
+    loading.value = false
+  })
+
 }
 
 </script>

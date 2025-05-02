@@ -156,7 +156,6 @@ definitions:
         $ref: '#/definitions/oc.OcservDefaultConfigs'
     required:
     - admin
-    - config
     - default_ocserv_group
     type: object
   panel.UserResponse:

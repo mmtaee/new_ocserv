@@ -13,7 +13,7 @@ type SetupData struct {
 	Config struct {
 		GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"required"`
 		GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"required"`
-	} `json:"config" validate:"required"`
+	} `json:"config" validate:"omitempty"`
 	DefaultOcservGroup *oc.OcservDefaultConfigs `json:"default_ocserv_group" validate:"required"`
 }
 

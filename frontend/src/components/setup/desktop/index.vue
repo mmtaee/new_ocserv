@@ -33,6 +33,12 @@ const validate = (v: boolean) => {
 const configHandler = (data: AdminConfigurations) => {
   finalizeData.admin.username = data.username;
   finalizeData.admin.password = data.password;
+  if (!finalizeData.config) {
+    finalizeData.config = {
+      google_captcha_site_key: "",
+      google_captcha_secret_key: ""
+    }
+  }
   finalizeData.config.google_captcha_site_key = data.google_captcha_site_key || ""
   finalizeData.config.google_captcha_secret_key = data.google_captcha_secret_key || ""
 }
