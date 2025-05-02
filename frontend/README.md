@@ -7,6 +7,6 @@ the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-scrip
 Learn more about the recommended Project Setup and IDE Support in
 the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
 
-```env
+```dotenv
 VITE_API_BASE_URL=http://127.0.0.1:8080/api
 ```
