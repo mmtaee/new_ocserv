@@ -1,7 +1,7 @@
 <script lang="ts">
 declare global {
   interface Window {
-    googleRecaptcha?: {
+    grecaptcha?: {
       reset: () => void
       render: (...args: any[]) => any
       getResponse: (widgetId?: any) => string
@@ -15,7 +15,11 @@ declare global {
 </script>
 
 <script lang="ts" setup>
-import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {useTheme} from "vuetify/framework";
+
+const emit = defineEmits(['update:modelValue', 'validForm']);
+const recaptcha = ref<HTMLElement | null>(null);
 
 defineProps({
   modelValue: String, // v-model value
@@ -29,18 +33,14 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'validForm']);
-const recaptcha = ref<HTMLElement | null>(null)
-const isDarkTheme = computed(() => localStorage.getItem('theme') === 'dark');
 
 // Callbacks
 function callbackSuccess(token: string) {
   emit('update:modelValue', token); // v-model
-  // emit('validForm', true);
 }
 
 function callbackError() {
-  if (window.googleRecaptcha) window.googleRecaptcha.reset();
+  if (window.grecaptcha) window.grecaptcha.reset();
   emit('validForm', false);
 }
 
@@ -57,7 +57,6 @@ onMounted(() => {
   recaptchaScript.async = true;
   recaptchaScript.defer = true;
   recaptchaScript.id = "captcha";
-
   document.head.appendChild(recaptchaScript);
 
   // Bind to window
@@ -72,17 +71,36 @@ onBeforeUnmount(() => {
   if (recaptcha.value) recaptcha.value.remove();
 });
 
+const theme = useTheme()
+const mode = ref(theme.global.name.value)
+
+watch(
+    () => theme.global.name.value,
+    async (newVal) => {
+      mode.value = newVal
+      if (window?.grecaptcha) {
+        const captchaElement = document.getElementById("recaptcha");
+        if (captchaElement) {
+          captchaElement.setAttribute("data-theme", newVal);
+        }
+      }
+
+    }
+)
 </script>
 
 <template>
   <div
+      id="recaptcha"
       ref="recaptcha"
       :data-sitekey="siteKey"
       :data-size="compact ? 'compact' : 'normal'"
-      :data-theme="isDarkTheme ? 'dark' : 'light'"
+      :data-theme="mode"
       class="g-recaptcha"
       data-callback="callbackSuccess"
       data-error-callback="callbackError"
       data-expired-callback="callbackExpired"
+      style="min-width: 100px; min-height: 75px; padding: 0; margin: 0;"
   />
 </template>
+

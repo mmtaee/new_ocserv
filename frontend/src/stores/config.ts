@@ -21,7 +21,6 @@ export const useConfigStore = defineStore('config', {
                 this.setup = response.data.setup
                 this.googleCaptchaSiteKey = response.data?.google_captcha_secret_key || ''
                 if (!this.setup) {
-                    console.log("response.data.setup: ", response.data.setup)
                     router.push('/setup')
                 }
             })

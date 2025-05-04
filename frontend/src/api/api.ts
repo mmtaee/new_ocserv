@@ -15,4 +15,5 @@
 
 
 export * from './api/panel-api';
+export * from './api/user-api';
 

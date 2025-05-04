@@ -234,4 +234,19 @@ paths:
       summary: Setup panel with admin user
       tags:
       - Panel
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get user Profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get user Profile
+      tags:
+      - User
 swagger: "2.0"

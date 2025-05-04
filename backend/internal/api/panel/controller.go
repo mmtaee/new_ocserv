@@ -10,7 +10,6 @@ import (
 	"ocserv/internal/models"
 	"ocserv/internal/repository"
 	"ocserv/pkg/crypto"
-	"ocserv/pkg/database"
 	"ocserv/pkg/oc"
 	"ocserv/pkg/request"
 	"ocserv/pkg/utils/captcha"
@@ -18,7 +17,6 @@ import (
 )
 
 type Controller struct {
-	DB              *gorm.DB
 	request         request.CustomRequestInterface
 	userRepo        repository.UserRepositoryInterface
 	tokenRepo       repository.TokenRepositoryInterface
@@ -28,7 +26,6 @@ type Controller struct {
 
 func New() *Controller {
 	return &Controller{
-		DB:              database.Get(),
 		request:         request.NewCustomRequest(),
 		userRepo:        repository.NewUserRepository(),
 		tokenRepo:       repository.NewTokenRepository(),
@@ -163,7 +160,7 @@ func (ctrl *Controller) Login(c echo.Context) error {
 
 	user, err := ctrl.userRepo.GetUserByUsername(c.Request().Context(), data.Username)
 	if err != nil {
-		return ctrl.request.BadRequest(c, err)
+		return ctrl.request.BadRequest(c, errors.New("invalid username or password"))
 	}
 
 	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true)

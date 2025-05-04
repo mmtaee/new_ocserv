@@ -2,6 +2,7 @@
 .npmignore
 api.ts
 api/panel-api.ts
+api/user-api.ts
 common.ts
 configuration.ts
 git_push.sh

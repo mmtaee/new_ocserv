@@ -13,7 +13,6 @@ const theme = useTheme()
 <template>
   <v-app :theme="theme.global.name.value">
     <AppBar/>
-    <!--    <v-btn @click="toggleTheme">Toggle Theme</v-btn>-->
     <CenterLayout>
       <RouterView/>
     </CenterLayout>

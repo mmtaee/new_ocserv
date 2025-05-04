@@ -105,6 +105,29 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/profile": {
+            "get": {
+                "description": "Get user Profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user Profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

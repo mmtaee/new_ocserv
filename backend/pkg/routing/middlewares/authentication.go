@@ -23,7 +23,7 @@ func AuthMiddleware() echo.MiddlewareFunc {
 				if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, echo.NewHTTPError(http.StatusUnauthorized, "unexpected signing method")
 				}
-				return cfg.JWTSecret, nil
+				return []byte(cfg.JWTSecret), nil
 			})
 
 			if err != nil || !token.Valid {

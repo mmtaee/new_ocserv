@@ -1,4 +1,10 @@
-import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from 'axios'
+import axios, {
+    type AxiosInstance,
+    type AxiosRequestConfig,
+    type AxiosRequestHeaders,
+    type AxiosResponse,
+    type InternalAxiosRequestConfig
+} from 'axios'
 import {type SnackbarItem, useSnackbarStore} from "@/stores/snackbar.ts";
 
 const config: AxiosRequestConfig = {
@@ -9,24 +15,19 @@ const config: AxiosRequestConfig = {
 const api: AxiosInstance = axios.create(config)
 
 
-// api.interceptors.request.use(
-//     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-//
-//         const token = localStorage.getItem('token') || "aaaaaaaa"
-//
-//         console.log("token", token)
-//
-//         config.headers = config.headers ?? {} as AxiosRequestHeaders
-//         if (token) {
-//             config.headers["Authorization"] = `Bearer ${token}`
-//         }
-//         console.log("config", config)
-//         return config
-//     },
-//     (error) => {
-//         return Promise.reject(error)
-//     }
-// )
+api.interceptors.request.use(
+    (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        config.headers = config.headers ?? {} as AxiosRequestHeaders
+        const token = localStorage.getItem('token')
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`
+        }
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
 
 // Response interceptor: Handle 401/400
 api.interceptors.response.use(
