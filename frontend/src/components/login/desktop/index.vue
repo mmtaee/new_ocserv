@@ -25,7 +25,15 @@ defineProps({
   },
 });
 
-const Captcha = defineAsyncComponent(() => import("@/components/login/Captcha.vue"));
+const captchaLoaded = ref(false);
+
+const Captcha = defineAsyncComponent(() =>
+    import('@/components/login/Captcha.vue').then((mod) => {
+      captchaLoaded.value = true;
+      return mod;
+    })
+);
+
 
 const rules = {
   required: (v: string) => requiredRule(v, t),
@@ -43,9 +51,10 @@ const btnDisable = computed(() => {
 })
 
 </script>
-
 <template>
-  <v-card class="mx-auto d-flex flex-column" max-height="800" min-width="500">
+  <v-card v-show="captchaLoaded" class="mx-auto d-flex flex-column" max-height="800"
+          min-width="500"
+  >
     <v-card-text class="flex-grow-1 overflow-auto">
 
       <v-row align="center" justify="center">
@@ -132,8 +141,8 @@ const btnDisable = computed(() => {
     </v-card-actions>
 
   </v-card>
-</template>
 
+</template>
 <style scoped>
 
 </style>

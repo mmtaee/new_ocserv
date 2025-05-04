@@ -44,6 +44,7 @@ router.beforeEach((to, _from, next) => {
     if (to.meta?.title) {
         document.title = to.meta.title as string
     }
+    
 
     if (!configStore.setup && to.path !== "/setup") {
         localStorage.removeItem("token")

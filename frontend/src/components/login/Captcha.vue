@@ -36,7 +36,7 @@ const isDarkTheme = computed(() => localStorage.getItem('theme') === 'dark');
 // Callbacks
 function callbackSuccess(token: string) {
   emit('update:modelValue', token); // v-model
-  emit('validForm', true);
+  // emit('validForm', true);
 }
 
 function callbackError() {

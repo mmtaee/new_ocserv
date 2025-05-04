@@ -17,10 +17,11 @@ export const useConfigStore = defineStore('config', {
     actions: {
         async fetchConfig() {
             const api = new PanelApi()
-            api.panelGet().then((response) => {
+            await api.panelGet().then((response) => {
                 this.setup = response.data.setup
                 this.googleCaptchaSiteKey = response.data?.google_captcha_secret_key || ''
                 if (!this.setup) {
+                    console.log("response.data.setup: ", response.data.setup)
                     router.push('/setup')
                 }
             })
