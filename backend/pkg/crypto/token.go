@@ -7,13 +7,14 @@ import (
 	"time"
 )
 
-func GenerateAccessToken(userID string, expire int64) (string, error) {
+func GenerateAccessToken(userID string, expire int64, isAdmin bool) (string, error) {
 	cfg := config.Get()
 	claims := jwt.MapClaims{
-		"sub": userID,
-		"jti": ulid.Make().String(),
-		"exp": expire,
-		"iat": time.Now().Unix(),
+		"sub":     userID,
+		"jti":     ulid.Make().String(),
+		"exp":     expire,
+		"iat":     time.Now().Unix(),
+		"isAdmin": isAdmin,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

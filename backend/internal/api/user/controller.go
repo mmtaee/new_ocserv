@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"ocserv/internal/repository"
@@ -9,14 +8,16 @@ import (
 )
 
 type Controller struct {
-	request  request.CustomRequestInterface
-	userRepo repository.UserRepositoryInterface
+	request   request.CustomRequestInterface
+	userRepo  repository.UserRepositoryInterface
+	tokenRepo repository.TokenRepositoryInterface
 }
 
 func New() *Controller {
 	return &Controller{
-		request:  request.NewCustomRequest(),
-		userRepo: repository.NewUserRepository(),
+		request:   request.NewCustomRequest(),
+		userRepo:  repository.NewUserRepository(),
+		tokenRepo: repository.NewTokenRepository(),
 	}
 }
 
@@ -31,9 +32,6 @@ func New() *Controller {
 // @Router       /user/profile [get]
 func (ctrl *Controller) Profile(c echo.Context) error {
 	userID := c.Get("userID").(string)
-	if userID == "" {
-		return ctrl.request.BadRequest(c, errors.New("user id is required"))
-	}
 
 	user, err := ctrl.userRepo.GetUserById(c.Request().Context(), userID)
 	if err != nil {

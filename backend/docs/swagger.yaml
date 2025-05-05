@@ -99,6 +99,13 @@ definitions:
     properties:
       google_captcha_secret_key:
         type: string
+      google_captcha_site_key:
+        type: string
+    type: object
+  panel.InitResponse:
+    properties:
+      google_captcha_secret_key:
+        type: string
       setup:
         type: boolean
     required:
@@ -174,7 +181,7 @@ info:
   title: Ocserv User management Example Api
   version: "1.0"
 paths:
-  /panel:
+  /panel/config:
     get:
       consumes:
       - application/json
@@ -187,6 +194,21 @@ paths:
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
       summary: Get panel Config
+      tags:
+      - Panel
+  /panel/init:
+    get:
+      consumes:
+      - application/json
+      description: Get panel Init Config
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/panel.InitResponse'
+      summary: Get panel Init Config
       tags:
       - Panel
   /panel/login/:

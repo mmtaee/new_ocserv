@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import {type ModelsUser, UserApi} from "@/api";
+import router from "@/plugins/router.ts";
 
 export const useUserStore = defineStore('user', {
     state: (): { user: ModelsUser | null } => ({
@@ -15,6 +16,11 @@ export const useUserStore = defineStore('user', {
             const response = await api.userProfileGet();
             this.setUser(response.data);
         },
+        async logout() {
+            this.user = null
+            localStorage.removeItem("token")
+            await router.push("/login")
+        }
     },
 
     getters: {

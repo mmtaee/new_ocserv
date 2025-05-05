@@ -34,27 +34,27 @@ func New() *Controller {
 	}
 }
 
-// Config		 Panel Config
+// Init		 	Panel Init Config
 //
-// @Summary      Get panel Config
-// @Description  Get panel Config
+// @Summary      Get panel Init Config
+// @Description  Get panel Init Config
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  ConfigResponse
-// @Router       /panel [get]
-func (ctrl *Controller) Config(c echo.Context) error {
+// @Success      200  {object}  InitResponse
+// @Router       /panel/init [get]
+func (ctrl *Controller) Init(c echo.Context) error {
 	config, err := ctrl.panelRepo.GetConfig(c.Request().Context())
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusOK, ConfigResponse{
+			return c.JSON(http.StatusOK, InitResponse{
 				Setup:                false,
 				GoogleCaptchaSiteKey: "",
 			})
 		}
 		return ctrl.request.BadRequest(c, err)
 	}
-	return c.JSON(http.StatusOK, ConfigResponse{
+	return c.JSON(http.StatusOK, InitResponse{
 		Setup:                true,
 		GoogleCaptchaSiteKey: config.GoogleCaptchaSiteKey,
 	})
@@ -116,7 +116,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 
-	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true)
+	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true, user.IsAdmin)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err, "user created")
 	}
@@ -163,7 +163,7 @@ func (ctrl *Controller) Login(c echo.Context) error {
 		return ctrl.request.BadRequest(c, errors.New("invalid username or password"))
 	}
 
-	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true)
+	token, err := ctrl.tokenRepo.CreateToken(c.Request().Context(), user.ID, user.UID, true, user.IsAdmin)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err, "user created")
 	}
@@ -171,5 +171,25 @@ func (ctrl *Controller) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, UserResponse{
 		User:  user,
 		Token: token,
+	})
+}
+
+// Config		 Panel Config
+//
+// @Summary      Get panel Config
+// @Description  Get panel Config
+// @Tags         Panel
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  ConfigResponse
+// @Router       /panel/config [get]
+func (ctrl *Controller) Config(c echo.Context) error {
+	config, err := ctrl.panelRepo.GetConfig(c.Request().Context())
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, ConfigResponse{
+		GoogleCaptchaSiteKey:   config.GoogleCaptchaSiteKey,
+		GoogleCaptchaSecretKey: config.GoogleCaptchaSecretKey,
 	})
 }

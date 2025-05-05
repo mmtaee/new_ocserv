@@ -22,7 +22,7 @@ type UserResponse struct {
 	Token string       `json:"token" validate:"required"`
 }
 
-type ConfigResponse struct {
+type InitResponse struct {
 	Setup                bool   `json:"setup" validate:"required"`
 	GoogleCaptchaSiteKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 }
@@ -32,4 +32,9 @@ type Login struct {
 	Password   string `json:"password" validate:"required,min=2,max=16" example:"doe123456"`
 	RememberMe bool   `json:"remember_me" desc:"remember for a month"`
 	Token      string `json:"token" desc:"captcha v2 token"`
+}
+
+type ConfigResponse struct {
+	GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"omitempty"`
+	GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 }

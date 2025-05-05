@@ -33,6 +33,7 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			if claims, ok := token.Claims.(jwt.MapClaims); ok {
 				if userID, ok := claims["sub"].(string); ok {
 					c.Set("userID", userID)
+					c.Set("isAdmin", claims["isAdmin"])
 				} else {
 					return echo.NewHTTPError(http.StatusUnauthorized, "user ID not found in token")
 				}

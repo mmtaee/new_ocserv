@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/panel": {
+        "/panel/config": {
             "get": {
                 "description": "Get panel Config",
                 "consumes": [
@@ -33,6 +33,29 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/panel.ConfigResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/panel/init": {
+            "get": {
+                "description": "Get panel Init Config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Panel"
+                ],
+                "summary": "Get panel Init Config",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/panel.InitResponse"
                         }
                     }
                 }
@@ -276,6 +299,17 @@ const docTemplate = `{
             }
         },
         "panel.ConfigResponse": {
+            "type": "object",
+            "properties": {
+                "google_captcha_secret_key": {
+                    "type": "string"
+                },
+                "google_captcha_site_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "panel.InitResponse": {
             "type": "object",
             "required": [
                 "setup"

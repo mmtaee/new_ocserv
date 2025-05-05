@@ -24,6 +24,8 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 // @ts-ignore
 import type { PanelConfigResponse } from '../models';
 // @ts-ignore
+import type { PanelInitResponse } from '../models';
+// @ts-ignore
 import type { PanelLogin } from '../models';
 // @ts-ignore
 import type { PanelSetupData } from '../models';
@@ -41,8 +43,38 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/panel`;
+        panelConfigGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/panel/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get panel Init Config
+         * @summary Get panel Init Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelInitGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/panel/init`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -153,10 +185,22 @@ export const PanelApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.panelGet(options);
+        async panelConfigGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PanelApi.panelGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PanelApi.panelConfigGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get panel Init Config
+         * @summary Get panel Init Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async panelInitGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelInitResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelInitGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PanelApi.panelInitGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -201,8 +245,17 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelGet(options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
-            return localVarFp.panelGet(options).then((request) => request(axios, basePath));
+        panelConfigGet(options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
+            return localVarFp.panelConfigGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get panel Init Config
+         * @summary Get panel Init Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelInitGet(options?: RawAxiosRequestConfig): AxiosPromise<PanelInitResponse> {
+            return localVarFp.panelInitGet(options).then((request) => request(axios, basePath));
         },
         /**
          * Admin and Staff users login with Google captcha(captcha site key required in get config api)
@@ -269,8 +322,19 @@ export class PanelApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PanelApi
      */
-    public panelGet(options?: RawAxiosRequestConfig) {
-        return PanelApiFp(this.configuration).panelGet(options).then((request) => request(this.axios, this.basePath));
+    public panelConfigGet(options?: RawAxiosRequestConfig) {
+        return PanelApiFp(this.configuration).panelConfigGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get panel Init Config
+     * @summary Get panel Init Config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PanelApi
+     */
+    public panelInitGet(options?: RawAxiosRequestConfig) {
+        return PanelApiFp(this.configuration).panelInitGet(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

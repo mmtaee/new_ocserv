@@ -25,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'LoginPage',
         component: () => import('../views/LoginView.vue'),
     },
+    {
+        path: '/config',
+        name: 'ConfigPage',
+        component: () => import('../views/ConfigView.vue'),
+    },
     // {
     //     path: '/error',
     //     name: 'ErrorPage',
@@ -44,7 +49,7 @@ router.beforeEach((to, _from, next) => {
     if (to.meta?.title) {
         document.title = to.meta.title as string
     }
-    
+
 
     if (!configStore.setup && to.path !== "/setup") {
         localStorage.removeItem("token")

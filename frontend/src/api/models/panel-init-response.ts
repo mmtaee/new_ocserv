@@ -17,20 +17,20 @@
 /**
  * 
  * @export
- * @interface PanelConfigResponse
+ * @interface PanelInitResponse
  */
-export interface PanelConfigResponse {
+export interface PanelInitResponse {
     /**
      * 
      * @type {string}
-     * @memberof PanelConfigResponse
+     * @memberof PanelInitResponse
      */
     'google_captcha_secret_key'?: string;
     /**
      * 
-     * @type {string}
-     * @memberof PanelConfigResponse
+     * @type {boolean}
+     * @memberof PanelInitResponse
      */
-    'google_captcha_site_key'?: string;
+    'setup': boolean;
 }
 
