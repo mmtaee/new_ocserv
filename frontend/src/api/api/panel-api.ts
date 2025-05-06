@@ -72,7 +72,7 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Update Config panel
          * @summary Update Config panel
-         * @param {PanelConfigData} request setup config data
+         * @param {PanelConfigData} request update config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -232,7 +232,7 @@ export const PanelApiFp = function(configuration?: Configuration) {
         /**
          * Update Config panel
          * @summary Update Config panel
-         * @param {PanelConfigData} request setup config data
+         * @param {PanelConfigData} request update config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -348,7 +348,7 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
  */
 export interface PanelApiPanelConfigPatchRequest {
     /**
-     * setup config data
+     * update config data
      * @type {PanelConfigData}
      * @memberof PanelApiPanelConfigPatch
      */

@@ -182,6 +182,16 @@ definitions:
     - token
     - user
     type: object
+  user.ChangePasswordData:
+    properties:
+      current_password:
+        type: string
+      new_password:
+        type: string
+    required:
+    - current_password
+    - new_password
+    type: object
 info:
   contact: {}
   description: This is a sample Ocserv User management Api server.
@@ -208,7 +218,7 @@ paths:
       - application/json
       description: Update Config panel
       parameters:
-      - description: setup config data
+      - description: update config data
         in: body
         name: request
         required: true
@@ -284,6 +294,26 @@ paths:
       summary: Setup panel with admin user
       tags:
       - Panel
+  /user/password:
+    post:
+      consumes:
+      - application/json
+      description: User Change Password
+      parameters:
+      - description: change user password data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.ChangePasswordData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: User Change Password
+      tags:
+      - User
   /user/profile:
     get:
       consumes:

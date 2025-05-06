@@ -24,10 +24,10 @@ func CreatePassword(passwd string, saltLength ...int) *CustomPassword {
 	if len(saltLength) > 0 {
 		length = saltLength[0]
 	}
-	salt := salt(length)
+	s := salt(length)
 	return &CustomPassword{
-		Salt: salt,
-		Hash: create(passwd, salt),
+		Salt: s,
+		Hash: create(passwd, s),
 	}
 }
 

@@ -10,4 +10,5 @@ func Routes(e *echo.Group) {
 	e = e.Group("/user", middlewares.AuthMiddleware())
 
 	e.GET("/profile", controller.Profile)
+	e.POST("/password", controller.ChangePassword)
 }

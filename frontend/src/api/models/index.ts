@@ -9,3 +9,4 @@ export * from './panel-setup-data';
 export * from './panel-setup-data-admin';
 export * from './panel-setup-data-config';
 export * from './panel-user-response';
+export * from './user-change-password-data';

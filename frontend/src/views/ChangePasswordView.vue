@@ -2,17 +2,22 @@
 import {defineAsyncComponent, reactive, ref} from "vue";
 import {useLocale} from "vuetify/framework";
 import {requiredRule} from "@/utils/rules.ts";
+import {UserApi, type UserChangePasswordData} from "@/api";
+import {useSnackbarStore} from "@/stores/snackbar.ts";
 
 const {t} = useLocale()
 const valid = ref(true)
 const loading = ref(false);
 const MinimalFormLayout = defineAsyncComponent(() => import("@/components/common/MinimalFormLayout.vue"))
-
+const snackbar = useSnackbarStore()
 const rules = {
   required: (v: string) => requiredRule(v, t),
+  commonPassword: () => {
+    return passwordData.new_password === repeatedPassword.value ? true : t("invalid repeated password")
+  },
 }
 
-const passwordData = reactive({
+const passwordData = reactive<UserChangePasswordData>({
   current_password: "",
   new_password: "",
 })
@@ -21,16 +26,24 @@ const repeatedPassword = ref("")
 
 const save = () => {
   loading.value = true
+  const api = new UserApi()
+  api.userPasswordPost({
+    request: passwordData
+  }).then((_) => {
+    snackbar.show({
+      id: 1,
+      message: t("Password Changed Successfully"),
+      color: 'success',
+      timeout: 4000,
+    })
+  }).finally(() => {
+    loading.value = false
+  })
 }
-
-const checkPassword = () => {
-  valid.value = passwordData.new_password == repeatedPassword.value && valid.value
-}
-
 </script>
 
 <template>
-  <MinimalFormLayout :valid="valid">
+  <MinimalFormLayout :valid="valid" :width="500">
     <template #formTitle>
       {{ t('ChangePassword') }}
     </template>
@@ -43,7 +56,6 @@ const checkPassword = () => {
               :label="t('Current Password')"
               :rules="[rules.required]"
               class="mt-5 mb-1"
-              clearable
               density="comfortable"
               prepend-inner-icon="mdi-key"
               variant="underlined"
@@ -55,12 +67,9 @@ const checkPassword = () => {
               v-model="passwordData.new_password"
               :label="t('New Password')"
               :rules="[rules.required]"
-              clearable
               density="comfortable"
               prepend-inner-icon="mdi-key"
               variant="underlined"
-              @blur="checkPassword"
-              @focus="checkPassword"
           />
         </v-col>
 
@@ -68,13 +77,10 @@ const checkPassword = () => {
           <v-text-field
               v-model="repeatedPassword"
               :label="t('Repeated Password')"
-              :rules="[rules.required]"
-              clearable
+              :rules="[rules.required, rules.commonPassword]"
               density="comfortable"
               prepend-inner-icon="mdi-key"
               variant="underlined"
-              @blur="checkPassword"
-              @focus="checkPassword"
           />
         </v-col>
       </v-form>
@@ -82,7 +88,7 @@ const checkPassword = () => {
 
     <template #formAction>
       <v-btn
-          :disabled="!valid"
+          :disabled="!valid || passwordData.new_password !== repeatedPassword"
           :loading="loading"
           :text="t('Save')"
           class="me-1"
@@ -94,7 +100,3 @@ const checkPassword = () => {
 
   </MinimalFormLayout>
 </template>
-
-<style scoped>
-
-</style>

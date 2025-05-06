@@ -1,8 +1,14 @@
 <script lang="ts" setup>
+
+defineProps<{
+  width?: number;
+}>();
+
+
 </script>
 
 <template>
-  <v-card class="pa-2" max-width="650" min-width="450">
+  <v-card :min-width="width || 450" class="pa-2" max-width="650">
     <v-card-text>
       <v-row align="center" justify="center">
 

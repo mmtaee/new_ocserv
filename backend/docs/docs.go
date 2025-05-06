@@ -51,7 +51,7 @@ const docTemplate = `{
                 "summary": "Update Config panel",
                 "parameters": [
                     {
-                        "description": "setup config data",
+                        "description": "update config data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -157,6 +157,37 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/panel.UserResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/user/password": {
+            "post": {
+                "description": "User Change Password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User Change Password",
+                "parameters": [
+                    {
+                        "description": "change user password data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.ChangePasswordData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -453,6 +484,21 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/models.User"
+                }
+            }
+        },
+        "user.ChangePasswordData": {
+            "type": "object",
+            "required": [
+                "current_password",
+                "new_password"
+            ],
+            "properties": {
+                "current_password": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string"
                 }
             }
         }

@@ -201,7 +201,7 @@ func (ctrl *Controller) Config(c echo.Context) error {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
-// @Param        request    body  ConfigData   true "setup config data"
+// @Param        request    body  ConfigData   true "update config data"
 // @Success      200  {object}  ConfigResponse
 // @Router       /panel/config [patch]
 func (ctrl *Controller) UpdateConfig(c echo.Context) error {
