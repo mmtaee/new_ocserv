@@ -13,4 +13,5 @@ func Routes(e *echo.Group) {
 	e.POST("/setup", controller.Setup)
 	e.POST("/login", controller.Login)
 	e.GET("/config", controller.Config, middlewares.AuthMiddleware(), middlewares.AdminPermission())
+	e.PATCH("/config", controller.UpdateConfig, middlewares.AuthMiddleware(), middlewares.AdminPermission())
 }

@@ -1,6 +1,7 @@
 export * from './models-permission';
 export * from './models-user';
 export * from './oc-ocserv-default-configs';
+export * from './panel-config-data';
 export * from './panel-config-response';
 export * from './panel-init-response';
 export * from './panel-login';

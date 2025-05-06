@@ -22,6 +22,8 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
+import type { PanelConfigData } from '../models';
+// @ts-ignore
 import type { PanelConfigResponse } from '../models';
 // @ts-ignore
 import type { PanelInitResponse } from '../models';
@@ -61,6 +63,42 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update Config panel
+         * @summary Update Config panel
+         * @param {PanelConfigData} request setup config data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelConfigPatch: async (request: PanelConfigData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('panelConfigPatch', 'request', request)
+            const localVarPath = `/panel/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -192,6 +230,19 @@ export const PanelApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Update Config panel
+         * @summary Update Config panel
+         * @param {PanelConfigData} request setup config data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async panelConfigPatch(request: PanelConfigData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigPatch(request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PanelApi.panelConfigPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get panel Init Config
          * @summary Get panel Init Config
          * @param {*} [options] Override http request option.
@@ -249,6 +300,16 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
             return localVarFp.panelConfigGet(options).then((request) => request(axios, basePath));
         },
         /**
+         * Update Config panel
+         * @summary Update Config panel
+         * @param {PanelApiPanelConfigPatchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        panelConfigPatch(requestParameters: PanelApiPanelConfigPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
+            return localVarFp.panelConfigPatch(requestParameters.request, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get panel Init Config
          * @summary Get panel Init Config
          * @param {*} [options] Override http request option.
@@ -279,6 +340,20 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
         },
     };
 };
+
+/**
+ * Request parameters for panelConfigPatch operation in PanelApi.
+ * @export
+ * @interface PanelApiPanelConfigPatchRequest
+ */
+export interface PanelApiPanelConfigPatchRequest {
+    /**
+     * setup config data
+     * @type {PanelConfigData}
+     * @memberof PanelApiPanelConfigPatch
+     */
+    readonly request: PanelConfigData
+}
 
 /**
  * Request parameters for panelLoginPost operation in PanelApi.
@@ -324,6 +399,18 @@ export class PanelApi extends BaseAPI {
      */
     public panelConfigGet(options?: RawAxiosRequestConfig) {
         return PanelApiFp(this.configuration).panelConfigGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update Config panel
+     * @summary Update Config panel
+     * @param {PanelApiPanelConfigPatchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PanelApi
+     */
+    public panelConfigPatch(requestParameters: PanelApiPanelConfigPatchRequest, options?: RawAxiosRequestConfig) {
+        return PanelApiFp(this.configuration).panelConfigPatch(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -29,6 +29,38 @@
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Update Config panel",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Panel"
+                ],
+                "summary": "Update Config panel",
+                "parameters": [
+                    {
+                        "description": "setup config data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/panel.ConfigData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/panel.ConfigResponse"
+                        }
+                    }
+                }
             }
         },
         "/panel/init": {
@@ -288,6 +320,17 @@
                 },
                 "tx-data-per-sec": {
                     "type": "integer"
+                }
+            }
+        },
+        "panel.ConfigData": {
+            "type": "object",
+            "properties": {
+                "google_captcha_secret_key": {
+                    "type": "string"
+                },
+                "google_captcha_site_key": {
+                    "type": "string"
                 }
             }
         },

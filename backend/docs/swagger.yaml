@@ -95,6 +95,13 @@ definitions:
       tx-data-per-sec:
         type: integer
     type: object
+  panel.ConfigData:
+    properties:
+      google_captcha_secret_key:
+        type: string
+      google_captcha_site_key:
+        type: string
+    type: object
   panel.ConfigResponse:
     properties:
       google_captcha_secret_key:
@@ -194,6 +201,27 @@ paths:
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
       summary: Get panel Config
+      tags:
+      - Panel
+    patch:
+      consumes:
+      - application/json
+      description: Update Config panel
+      parameters:
+      - description: setup config data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/panel.ConfigData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/panel.ConfigResponse'
+      summary: Update Config panel
       tags:
       - Panel
   /panel/init:

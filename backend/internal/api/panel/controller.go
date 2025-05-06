@@ -193,3 +193,38 @@ func (ctrl *Controller) Config(c echo.Context) error {
 		GoogleCaptchaSecretKey: config.GoogleCaptchaSecretKey,
 	})
 }
+
+// UpdateConfig		 Panel Config Updating
+//
+// @Summary      Update Config panel
+// @Description  Update Config panel
+// @Tags         Panel
+// @Accept       json
+// @Produce      json
+// @Param        request    body  ConfigData   true "setup config data"
+// @Success      200  {object}  ConfigResponse
+// @Router       /panel/config [patch]
+func (ctrl *Controller) UpdateConfig(c echo.Context) error {
+	var data ConfigData
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	panel := &models.Panel{}
+
+	if data.GoogleCaptchaSecretKey != nil {
+		panel.GoogleCaptchaSecretKey = *data.GoogleCaptchaSecretKey
+	}
+	if data.GoogleCaptchaSiteKey != nil {
+		panel.GoogleCaptchaSiteKey = *data.GoogleCaptchaSiteKey
+	}
+
+	config, err := ctrl.panelRepo.Update(c.Request().Context(), panel)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, ConfigResponse{
+		GoogleCaptchaSiteKey:   config.GoogleCaptchaSiteKey,
+		GoogleCaptchaSecretKey: config.GoogleCaptchaSecretKey,
+	})
+}

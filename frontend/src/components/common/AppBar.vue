@@ -34,7 +34,7 @@ watch(() => userStore.getUser, (newVal) => {
 
 const menuItems: Item[] = [
   {text: t("CONFIG"), icon: 'mdi-cog', admin: false, to: "/config"},
-  {text: t("CHANGE_PASSWORD"), icon: 'mdi-account-key', admin: false, to: "/password"},
+  {text: t("CHANGE_PASSWORD"), icon: 'mdi-account-key', admin: false, to: "/change_password"},
   {text: t("STAFF_MANAGEMENT"), icon: 'mdi-account-tie-hat', admin: true, to: "/staffs"},
   {
     text: t("LOGOUT"), icon: 'mdi-logout', admin: false, action: () => {
@@ -86,7 +86,7 @@ theme.global.name.value = localStorage.getItem('theme') === 'dark' ? 'dark' : 'l
       <v-icon>mdi-theme-light-dark</v-icon>
     </v-btn>
 
-    <v-menu v-if="user" persistent>
+    <v-menu v-if="user">
       <template v-slot:activator="{ props }">
         <v-btn class="me-5" density="comfortable" icon="mdi-account-settings-outline" v-bind="props"/>
       </template>

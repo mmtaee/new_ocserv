@@ -30,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'ConfigPage',
         component: () => import('../views/ConfigView.vue'),
     },
+    {
+        path: '/change_password',
+        name: 'ChangePasswordPage',
+        component: () => import('../views/ChangePasswordView.vue'),
+    },
     // {
     //     path: '/error',
     //     name: 'ErrorPage',

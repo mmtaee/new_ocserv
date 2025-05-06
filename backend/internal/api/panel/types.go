@@ -38,3 +38,8 @@ type ConfigResponse struct {
 	GoogleCaptchaSiteKey   string `json:"google_captcha_site_key" validate:"omitempty"`
 	GoogleCaptchaSecretKey string `json:"google_captcha_secret_key" validate:"omitempty"`
 }
+
+type ConfigData struct {
+	GoogleCaptchaSiteKey   *string `json:"google_captcha_site_key" validate:"omitempty"`
+	GoogleCaptchaSecretKey *string `json:"google_captcha_secret_key" validate:"omitempty"`
+}
