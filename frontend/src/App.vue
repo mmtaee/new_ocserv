@@ -4,7 +4,7 @@ import {defineAsyncComponent} from "vue";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
 
 const CenterLayout = defineAsyncComponent(() => import("@/components/common/CenterLayout.vue"))
-const AppBar = defineAsyncComponent(() => import("@/components/common/AppBar.vue"))
+const AppBar = defineAsyncComponent(() => import("@/components/appbar/AppBar.vue"))
 
 const theme = useTheme()
 

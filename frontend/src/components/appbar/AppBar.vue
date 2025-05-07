@@ -2,7 +2,7 @@
 import logoUrl from "@/assets/ocserv.png"
 import {useLocale, useTheme} from "vuetify/framework";
 import {useUserStore} from "@/stores/user.ts";
-import {computed, ref, watch} from "vue";
+import {computed, defineAsyncComponent, ref, watch} from "vue";
 import type {ModelsUser} from "@/api";
 import router from "@/plugins/router.ts";
 
@@ -19,13 +19,8 @@ const userStore = useUserStore()
 const {t} = useLocale()
 const user = ref<ModelsUser | null>(userStore.getUser)
 const theme = useTheme()
+const Logout = defineAsyncComponent(() => import("@/components/appbar/Logout.vue"))
 const logoutDialog = ref(false)
-
-const logout = async () => {
-  await userStore.logout()
-  logoutDialog.value = false
-}
-
 
 watch(() => userStore.getUser, (newVal) => {
   user.value = newVal
@@ -133,40 +128,6 @@ theme.global.name.value = localStorage.getItem('theme') === 'dark' ? 'dark' : 'l
 
   </v-app-bar>
 
-
-  <v-dialog
-      v-model="logoutDialog"
-      persistent
-      transition="dialog-top-transition"
-      width="auto"
-  >
-    <v-card>
-
-      <v-card-title class="bg-primary">
-        {{ t('LOGOUT') }}
-      </v-card-title>
-
-      <v-card-text class="text-subtitle-1 text-capitalize">
-        {{ t("Are you sure you want to log out") }}?
-      </v-card-text>
-
-      <v-card-actions class="justify-end">
-        <v-btn
-            :text="t('Close')"
-            class="me-2"
-            color="grey"
-            variant="outlined"
-            @click="logoutDialog = !logoutDialog"
-        />
-        <v-btn
-            :text="t('Logout')"
-            class="me-1"
-            color="error"
-            variant="outlined"
-            @click="logout"
-        />
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <Logout v-model="logoutDialog"/>
 
 </template>
