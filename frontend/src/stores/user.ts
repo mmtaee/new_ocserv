@@ -18,8 +18,6 @@ export const useUserStore = defineStore('user', {
         },
         async logout() {
             this.user = null
-            localStorage.removeItem("token")
-            await router.push("/login")
         }
     },
 

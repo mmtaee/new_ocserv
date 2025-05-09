@@ -36,7 +36,7 @@ const login = () => {
 }
 
 const btnDisable = computed(() => {
-  if (config.value.googleCaptchaSiteKey != null) {
+  if (Boolean(config.value.googleCaptchaSiteKey)) {
     return !(loginData.token != null && valid.value);
   }
   return !valid.value;

@@ -2,6 +2,7 @@
 import {defineAsyncComponent} from "vue";
 import {useUserStore} from "@/stores/user.ts";
 import {useLocale} from "vuetify/framework";
+import router from "@/plugins/router.ts";
 
 defineProps({
   logoutDialog: Boolean
@@ -20,6 +21,8 @@ const close = () => {
 const logout = async () => {
   await userStore.logout()
   close()
+  localStorage.removeItem("token")
+  await router.push("/login")
 }
 </script>
 
@@ -39,7 +42,7 @@ const logout = async () => {
           class="me-2"
           color="grey"
           variant="outlined"
-          @click="close()"
+          @click="close"
       />
       <v-btn
           :text="t('Logout')"

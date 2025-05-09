@@ -51,7 +51,6 @@ function toggleTheme() {
 }
 
 const menuAction = (item: Item) => {
-  console.log(item)
   if (item.to) {
     router.push(item.to)
     return
@@ -128,6 +127,6 @@ theme.global.name.value = localStorage.getItem('theme') === 'dark' ? 'dark' : 'l
 
   </v-app-bar>
 
-  <Logout v-model="logoutDialog"/>
+  <Logout v-model:logoutDialog="logoutDialog"/>
 
 </template>
