@@ -25,6 +25,8 @@ import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError
 import type { ModelsUser } from '../models';
 // @ts-ignore
 import type { UserChangePasswordData } from '../models';
+// @ts-ignore
+import type { UserStaffsResponse } from '../models';
 /**
  * UserApi - axios parameter creator
  * @export
@@ -97,6 +99,56 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * List os Staffs
+         * @summary List os Staffs
+         * @param {number} [page] Page number, starting from 1
+         * @param {number} [pageSize] Number of items per page
+         * @param {string} [order] Field to order by
+         * @param {UserStaffsGetSortEnum} [sort] Sort order, either ASC or DESC
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsGet: async (page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user/staffs`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (order !== undefined) {
+                localVarQueryParameter['order'] = order;
+            }
+
+            if (sort !== undefined) {
+                localVarQueryParameter['sort'] = sort;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -132,6 +184,22 @@ export const UserApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['UserApi.userProfileGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * List os Staffs
+         * @summary List os Staffs
+         * @param {number} [page] Page number, starting from 1
+         * @param {number} [pageSize] Number of items per page
+         * @param {string} [order] Field to order by
+         * @param {UserStaffsGetSortEnum} [sort] Sort order, either ASC or DESC
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userStaffsGet(page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserStaffsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsGet(page, pageSize, order, sort, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -161,6 +229,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         userProfileGet(options?: RawAxiosRequestConfig): AxiosPromise<ModelsUser> {
             return localVarFp.userProfileGet(options).then((request) => request(axios, basePath));
         },
+        /**
+         * List os Staffs
+         * @summary List os Staffs
+         * @param {UserApiUserStaffsGetRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsGet(requestParameters: UserApiUserStaffsGetRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<UserStaffsResponse> {
+            return localVarFp.userStaffsGet(requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -176,6 +254,41 @@ export interface UserApiUserPasswordPostRequest {
      * @memberof UserApiUserPasswordPost
      */
     readonly request: UserChangePasswordData
+}
+
+/**
+ * Request parameters for userStaffsGet operation in UserApi.
+ * @export
+ * @interface UserApiUserStaffsGetRequest
+ */
+export interface UserApiUserStaffsGetRequest {
+    /**
+     * Page number, starting from 1
+     * @type {number}
+     * @memberof UserApiUserStaffsGet
+     */
+    readonly page?: number
+
+    /**
+     * Number of items per page
+     * @type {number}
+     * @memberof UserApiUserStaffsGet
+     */
+    readonly pageSize?: number
+
+    /**
+     * Field to order by
+     * @type {string}
+     * @memberof UserApiUserStaffsGet
+     */
+    readonly order?: string
+
+    /**
+     * Sort order, either ASC or DESC
+     * @type {'ASC' | 'DESC'}
+     * @memberof UserApiUserStaffsGet
+     */
+    readonly sort?: UserStaffsGetSortEnum
 }
 
 /**
@@ -207,5 +320,25 @@ export class UserApi extends BaseAPI {
     public userProfileGet(options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userProfileGet(options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * List os Staffs
+     * @summary List os Staffs
+     * @param {UserApiUserStaffsGetRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userStaffsGet(requestParameters: UserApiUserStaffsGetRequest = {}, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userStaffsGet(requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
+/**
+ * @export
+ */
+export const UserStaffsGetSortEnum = {
+    ASC: 'ASC',
+    DESC: 'DESC'
+} as const;
+export type UserStaffsGetSortEnum = typeof UserStaffsGetSortEnum[keyof typeof UserStaffsGetSortEnum];

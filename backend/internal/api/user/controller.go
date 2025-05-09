@@ -64,3 +64,38 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, nil)
 }
+
+// Staffs 		 List os Staffs
+//
+// @Summary      List os Staffs
+// @Description  List os Staffs
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param page query int false "Page number, starting from 1" minimum(1)
+// @Param page_size query int false "Number of items per page" minimum(1) maximum(100)
+// @Param order query string false "Field to order by"
+// @Param sort query string false "Sort order, either ASC or DESC" Enums(ASC, DESC)
+// @Success      200  {object}  StaffsResponse
+// @Router       /user/staffs [get]
+func (ctrl *Controller) Staffs(c echo.Context) error {
+	pagination := ctrl.request.Pagination()
+
+	if err := ctrl.request.DoValidate(c, pagination); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	staffs, total, err := ctrl.userRepo.GetStaffs(c.Request().Context(), pagination)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	return c.JSON(http.StatusOK, StaffsResponse{
+		Meta: request.Meta{
+			Page:         pagination.Page,
+			PageSize:     pagination.PageSize,
+			TotalRecords: total,
+		},
+		Result: staffs,
+	})
+}

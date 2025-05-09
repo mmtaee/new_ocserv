@@ -182,6 +182,18 @@ definitions:
     - token
     - user
     type: object
+  request.Meta:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_records:
+        type: integer
+    required:
+    - page
+    - page_size
+    type: object
   user.ChangePasswordData:
     properties:
       current_password:
@@ -191,6 +203,17 @@ definitions:
     required:
     - current_password
     - new_password
+    type: object
+  user.StaffsResponse:
+    properties:
+      meta:
+        $ref: '#/definitions/request.Meta'
+      result:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    required:
+    - meta
     type: object
 info:
   contact: {}
@@ -327,6 +350,44 @@ paths:
           schema:
             $ref: '#/definitions/models.User'
       summary: Get user Profile
+      tags:
+      - User
+  /user/staffs:
+    get:
+      consumes:
+      - application/json
+      description: List os Staffs
+      parameters:
+      - description: Page number, starting from 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Field to order by
+        in: query
+        name: order
+        type: string
+      - description: Sort order, either ASC or DESC
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.StaffsResponse'
+      summary: List os Staffs
       tags:
       - User
 swagger: "2.0"

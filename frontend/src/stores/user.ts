@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia'
 import {type ModelsUser, UserApi} from "@/api";
-import router from "@/plugins/router.ts";
 
 export const useUserStore = defineStore('user', {
     state: (): { user: ModelsUser | null } => ({

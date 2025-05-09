@@ -13,7 +13,7 @@ type CustomRequestInterface interface {
 	DoValidate(echo.Context, interface{}) interface{}
 	BadRequest(c echo.Context, err interface{}, msg ...string) error
 	Pagination() *Pagination
-	Response(c echo.Context, p *Pagination, total int, result interface{}) error
+	//Response(c echo.Context, p *Pagination, total int64, result interface{}) error
 }
 
 func NewCustomRequest() *Request {

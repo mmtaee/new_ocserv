@@ -1,10 +1,5 @@
 package request
 
-import (
-	"github.com/labstack/echo/v4"
-	"net/http"
-)
-
 // Pagination defines pagination query parameters for the API.
 // @Param page query int false "Page number, starting from 1" minimum(1)
 // @Param page_size query int false "Number of items per page" minimum(1) maximum(100)
@@ -18,12 +13,16 @@ type Pagination struct {
 	Sort     string `json:"sort" query:"sort" validate:"omitempty,oneof=DESC ASC"`
 }
 
-type ResponseWithPagination struct {
-	Page         int         `json:"page"`
-	PageSize     int         `json:"page_size"`
-	TotalRecords int         `json:"total_records"`
-	Result       interface{} `json:"result"`
+type Meta struct {
+	Page         int   `json:"page" validate:"required"`
+	PageSize     int   `json:"page_size" validate:"required"`
+	TotalRecords int64 `json:"total_records" validate:"omitempty"`
 }
+
+//type ResponseWithPagination struct {
+//	Meta   Meta        `json:"meta"`
+//	Result interface{} `json:"result"`
+//}
 
 func (r *Request) Pagination() *Pagination {
 	return &Pagination{
@@ -34,11 +33,13 @@ func (r *Request) Pagination() *Pagination {
 	}
 }
 
-func (r *Request) Response(c echo.Context, p *Pagination, total int, result interface{}) error {
-	return c.JSON(http.StatusOK, ResponseWithPagination{
-		Page:         p.Page,
-		PageSize:     p.PageSize,
-		TotalRecords: total,
-		Result:       result,
-	})
-}
+//func (r *Request) Response(c echo.Context, p *Pagination, total int64, result interface{}) error {
+//	return c.JSON(http.StatusOK, ResponseWithPagination{
+//		Meta: Meta{
+//			Page:         p.Page,
+//			PageSize:     p.PageSize,
+//			TotalRecords: total,
+//		},
+//		Result: result,
+//	})
+//}
