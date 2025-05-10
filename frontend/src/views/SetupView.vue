@@ -1,30 +1,16 @@
 <script lang="ts" setup>
 import {PanelApi, type PanelSetupData} from "@/api";
-import {defineAsyncComponent, onBeforeUnmount, onMounted, ref} from "vue";
-
+import {defineAsyncComponent, ref} from "vue";
 import router from "@/plugins/router.ts";
 import {useConfigStore} from "@/stores/config.ts";
 import {useUserStore} from "@/stores/user.ts";
+import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 
-
+const useIsMobile = useIsMobileStore()
 const loading = ref(false);
+
 const DesktopView = defineAsyncComponent(() => import("@/components/setup/desktop/index.vue"))
-
 const MobileView = null
-const isMobile = ref(false)
-
-function checkIsMobile() {
-  isMobile.value = window.innerWidth <= 768
-}
-
-onMounted(() => {
-  checkIsMobile()
-  window.addEventListener('resize', checkIsMobile)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', checkIsMobile)
-})
 
 async function finalize(data: PanelSetupData) {
   loading.value = true
@@ -46,7 +32,7 @@ async function finalize(data: PanelSetupData) {
 </script>
 
 <template>
-  <component :is="isMobile ? MobileView : DesktopView" @finalize="finalize" :loading="loading" />
+  <component :is="useIsMobile.isMobile ? MobileView : DesktopView" @finalize="finalize" :loading="loading" />
 </template>
 
 <style scoped>

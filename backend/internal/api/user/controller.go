@@ -3,8 +3,10 @@ package user
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"ocserv/internal/models"
 	"ocserv/internal/repository"
 	"ocserv/pkg/request"
+	"strconv"
 )
 
 type Controller struct {
@@ -98,4 +100,34 @@ func (ctrl *Controller) Staffs(c echo.Context) error {
 		},
 		Result: staffs,
 	})
+}
+
+// UpdateStaffPermission 		 Update Staff Permission
+//
+// @Summary      Update Staff Permission
+// @Description  Update Staff Permission by given id
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param 		 id path int true "User ID"
+// @Param        request    body  models.Permission   true "user permission"
+// @Success      200  {object}  nil
+// @Router       /user/staffs/permissions/${id}/ [put]
+func (ctrl *Controller) UpdateStaffPermission(c echo.Context) error {
+	var perm models.Permission
+
+	if err := ctrl.request.DoValidate(c, &perm); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	err = ctrl.userRepo.UpdatePermission(c.Request().Context(), uint(id), perm)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, nil)
 }

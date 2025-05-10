@@ -10,26 +10,26 @@ import (
 )
 
 type Permission struct {
-	OcUser       bool `json:"oc_user"`
-	OcGroup      bool `json:"oc_group"`
-	Statistic    bool `json:"statistic"`
-	Occtl        bool `json:"occtl"`
-	System       bool `json:"system"`
-	SeeServerLog bool `json:"see_server_log"`
+	OcUser       bool `json:"oc_user" validate:"omitempty"`
+	OcGroup      bool `json:"oc_group" validate:"omitempty"`
+	Statistic    bool `json:"statistic" validate:"omitempty"`
+	Occtl        bool `json:"occtl" validate:"omitempty"`
+	System       bool `json:"system" validate:"omitempty"`
+	SeeServerLog bool `json:"see_server_log" validate:"omitempty"`
 }
 
 type User struct {
-	ID          uint       `json:"-" gorm:"primaryKey;autoIncrement"`
-	UID         string     `json:"uid" gorm:"type:varchar(26);not null;unique"`
-	Username    string     `json:"username" gorm:"type:varchar(16);not null;unique"`
+	ID          uint       `json:"id" gorm:"primaryKey;autoIncrement" validate:"required"`
+	UID         string     `json:"uid" gorm:"type:varchar(26);not null;unique" validate:"required"`
+	Username    string     `json:"username" gorm:"type:varchar(16);not null;unique"  validate:"required"`
 	Password    string     `json:"-" gorm:"type:varchar(64); not null"`
-	IsAdmin     bool       `json:"is_admin" gorm:"type:bool;default(false)"`
+	IsAdmin     bool       `json:"is_admin" gorm:"type:bool;default(false)"  validate:"required"`
 	Salt        string     `json:"-" gorm:"type:varchar(8);not null;unique"`
-	LastLogin   *time.Time `json:"last_login"`
+	LastLogin   *time.Time `json:"last_login"  validate:"required"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	Token       []UserToken `json:"-"`
-	Permissions *Permission `json:"permission" gorm:"type:jsonb"`
+	Permissions *Permission `json:"permission" gorm:"type:jsonb"  validate:"required"`
 }
 
 type UserToken struct {

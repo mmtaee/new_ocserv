@@ -31,28 +31,34 @@ export interface ModelsUser {
     'createdAt'?: string;
     /**
      * 
+     * @type {number}
+     * @memberof ModelsUser
+     */
+    'id': number;
+    /**
+     * 
      * @type {boolean}
      * @memberof ModelsUser
      */
-    'is_admin'?: boolean;
+    'is_admin': boolean;
     /**
      * 
      * @type {string}
      * @memberof ModelsUser
      */
-    'last_login'?: string;
+    'last_login': string;
     /**
      * 
      * @type {ModelsPermission}
      * @memberof ModelsUser
      */
-    'permission'?: ModelsPermission;
+    'permission': ModelsPermission;
     /**
      * 
      * @type {string}
      * @memberof ModelsUser
      */
-    'uid'?: string;
+    'uid': string;
     /**
      * 
      * @type {string}
@@ -64,6 +70,6 @@ export interface ModelsUser {
      * @type {string}
      * @memberof ModelsUser
      */
-    'username'?: string;
+    'username': string;
 }
 

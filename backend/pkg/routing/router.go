@@ -33,7 +33,15 @@ func Serve(debug bool) {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: cfg.AllowOrigins,
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
-		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPatch, http.MethodHead, http.MethodOptions},
+		AllowMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodDelete,
+			http.MethodPatch,
+			http.MethodPut,
+			http.MethodHead,
+			http.MethodOptions,
+		},
 	}))
 
 	routing.Register(e)

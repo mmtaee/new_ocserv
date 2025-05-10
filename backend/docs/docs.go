@@ -270,6 +270,44 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/staffs/permissions/${id}/": {
+            "put": {
+                "description": "Update Staff Permission by given id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update Staff Permission",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user permission",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Permission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -298,9 +336,20 @@ const docTemplate = `{
         },
         "models.User": {
             "type": "object",
+            "required": [
+                "id",
+                "is_admin",
+                "last_login",
+                "permission",
+                "uid",
+                "username"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "is_admin": {
                     "type": "boolean"

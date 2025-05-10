@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
@@ -22,6 +23,7 @@ type UserRepositoryInterface interface {
 	GetUserById(ctx context.Context, id string) (*models.User, error)
 	ChangePassword(ctx context.Context, id string, currentPassword, newPassword string) error
 	GetStaffs(ctx context.Context, pagination *request.Pagination) (*[]models.User, int64, error)
+	UpdatePermission(ctx context.Context, id uint, perm models.Permission) error
 }
 
 func NewUserRepository() *UserRepository {
@@ -100,4 +102,13 @@ func (r *UserRepository) GetStaffs(ctx context.Context, pagination *request.Pagi
 		return nil, 0, err
 	}
 	return &staffs, totalRecords, nil
+}
+
+func (r *UserRepository) UpdatePermission(ctx context.Context, id uint, perm models.Permission) error {
+	jsonPerm, err := json.Marshal(perm)
+	if err != nil {
+		return err
+	}
+
+	return r.db.WithContext(ctx).Model(&models.User{}).Where("id = ?", id).Update("permissions", jsonPerm).Error
 }

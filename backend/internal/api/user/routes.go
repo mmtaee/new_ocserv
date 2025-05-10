@@ -13,4 +13,6 @@ func Routes(e *echo.Group) {
 	e.POST("/password", controller.ChangePassword)
 
 	e.GET("/staffs", controller.Staffs, middlewares.AdminPermission())
+
+	e.PUT("/staffs/permissions/:id", controller.UpdateStaffPermission, middlewares.AdminPermission())
 }

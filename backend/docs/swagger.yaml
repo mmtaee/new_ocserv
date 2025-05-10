@@ -19,6 +19,8 @@ definitions:
     properties:
       createdAt:
         type: string
+      id:
+        type: integer
       is_admin:
         type: boolean
       last_login:
@@ -31,6 +33,13 @@ definitions:
         type: string
       username:
         type: string
+    required:
+    - id
+    - is_admin
+    - last_login
+    - permission
+    - uid
+    - username
     type: object
   oc.OcservDefaultConfigs:
     properties:
@@ -388,6 +397,31 @@ paths:
           schema:
             $ref: '#/definitions/user.StaffsResponse'
       summary: List os Staffs
+      tags:
+      - User
+  /user/staffs/permissions/${id}/:
+    put:
+      consumes:
+      - application/json
+      description: Update Staff Permission by given id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user permission
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Permission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Update Staff Permission
       tags:
       - User
 swagger: "2.0"
