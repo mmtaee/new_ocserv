@@ -95,13 +95,16 @@ function removeDomain(d: string) {
   }
 }
 
-onMounted(()=>{
-if (props.data) {
-  const combined = {
-    ...toRaw(props.data.default_ocserv_group),
-  }
-  Object.assign(formValues, combined)
-}})
+onMounted(() => {
+      if (props.data) {
+        const combined = {
+          ...toRaw(props.data.default_ocserv_group),
+        }
+        Object.assign(formValues, combined)
+      }
+    }
+)
+
 </script>
 
 <template>

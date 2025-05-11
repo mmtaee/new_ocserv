@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"ocserv/internal/models"
 	"ocserv/internal/repository"
+	"ocserv/pkg/crypto"
 	"ocserv/pkg/request"
 	"strconv"
 )
@@ -33,9 +34,9 @@ func New() *Controller {
 // @Success      200  {object}  models.User
 // @Router       /user/profile [get]
 func (ctrl *Controller) Profile(c echo.Context) error {
-	userID := c.Get("userID").(string)
+	userUID := c.Get("userUID").(string)
 
-	user, err := ctrl.userRepo.GetUserById(c.Request().Context(), userID)
+	user, err := ctrl.userRepo.GetUserById(c.Request().Context(), userUID)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -58,9 +59,9 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 
-	userID := c.Get("userID").(string)
+	userUID := c.Get("userUID").(string)
 
-	err := ctrl.userRepo.ChangePassword(c.Request().Context(), userID, data.CurrentPassword, data.NewPassword)
+	err := ctrl.userRepo.ChangePassword(c.Request().Context(), userUID, data.CurrentPassword, data.NewPassword)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -82,7 +83,6 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 // @Router       /user/staffs [get]
 func (ctrl *Controller) Staffs(c echo.Context) error {
 	pagination := ctrl.request.Pagination()
-
 	if err := ctrl.request.DoValidate(c, pagination); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -130,4 +130,88 @@ func (ctrl *Controller) UpdateStaffPermission(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 	return c.JSON(http.StatusOK, nil)
+}
+
+// RemoveStaff 	 Remove Staff
+//
+// @Summary      Remove Staff
+// @Description  Remove Staff by given id
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param 		 id path int true "User ID"
+// @Success      204  {object}  nil
+// @Router       /user/staffs/${id}/ [delete]
+func (ctrl *Controller) RemoveStaff(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	err = ctrl.userRepo.Delete(c.Request().Context(), uint(id))
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusNoContent, nil)
+}
+
+// ChangeStaffPassword 	 Change Staff Password
+//
+// @Summary      Change Staff Password
+// @Description  Change Staff Password by given id
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param 		 id path int true "User ID"
+// @Param        request    body  ChangeStaffPassword  true "user new password"
+// @Success      200  {object}  nil
+// @Router       /user/staffs/{id}/password [post]
+func (ctrl *Controller) ChangeStaffPassword(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	var data ChangeStaffPassword
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	err = ctrl.userRepo.ChangeStaffPassword(c.Request().Context(), uint(id), data.Password)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, nil)
+}
+
+// CreateStaff 	 Create Admin or Staff
+//
+// @Summary      Create Admin or Staff
+// @Description  Create Admin or Staff
+// @Tags         User
+// @Accept       json
+// @Produce      json
+// @Param        request    body  CreateStaffData  true "user create data"
+// @Success      201  {object}  models.User
+// @Router       /user/staffs [post]
+func (ctrl *Controller) CreateStaff(c echo.Context) error {
+	var data CreateStaffData
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	passwd := crypto.CreatePassword(data.Password)
+
+	user := &models.User{
+		Username:    data.Username,
+		Password:    passwd.Hash,
+		Salt:        passwd.Salt,
+		IsAdmin:     data.IsAdmin,
+		Permissions: &data.Permission,
+	}
+
+	staff, err := ctrl.userRepo.CreateStaff(c.Request().Context(), user)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusCreated, staff)
 }

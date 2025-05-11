@@ -36,5 +36,10 @@
   "Address pool for client IP leases": "Address pool for client IP leases",
   "EXPLICIT_IPV4": "explicit IPv4",
   "STATIC_IPV4_ADDRESS_TO_ASSIGN_TO_CLIENT": "Static IPv4 address to assign to client",
-  "ROUTING_&_ACCESS_CONTROL": "Routing & Access Control"
+  "ROUTING_&_ACCESS_CONTROL": "Routing & Access Control",
+  "STAFF_DELETED_SUCCESSFULLY": "Staff {username} deleted successfully",
+  "STAFF_CHANGE_PASSWORD_SUCCESSFULLY": "Staff {username} password updated successfully",
+  "STAFF_CREATED_SUCCESSFULLY": "Staff {username} created successfully",
+  "MAKE_USER_AS_ADMIN": "make user as admin user",
+  "CREATE_IS_ADMIN_CHECKBOX_HINT": "this action make user with full access permission"
 }

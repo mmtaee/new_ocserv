@@ -28,6 +28,10 @@ import type { ModelsUser } from '../models';
 // @ts-ignore
 import type { UserChangePasswordData } from '../models';
 // @ts-ignore
+import type { UserChangeStaffPassword } from '../models';
+// @ts-ignore
+import type { UserCreateStaffData } from '../models';
+// @ts-ignore
 import type { UserStaffsResponse } from '../models';
 /**
  * UserApi - axios parameter creator
@@ -152,6 +156,80 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
+         * Remove Staff by given id
+         * @summary Remove Staff
+         * @param {number} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsIdDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('userStaffsIdDelete', 'id', id)
+            const localVarPath = `/user/staffs/${id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Change Staff Password by given id
+         * @summary Change Staff Password
+         * @param {number} id User ID
+         * @param {UserChangeStaffPassword} request user new password
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsIdPasswordPost: async (id: number, request: UserChangeStaffPassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('userStaffsIdPasswordPost', 'id', id)
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('userStaffsIdPasswordPost', 'request', request)
+            const localVarPath = `/user/staffs/{id}/password`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Update Staff Permission by given id
          * @summary Update Staff Permission
          * @param {number} id User ID
@@ -174,6 +252,42 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             }
 
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create Admin or Staff
+         * @summary Create Admin or Staff
+         * @param {UserCreateStaffData} request user create data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsPost: async (request: UserCreateStaffData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('userStaffsPost', 'request', request)
+            const localVarPath = `/user/staffs`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -243,6 +357,33 @@ export const UserApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Remove Staff by given id
+         * @summary Remove Staff
+         * @param {number} id User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userStaffsIdDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsIdDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Change Staff Password by given id
+         * @summary Change Staff Password
+         * @param {number} id User ID
+         * @param {UserChangeStaffPassword} request user new password
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userStaffsIdPasswordPost(id: number, request: UserChangeStaffPassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdPasswordPost(id, request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsIdPasswordPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Update Staff Permission by given id
          * @summary Update Staff Permission
          * @param {number} id User ID
@@ -254,6 +395,19 @@ export const UserApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPermissionsIdPut(id, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsPermissionsIdPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Create Admin or Staff
+         * @summary Create Admin or Staff
+         * @param {UserCreateStaffData} request user create data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userStaffsPost(request: UserCreateStaffData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ModelsUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPost(request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -296,6 +450,26 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.userStaffsGet(requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(axios, basePath));
         },
         /**
+         * Remove Staff by given id
+         * @summary Remove Staff
+         * @param {UserApiUserStaffsIdDeleteRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsIdDelete(requestParameters: UserApiUserStaffsIdDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.userStaffsIdDelete(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Change Staff Password by given id
+         * @summary Change Staff Password
+         * @param {UserApiUserStaffsIdPasswordPostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsIdPasswordPost(requestParameters: UserApiUserStaffsIdPasswordPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.userStaffsIdPasswordPost(requestParameters.id, requestParameters.request, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Update Staff Permission by given id
          * @summary Update Staff Permission
          * @param {UserApiUserStaffsPermissionsIdPutRequest} requestParameters Request parameters.
@@ -304,6 +478,16 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         userStaffsPermissionsIdPut(requestParameters: UserApiUserStaffsPermissionsIdPutRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.userStaffsPermissionsIdPut(requestParameters.id, requestParameters.request, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create Admin or Staff
+         * @summary Create Admin or Staff
+         * @param {UserApiUserStaffsPostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userStaffsPost(requestParameters: UserApiUserStaffsPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<ModelsUser> {
+            return localVarFp.userStaffsPost(requestParameters.request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -358,6 +542,41 @@ export interface UserApiUserStaffsGetRequest {
 }
 
 /**
+ * Request parameters for userStaffsIdDelete operation in UserApi.
+ * @export
+ * @interface UserApiUserStaffsIdDeleteRequest
+ */
+export interface UserApiUserStaffsIdDeleteRequest {
+    /**
+     * User ID
+     * @type {number}
+     * @memberof UserApiUserStaffsIdDelete
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for userStaffsIdPasswordPost operation in UserApi.
+ * @export
+ * @interface UserApiUserStaffsIdPasswordPostRequest
+ */
+export interface UserApiUserStaffsIdPasswordPostRequest {
+    /**
+     * User ID
+     * @type {number}
+     * @memberof UserApiUserStaffsIdPasswordPost
+     */
+    readonly id: number
+
+    /**
+     * user new password
+     * @type {UserChangeStaffPassword}
+     * @memberof UserApiUserStaffsIdPasswordPost
+     */
+    readonly request: UserChangeStaffPassword
+}
+
+/**
  * Request parameters for userStaffsPermissionsIdPut operation in UserApi.
  * @export
  * @interface UserApiUserStaffsPermissionsIdPutRequest
@@ -376,6 +595,20 @@ export interface UserApiUserStaffsPermissionsIdPutRequest {
      * @memberof UserApiUserStaffsPermissionsIdPut
      */
     readonly request: ModelsPermission
+}
+
+/**
+ * Request parameters for userStaffsPost operation in UserApi.
+ * @export
+ * @interface UserApiUserStaffsPostRequest
+ */
+export interface UserApiUserStaffsPostRequest {
+    /**
+     * user create data
+     * @type {UserCreateStaffData}
+     * @memberof UserApiUserStaffsPost
+     */
+    readonly request: UserCreateStaffData
 }
 
 /**
@@ -421,6 +654,30 @@ export class UserApi extends BaseAPI {
     }
 
     /**
+     * Remove Staff by given id
+     * @summary Remove Staff
+     * @param {UserApiUserStaffsIdDeleteRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userStaffsIdDelete(requestParameters: UserApiUserStaffsIdDeleteRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userStaffsIdDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Change Staff Password by given id
+     * @summary Change Staff Password
+     * @param {UserApiUserStaffsIdPasswordPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userStaffsIdPasswordPost(requestParameters: UserApiUserStaffsIdPasswordPostRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userStaffsIdPasswordPost(requestParameters.id, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Update Staff Permission by given id
      * @summary Update Staff Permission
      * @param {UserApiUserStaffsPermissionsIdPutRequest} requestParameters Request parameters.
@@ -430,6 +687,18 @@ export class UserApi extends BaseAPI {
      */
     public userStaffsPermissionsIdPut(requestParameters: UserApiUserStaffsPermissionsIdPutRequest, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userStaffsPermissionsIdPut(requestParameters.id, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create Admin or Staff
+     * @summary Create Admin or Staff
+     * @param {UserApiUserStaffsPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userStaffsPost(requestParameters: UserApiUserStaffsPostRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userStaffsPost(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

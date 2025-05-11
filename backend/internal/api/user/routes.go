@@ -7,12 +7,15 @@ import (
 
 func Routes(e *echo.Group) {
 	controller := New()
-	e = e.Group("/user", middlewares.AuthMiddleware())
 
-	e.GET("/profile", controller.Profile)
-	e.POST("/password", controller.ChangePassword)
+	groupBase := e.Group("/user", middlewares.AuthMiddleware())
+	groupBase.GET("/profile", controller.Profile)
+	groupBase.POST("/password", controller.ChangePassword)
 
-	e.GET("/staffs", controller.Staffs, middlewares.AdminPermission())
-
-	e.PUT("/staffs/permissions/:id", controller.UpdateStaffPermission, middlewares.AdminPermission())
+	groupWithPerm := e.Group("/user", middlewares.AuthMiddleware(), middlewares.AdminPermission())
+	groupWithPerm.GET("/staffs", controller.Staffs)
+	groupWithPerm.PUT("/staffs/permissions/:id", controller.UpdateStaffPermission)
+	groupWithPerm.DELETE("/staffs/:id", controller.RemoveStaff)
+	groupWithPerm.POST("/staffs/:id/password", controller.ChangeStaffPassword)
+	groupWithPerm.POST("/staffs", controller.CreateStaff)
 }

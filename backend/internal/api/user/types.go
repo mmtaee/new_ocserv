@@ -14,3 +14,14 @@ type StaffsResponse struct {
 	Meta   request.Meta   `json:"meta" validate:"required"`
 	Result *[]models.User `json:"result" validate:"omitempty"`
 }
+
+type ChangeStaffPassword struct {
+	Password string `json:"password" validate:"required"`
+}
+
+type CreateStaffData struct {
+	Username   string            `json:"username" validate:"required"`
+	Password   string            `json:"password" validate:"required"`
+	IsAdmin    bool              `json:"is_admin" validate:"omitempty"`
+	Permission models.Permission `json:"permission" validate:"required"`
+}

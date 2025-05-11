@@ -29,7 +29,7 @@ func (r *Request) Pagination() *Pagination {
 		Page:     1,
 		PageSize: 50,
 		Order:    "id",
-		Sort:     "DESC",
+		Sort:     "ASC",
 	}
 }
 

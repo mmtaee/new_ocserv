@@ -213,6 +213,28 @@ definitions:
     - current_password
     - new_password
     type: object
+  user.ChangeStaffPassword:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  user.CreateStaffData:
+    properties:
+      is_admin:
+        type: boolean
+      password:
+        type: string
+      permission:
+        $ref: '#/definitions/models.Permission'
+      username:
+        type: string
+    required:
+    - password
+    - permission
+    - username
+    type: object
   user.StaffsResponse:
     properties:
       meta:
@@ -397,6 +419,71 @@ paths:
           schema:
             $ref: '#/definitions/user.StaffsResponse'
       summary: List os Staffs
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create Admin or Staff
+      parameters:
+      - description: user create data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateStaffData'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create Admin or Staff
+      tags:
+      - User
+  /user/staffs/${id}/:
+    delete:
+      consumes:
+      - application/json
+      description: Remove Staff by given id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Remove Staff
+      tags:
+      - User
+  /user/staffs/{id}/password:
+    post:
+      consumes:
+      - application/json
+      description: Change Staff Password by given id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user new password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.ChangeStaffPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Change Staff Password
       tags:
       - User
   /user/staffs/permissions/${id}/:
