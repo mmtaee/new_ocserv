@@ -5,6 +5,7 @@ import {type ModelsUser, UserApi, type UserChangeStaffPassword, type UserCreateS
 import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useI18n} from "vue-i18n";
 import {requiredRule} from "@/utils/rules.ts";
+import {useUserStore} from "@/stores/user.ts";
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
@@ -24,6 +25,7 @@ const staffData = reactive<ModelsUser[]>([]);
 const selectedUser = reactive<ModelsUser>({
   id: 0,
   is_admin: false,
+  is_super_admin: false,
   last_login: "",
   permission: {
     oc_group: false,
@@ -64,6 +66,7 @@ const headers: DataTableHeader[] = [
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
+const userStore = useUserStore()
 
 const snackbar = useSnackbarStore()
 
@@ -240,6 +243,15 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         .sort((a, b) => a.localeCompare(b)) as (keyof typeof selectedUser.permission)[]
 )
 
+
+const isAllowAction = (item: ModelsUser, action: string) => {
+  let user = userStore.getUser
+  if (user) {
+    if (user.is_super_admin && !["delete", "perm"].includes(action)) return true
+    return user.id !== item.id && !item.is_admin
+  }
+}
+
 </script>
 
 <template>
@@ -274,11 +286,33 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
           {{ formatDate(item.last_login) }}
         </template>
         <template #item.actions="{ item }">
-          <v-icon color="warning" end icon="mdi-door-closed-lock" @click="permission(item)"></v-icon>
-          <v-icon color="primary" end icon="mdi-key"
-                  @click="Object.assign(selectedUser, item); changePasswordDialog = true"></v-icon>
-          <v-icon color="error" end icon="mdi-delete"
-                  @click="Object.assign(selectedUser, item); deleteDialog = true"></v-icon>
+          <v-icon
+              v-if="isAllowAction(item, 'perm')"
+              color="warning"
+              end
+              icon="mdi-door-closed-lock"
+              @click="permission(item)"
+          />
+          <v-icon v-else color="warning" disabled end icon="mdi-door-closed-cancel"/>
+
+          <v-icon
+              v-if="isAllowAction(item, 'password')"
+              color="primary"
+              end
+              icon="mdi-key"
+              @click="Object.assign(selectedUser, item); changePasswordDialog = true"
+          />
+
+          <v-icon v-else color="primary" disabled end icon="mdi-key"/>
+
+          <v-icon
+              v-if="isAllowAction(item, 'delete')"
+              color="error"
+              end
+              icon="mdi-delete"
+              @click="Object.assign(selectedUser, item); deleteDialog = true"
+          />
+          <v-icon v-else color="error" disabled end icon="mdi-delete-off"/>
         </template>
         <template v-slot:bottom>
           <div v-if="pageCount>1" class="text-center pt-2">
@@ -367,6 +401,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         </v-row>
       </v-form>
     </template>
+
 
     <template #dialogAction>
       <v-btn

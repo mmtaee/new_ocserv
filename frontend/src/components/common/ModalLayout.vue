@@ -47,7 +47,9 @@ const close = ()=>{
         <slot name="dialogText"/>
       </v-card-text>
 
-      <v-card-actions class="justify-end">
+      <v-divider class="mb-3" />
+
+      <v-card-actions class="justify-end me-2 mb-2">
         <slot name="dialogAction"/>
       </v-card-actions>
     </v-card>

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
-	"log"
 	"ocserv/internal/models"
 	"ocserv/pkg/crypto"
 	"ocserv/pkg/database"
@@ -117,10 +116,13 @@ func (r *UserRepository) GetStaffs(ctx context.Context, pagination *request.Pagi
 	var staffs []models.User
 	offset := (pagination.Page - 1) * pagination.PageSize
 	order := fmt.Sprintf("%s %s", pagination.Order, pagination.Sort)
-	log.Println(order)
-	log.Println(pagination)
-	err := r.db.WithContext(ctx).Model(&staffs).Where("is_admin = false").
-		Order(order).Limit(pagination.PageSize).Offset(offset).Scan(&staffs).Error
+
+	query = r.db.WithContext(ctx).Model(&staffs)
+	if whereFilters != "" {
+		query = query.Where(whereFilters)
+	}
+
+	err := query.Order(order).Limit(pagination.PageSize).Offset(offset).Scan(&staffs).Error
 	if err != nil {
 		return nil, 0, err
 	}
