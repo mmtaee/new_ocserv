@@ -205,7 +205,7 @@ func (ctrl *Controller) CreateStaff(c echo.Context) error {
 		Username:    data.Username,
 		Password:    passwd.Hash,
 		Salt:        passwd.Salt,
-		IsAdmin:     data.IsAdmin,
+		IsAdmin:     false,
 		Permissions: &data.Permission,
 	}
 

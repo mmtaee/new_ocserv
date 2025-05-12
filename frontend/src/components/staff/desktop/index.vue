@@ -243,15 +243,6 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         .sort((a, b) => a.localeCompare(b)) as (keyof typeof selectedUser.permission)[]
 )
 
-
-const isAllowAction = (item: ModelsUser, action: string) => {
-  let user = userStore.getUser
-  if (user) {
-    if (user.is_super_admin && !["delete", "perm"].includes(action)) return true
-    return user.id !== item.id && !item.is_admin
-  }
-}
-
 </script>
 
 <template>
@@ -287,32 +278,25 @@ const isAllowAction = (item: ModelsUser, action: string) => {
         </template>
         <template #item.actions="{ item }">
           <v-icon
-              v-if="isAllowAction(item, 'perm')"
               color="warning"
               end
               icon="mdi-door-closed-lock"
               @click="permission(item)"
           />
-          <v-icon v-else color="warning" disabled end icon="mdi-door-closed-cancel"/>
 
           <v-icon
-              v-if="isAllowAction(item, 'password')"
               color="primary"
               end
               icon="mdi-key"
               @click="Object.assign(selectedUser, item); changePasswordDialog = true"
           />
 
-          <v-icon v-else color="primary" disabled end icon="mdi-key"/>
-
           <v-icon
-              v-if="isAllowAction(item, 'delete')"
               color="error"
               end
               icon="mdi-delete"
               @click="Object.assign(selectedUser, item); deleteDialog = true"
           />
-          <v-icon v-else color="error" disabled end icon="mdi-delete-off"/>
         </template>
         <template v-slot:bottom>
           <div v-if="pageCount>1" class="text-center pt-2">

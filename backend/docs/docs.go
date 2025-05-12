@@ -438,7 +438,6 @@ const docTemplate = `{
             "required": [
                 "id",
                 "is_admin",
-                "is_super_admin",
                 "last_login",
                 "permission",
                 "uid",
@@ -452,9 +451,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "is_admin": {
-                    "type": "boolean"
-                },
-                "is_super_admin": {
                     "type": "boolean"
                 },
                 "last_login": {
@@ -747,9 +743,6 @@ const docTemplate = `{
                 "username"
             ],
             "properties": {
-                "is_admin": {
-                    "type": "boolean"
-                },
                 "password": {
                     "type": "string"
                 },

@@ -5,6 +5,7 @@
 
 <template>
   <v-card
+      border="none"
       elevation="40"
       height="100%"
       max-width="100%"

@@ -108,11 +108,10 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 
 	passwordPKG := crypto.CreatePassword(data.Admin.Password)
 	user, err := ctrl.userRepo.CreateAdmin(c.Request().Context(), &models.User{
-		Username:     strings.ToLower(data.Admin.Username),
-		Password:     passwordPKG.Hash,
-		Salt:         passwordPKG.Salt,
-		IsAdmin:      true,
-		IsSuperAdmin: true,
+		Username: strings.ToLower(data.Admin.Username),
+		Password: passwordPKG.Hash,
+		Salt:     passwordPKG.Salt,
+		IsAdmin:  true,
 	})
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)

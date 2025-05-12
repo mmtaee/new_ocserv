@@ -43,12 +43,6 @@ export interface ModelsUser {
     'is_admin': boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof ModelsUser
-     */
-    'is_super_admin': boolean;
-    /**
-     * 
      * @type {string}
      * @memberof ModelsUser
      */

@@ -91,20 +91,9 @@ func (r *UserRepository) ChangePassword(ctx context.Context, uid string, current
 func (r *UserRepository) GetStaffs(ctx context.Context, pagination *request.Pagination, filters ...map[string]interface{}) (*[]models.User, int64, error) {
 	var totalRecords int64
 
-	whereFilters := ""
+	whereFilters := "is_admin = false"
 
-	if len(filters) > 0 {
-		if isAdmin, ok := filters[0]["isAdmin"]; ok && isAdmin.(bool) {
-			whereFilters += "is_admin = false"
-		}
-	}
-
-	query := r.db.WithContext(ctx).Model(&models.User{})
-	if whereFilters != "" {
-		query = query.Where(whereFilters)
-	}
-
-	if err := query.Count(&totalRecords).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&models.User{}).Where(whereFilters).Count(&totalRecords).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -117,12 +106,7 @@ func (r *UserRepository) GetStaffs(ctx context.Context, pagination *request.Pagi
 	offset := (pagination.Page - 1) * pagination.PageSize
 	order := fmt.Sprintf("%s %s", pagination.Order, pagination.Sort)
 
-	query = r.db.WithContext(ctx).Model(&staffs)
-	if whereFilters != "" {
-		query = query.Where(whereFilters)
-	}
-
-	err := query.Order(order).Limit(pagination.PageSize).Offset(offset).Scan(&staffs).Error
+	err := r.db.WithContext(ctx).Model(&staffs).Where(whereFilters).Order(order).Limit(pagination.PageSize).Offset(offset).Scan(&staffs).Error
 	if err != nil {
 		return nil, 0, err
 	}

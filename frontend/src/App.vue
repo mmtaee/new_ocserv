@@ -5,7 +5,8 @@ import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 
 const CenterLayout = defineAsyncComponent(() => import("@/components/common/CenterLayout.vue"))
-const AppBar = defineAsyncComponent(() => import("@/components/appbar/AppBar.vue"))
+const AppBar = defineAsyncComponent(() => import("@/components/app/AppBar.vue"))
+const SideBar = defineAsyncComponent(() => import("@/components/app/SideBar.vue"))
 
 const theme = useTheme()
 const useIsMobile = useIsMobileStore()
@@ -23,7 +24,7 @@ const checkIsMobile = () => {
   useIsMobile.setIsMobile(
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       ||
-      window.innerWidth <= 768
+      window.innerWidth <= 870
   )
 }
 
@@ -31,10 +32,17 @@ const checkIsMobile = () => {
 
 <template>
   <v-app :theme="theme.global.name.value">
+
+    <SideBar/>
     <AppBar/>
-    <CenterLayout>
-      <RouterView/>
-    </CenterLayout>
+
+    <v-main>
+      <CenterLayout>
+        <RouterView/>
+      </CenterLayout>
+    </v-main>
+
     <GlobalSnackbar/>
+    
   </v-app>
 </template>

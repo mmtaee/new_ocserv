@@ -25,12 +25,6 @@ import type { ModelsPermission } from './models-permission';
 export interface UserCreateStaffData {
     /**
      * 
-     * @type {boolean}
-     * @memberof UserCreateStaffData
-     */
-    'is_admin'?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof UserCreateStaffData
      */

@@ -22,6 +22,5 @@ type ChangeStaffPassword struct {
 type CreateStaffData struct {
 	Username   string            `json:"username" validate:"required"`
 	Password   string            `json:"password" validate:"required"`
-	IsAdmin    bool              `json:"is_admin" validate:"omitempty"`
 	Permission models.Permission `json:"permission" validate:"required"`
 }

@@ -23,8 +23,6 @@ definitions:
         type: integer
       is_admin:
         type: boolean
-      is_super_admin:
-        type: boolean
       last_login:
         type: string
       permission:
@@ -38,7 +36,6 @@ definitions:
     required:
     - id
     - is_admin
-    - is_super_admin
     - last_login
     - permission
     - uid
@@ -225,8 +222,6 @@ definitions:
     type: object
   user.CreateStaffData:
     properties:
-      is_admin:
-        type: boolean
       password:
         type: string
       permission:
