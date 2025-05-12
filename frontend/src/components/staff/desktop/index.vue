@@ -5,7 +5,6 @@ import {type ModelsUser, UserApi, type UserChangeStaffPassword, type UserCreateS
 import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useI18n} from "vue-i18n";
 import {requiredRule} from "@/utils/rules.ts";
-import {useUserStore} from "@/stores/user.ts";
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
@@ -25,7 +24,6 @@ const staffData = reactive<ModelsUser[]>([]);
 const selectedUser = reactive<ModelsUser>({
   id: 0,
   is_admin: false,
-  is_super_admin: false,
   last_login: "",
   permission: {
     oc_group: false,
@@ -40,7 +38,6 @@ const selectedUser = reactive<ModelsUser>({
 });
 
 const createUser = reactive<UserCreateStaffData>({
-  is_admin: false,
   password: "",
   permission: {
     oc_group: false,
@@ -66,7 +63,6 @@ const headers: DataTableHeader[] = [
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
-const userStore = useUserStore()
 
 const snackbar = useSnackbarStore()
 
@@ -184,19 +180,6 @@ const remove = () => {
   })
 
 }
-
-const createUserPermissionManager = () => {
-  if (createUser.is_admin) {
-    Object.keys(createUser.permission).forEach(key => {
-      createUser.permission[key as keyof typeof createUser.permission] = true
-    })
-  } else {
-    Object.keys(createUser.permission).forEach(key => {
-      createUser.permission[key as keyof typeof createUser.permission] = false
-    })
-  }
-}
-
 
 const resetCreateUser = () => {
   Object.assign(createUser, {
@@ -340,18 +323,6 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
                 :rules="[rules.required]"
                 density="comfortable"
                 variant="underlined"
-            />
-          </v-col>
-
-          <v-col class="ma-0 pa-0 px-2 mb-3" cols="12" md="auto" sm="6">
-            <v-checkbox
-                v-model="createUser.is_admin"
-                :hint="t('CREATE_IS_ADMIN_CHECKBOX_HINT')"
-                :label="t('MAKE_USER_AS_ADMIN')"
-                color="primary"
-                density="compact"
-                persistent-hint
-                @update:modelValue="createUserPermissionManager"
             />
           </v-col>
 
