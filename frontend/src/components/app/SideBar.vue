@@ -25,14 +25,14 @@ const user = ref<ModelsUser | null>(userStore.getUser)
 
 const possibleSideBarItems: sideBar[] = [
   {
-    title: t("OCSERV_USERS"),
+    title: t("OCSERV_USER"),
     icon: "mdi-account-network-outline",
     to: "/oc_user",
     value: "oc_user",
     permission: "oc_user"
   },
   {
-    title: t("OCSERV_GROUPS"),
+    title: t("OCSERV_GROUP"),
     icon: "mdi-account-group-outline",
     to: "/oc_group",
     value: "oc_group",

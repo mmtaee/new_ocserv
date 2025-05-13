@@ -10,7 +10,6 @@ const DesktopView = defineAsyncComponent(() => import("@/components/login/deskto
 const MobileView = defineAsyncComponent(() => import("@/components/login/mobile/index.vue"))
 
 const loading = ref(false)
-
 const useIsMobile = useIsMobileStore()
 
 const login = async (data: PanelLogin) => {
@@ -31,7 +30,6 @@ const login = async (data: PanelLogin) => {
   }).finally(() => {
     loading.value = false
   })
-
 }
 
 </script>

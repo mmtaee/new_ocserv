@@ -135,8 +135,8 @@ onMounted(() => {
           <v-col class="ma-0 pa-0 px-3 mb-1" cols="12" md="6" sm="12">
             <v-text-field
                 v-model="routeInput"
-                :hint="t('Routes pushed to the client for routing traffic')"
-                :label="t('routes')"
+                :hint="t('ROUTES_PUSHED_TO_THE_CLIENT_FOR_ROUTING_TRAFFIC')"
+                :label="t('ROUTES')"
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
@@ -149,8 +149,8 @@ onMounted(() => {
           <v-col class="ma-0 pa-0 px-3 mb-1" cols="12" md="6" sm="12">
             <v-text-field
                 v-model="noRouteInput"
-                :hint="t('List of networks to exclude from VPN routing')"
-                :label="t('no-routes')"
+                :hint="t('LIST_OF_NETWORKS_TO_EXCLUDE_FROM_VPN_ROUTING')"
+                :label="t('NO-ROUTES')"
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
@@ -162,7 +162,7 @@ onMounted(() => {
           </v-col>
 
           <v-col class="ma-0 pa-0 px-3" cols="12" md="6" sm="12">
-            <v-card :subtitle="t('routes:')" class="overflow-auto" height="150">
+            <v-card :subtitle="t('ROUTES:')" class="overflow-auto" height="150">
               <v-chip
                   v-for="route in formValues.route"
                   :key="route"
@@ -177,7 +177,7 @@ onMounted(() => {
           </v-col>
 
           <v-col class="ma-0 pa-0 px-3" cols="12" md="6" sm="12">
-            <v-card :subtitle="t('no routes:')" class="overflow-auto" height="150">
+            <v-card :subtitle="t('NO-ROUTES:')" class="overflow-auto" height="150">
               <v-chip
                   v-for="route in formValues['no-route']"
                   :key="route"
@@ -198,8 +198,8 @@ onMounted(() => {
           <v-col class="ma-0 pa-0 px-3 mb-1 mt-2" cols="12" md="6" sm="12">
             <v-text-field
                 v-model="splitDNSInput"
-                :hint="t('Domains to resolve via VPN DNS servers')"
-                :label="t('Split DNS')"
+                :hint="t('DOMAINS_TO_RESOLVE_VIA_VPN_DNS_SERVERS')"
+                :label="t('SPLIT_DNS')"
                 :rules="[rules.domain]"
                 clearable
                 density="comfortable"
@@ -211,11 +211,11 @@ onMounted(() => {
           <v-col class="ma-0 pa-0 px-3 mb-1 mt-2" cols="12" md="6" sm="12">
             <v-text-field
                 v-model="formValues.iroute"
-                :hint="t('Internal route available')"
-                :label="t('iroute')"
+                :hint="t('INTERNAL_ROUTE_AVAILABLE')"
                 :rules="[rules.ipOrRange]"
                 clearable
                 density="comfortable"
+                label='iroute'
                 placeholder="192.168.2.0/24"
                 variant="underlined"
                 @keyup="sendResult"
@@ -224,7 +224,7 @@ onMounted(() => {
           </v-col>
 
           <v-col class="ma-0 pa-0 px-3" cols="12" md="6" sm="12">
-            <v-card :subtitle="t('Split DNS: ')" class="overflow-auto" height="200">
+            <v-card :subtitle="t('SPLIT-DNS:')" class="overflow-auto" height="200">
               <v-chip
                   v-for="domain in formValues['split-dns']"
                   :key="domain"
@@ -244,8 +244,8 @@ onMounted(() => {
               <v-col class="ma-0 pa-0 px-3 mb-1" cols="12" md="12" sm="12">
                 <v-number-input
                     v-model="formValues['net-priority']"
-                    :hint="t('Priority for routes')"
-                    :label="t('net priority')"
+                    :hint="t('PRIORITY_FOR_ROUTES')"
+                    :label="t('NET_PRIORITY')"
                     :min="0"
                     clearable
                     controlVariant="hidden"
@@ -260,8 +260,8 @@ onMounted(() => {
               <v-col class="ma-0 pa-0 px-3 mb-1" cols="12" md="12" sm="12">
                 <v-text-field
                     v-model="formValues['restrict-user-to-ports']"
-                    :hint="t('list of allowed or blocked protocols and ports')"
-                    :label="t('restrict user to ports')"
+                    :hint="t('LIST_OF_ALLOWED_OR_BLOCKED_PROTOCOLS_AND_PORTS')"
+                    :label="t('RESTRICT_USER_TO_PORTS')"
                     clearable
                     density="comfortable"
                     placeholder="tcp(443),tcp(80) or !(tcp(443),tcp(80)"
@@ -275,7 +275,7 @@ onMounted(() => {
                 <v-checkbox
                     v-model="formValues['restrict-user-to-routes']"
                     :false-value="false"
-                    :label="t('Allow client access only to defined routes (restrict-user-to-routes)')"
+                    :label="t('ALLOW_CLIENT_ACCESS_ONLY_TO_DEFINED_ROUTES_(RESTRICT-USER-TO-ROUTES)')"
                     :true-value="true"
                     base-color="grey"
                     density="comfortable"
@@ -291,5 +291,4 @@ onMounted(() => {
 
     </v-row>
   </v-form>
-
 </template>

@@ -24,7 +24,7 @@ function keyTransform(key: string): string {
     <v-col class="mt-5 ma-0 pa-0" cols="12" md="12" sm="12">
       <div style="text-align: center;">
       <span class="text-h5">
-        {{ t('Review Setup Result') }}
+        {{ t('REVIEW_SETUP_RESULT') }}
       </span>
       </div>
     </v-col>
@@ -32,7 +32,7 @@ function keyTransform(key: string): string {
     <v-divider class="mt-5"/>
     <v-col class="mt-5 ma-0" cols="12" md="11" sm="12">
       <v-card
-          :subtitle="t('Admin & Site Configuration')"
+          :subtitle="t('ADMIN_&_SITE_CONFIGURATION')"
           class="py-5 px-1"
           elevation="40"
           variant="outlined"
@@ -41,7 +41,7 @@ function keyTransform(key: string): string {
         <v-row align="start" justify="start">
           <v-col class="px-5 mx-5" cols="12" md="12" sm="12">
             <span class="text-primary">
-              {{ t('Admin Username') }}:
+              {{ t('ADMIN_USERNAME') }}:
             </span>
             <span class="text-grey mx-3">
               {{ data.admin.username }}
@@ -50,7 +50,7 @@ function keyTransform(key: string): string {
           <v-col class="px-5 mx-5" cols="12" md="12" sm="12">
 
             <span class="text-primary">
-              {{ t('Admin Password') }}:
+              {{ t('ADMIN_PASSWORD') }}:
             </span>
             <v-tooltip :text="data.admin.password">
               <template v-slot:activator="{ props }">
@@ -70,7 +70,7 @@ function keyTransform(key: string): string {
           >
             <p>
               <span class="text-primary">
-                {{ t('Google Captcha Site Key') }}:
+                {{ t('GOOGLE_CAPTCHA_SITE_KEY') }}:
               </span>
               <span class="text-justify text-grey mx-3">
                 {{ data.config?.google_captcha_site_key }}
@@ -79,7 +79,7 @@ function keyTransform(key: string): string {
           </v-col>
           <v-col class="px-5 mx-5" cols="12" md="12" sm="12">
             <span class="text-primary">
-              {{ t('Google Captcha Secret Key') }}:
+              {{ t('GOOGLE_CAPTCHA_SECRET_KEY') }}:
             </span>
             <span class="text-justify text-grey mx-3">
             {{ data.config?.google_captcha_secret_key }}
@@ -97,7 +97,7 @@ function keyTransform(key: string): string {
         sm="12"
     >
       <v-card
-          :subtitle="t('Ocserv Default Group Configuration')"
+          :subtitle="t('OCSERV_DEFAULT_GROUP_CONFIGURATION')"
           class="py-5 px-2"
           elevation="40"
           variant="outlined"
@@ -117,7 +117,7 @@ function keyTransform(key: string): string {
               {{ keyTransform(key.toString()) }}:
                 </span>
               <span v-if="!Array.isArray(val)" class="text-justify">
-                {{ val || "undefined" }}
+                {{ val || t("UNDEFINED") }}
               </span>
               <span v-else>
                 {{ val.join(",") }}

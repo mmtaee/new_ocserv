@@ -7,11 +7,11 @@ const ipOrRangeRule: Validator = (v, t) => {
 }
 
 const requiredRule: Validator = (v, t) => {
-    return !!v || t('Required')
+    return !!v || t('FIELD_REQUIRED')
 }
 
 const numberRule: Validator = (v, t) => {
-    return v && isNaN(Number(v)) ? t('NUMBER_REQUIRED') : true
+    return v && isNaN(Number(v)) ? t('FIELD_NUMBER_REQUIRED') : true
 }
 
 const ipWithNetmaskRule: Validator = (v, t) => {
@@ -49,7 +49,7 @@ const ipWithRangeRule: Validator = (v, t) => {
         return true;
     }
 
-    return t?.('Invalid IP/subnet format') || 'Invalid IP/subnet format';
+    return t('(IP/SUBNET)_or_(IP/RANGE)_FORMAT_REQUIRED');
 };
 
 export {ipOrRangeRule, requiredRule, numberRule, ipRule, ipWithNetmaskRule, domainRule, ipWithRangeRule}

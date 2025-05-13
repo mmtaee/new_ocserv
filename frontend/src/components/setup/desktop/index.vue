@@ -2,20 +2,7 @@
 import {computed, defineAsyncComponent, reactive, ref, toRaw} from 'vue'
 import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {useLocale} from "vuetify/framework";
-import {panelSetupDefault} from "@/utils/defaults.ts";
 import type {AdminConfigurations} from "@/components/setup/types.ts";
-
-const step = ref(1)
-const {t} = useLocale()
-const emit = defineEmits(["finalize"])
-const skipStep = ref(0)
-
-const props = defineProps<{
-  loading: boolean,
-}>();
-
-const formIsValid = ref(false)
-const finalizeData = reactive<PanelSetupData>(panelSetupDefault)
 
 const Step1 = defineAsyncComponent(() => import("./Step1.vue"));
 const Step2 = defineAsyncComponent(() => import("./Step2.vue"));
@@ -24,6 +11,18 @@ const Step4 = defineAsyncComponent(() => import("./Step4.vue"));
 const Step5 = defineAsyncComponent(() => import("./Step5.vue"));
 const Step6 = defineAsyncComponent(() => import("./Step6.vue"));
 const Step7 = defineAsyncComponent(() => import("./Step7.vue"));
+
+const props = defineProps<{
+  loading: boolean,
+}>();
+
+
+const step = ref(1)
+const {t} = useLocale()
+const emit = defineEmits(["finalize"])
+const skipStep = ref(0)
+const formIsValid = ref(false)
+const finalizeData = reactive(<PanelSetupData>{admin: {}, default_ocserv_group: {}})
 
 
 const validate = (v: boolean) => {
@@ -122,7 +121,7 @@ const nextBtnText = computed(() => {
     case 1:
       return t("START_BTN")
     case steps.length :
-      return t("FINALIZATION_SETUP")
+      return t("FINALIZATION_SETUP_BTN")
     default:
       return t("NEXT_BTN")
   }

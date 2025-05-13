@@ -2,7 +2,7 @@
 import {useLocale} from "vuetify/framework";
 import type {OcOcservDefaultConfigs, PanelSetupData} from "@/api";
 import {onMounted, reactive, ref, toRaw} from "vue";
-import {domainRule, ipOrRangeRule, ipRule, ipWithNetmaskRule, ipWithRangeRule} from "@/utils/rules.ts";
+import {domainRule, ipOrRangeRule, ipRule, ipWithRangeRule} from "@/utils/rules.ts";
 
 const emit = defineEmits(['result', "validate"])
 const valid = ref(true)
@@ -25,7 +25,6 @@ const sendResult = () => {
 const rules = {
   ip: (v: string) => ipRule(v, t),
   ipOrRange: (v: string) => ipOrRangeRule(v, t),
-  ipWithNetmask: (v: string) => ipWithNetmaskRule(v, t),
   domain: (v: string) => domainRule(v, t),
   ipWithRange: (v: string) => ipWithRangeRule(v, t)
 }
@@ -50,13 +49,14 @@ function removeDNS(r: string) {
   }
 }
 
-onMounted(()=>{
-if (props.data) {
-  const combined = {
-    ...toRaw(props.data.default_ocserv_group),
+onMounted(() => {
+  if (props.data) {
+    const combined = {
+      ...toRaw(props.data.default_ocserv_group),
+    }
+    Object.assign(formValues, combined)
   }
-  Object.assign(formValues, combined)
-}})
+})
 
 </script>
 
@@ -80,7 +80,7 @@ if (props.data) {
       <v-col class="ma-0 pa-0" cols="12" md="12" sm="12">
         <p class="mx-8 mb-4 text-grey-darken-1">
           <v-icon color="primary">mdi-bullhorn-outline</v-icon>
-          {{ t('These settings control how clients receive IP addresses and resolve domain names while connected') }}.
+          {{ t('THESE_SETTINGS_CONTROL_HOW_CLIENTS_RECEIVE_IP_ADDRESSES_AND_RESOLVE_DOMAIN_NAMES_WHILE_CONNECTED') }}.
         </p>
       </v-col>
 
@@ -103,7 +103,7 @@ if (props.data) {
           <v-col class="ma-0 pa-0 px-3" cols="12" md="6" sm="12">
             <v-text-field
                 v-model="formValues['ipv4-network']"
-                :hint="t('Address pool for client IP leases')"
+                :hint="t('ADDRESS_POOL_FOR_CLIENT_IP_LEASES')"
                 :label="t('IPV4NETWORK')"
                 :rules="[rules.ipWithRange]"
                 clearable
@@ -150,10 +150,10 @@ if (props.data) {
                 <v-text-field
                     v-model="formValues.nbns"
                     :hint="t('NETBIOS_NAME_SERVERS_(WINS)_FOR_WINDOWS_CLIENTS')"
-                    :label="t('NBNS')"
                     :rules="[rules.ip]"
                     clearable
                     density="comfortable"
+                    label="NBNS"
                     placeholder="192.168.1.3"
                     variant="underlined"
                     @keyup="sendResult"
@@ -163,10 +163,10 @@ if (props.data) {
               <v-col class="ma-0 pa-0 px-3" cols="12" md="12" sm="12">
                 <v-text-field
                     v-model="formValues.cgroup"
-                    :hint="t('Linux control group')"
-                    :label="t('CGroup')"
+                    :hint="t('LINUX_CONTROL_GROUP')"
                     clearable
                     density="comfortable"
+                    label='CGroup'
                     placeholder="cpuset,cpu:test"
                     variant="underlined"
                     @keyup="sendResult"
@@ -177,7 +177,7 @@ if (props.data) {
                 <v-checkbox
                     v-model="formValues['no-udp']"
                     :false-value="false"
-                    :label="t('prevent a UDP session (no-udp)')"
+                    :label="t('PREVENT_A_UDP_SESSION_(NO-UDP)')"
                     :true-value="true"
                     base-color="grey"
                     density="comfortable"
@@ -191,8 +191,5 @@ if (props.data) {
       </v-col>
     </v-row>
 
-
   </v-form>
-
-
 </template>

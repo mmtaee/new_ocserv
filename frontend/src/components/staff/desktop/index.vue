@@ -9,6 +9,7 @@ import {requiredRule} from "@/utils/rules.ts";
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
 const {t} = useI18n()
+const snackbar = useSnackbarStore()
 const loading = ref(false)
 const btnLoading = ref(false)
 const totalItems = ref(0)
@@ -56,15 +57,13 @@ const newPassword = reactive<UserChangeStaffPassword>({
 const changePasswordValid = ref(true)
 const headers: DataTableHeader[] = [
   {title: t("ID"), key: 'id', align: 'center'},
-  {title: t("Username"), key: 'username', align: 'center'},
-  {title: t("Last Login"), key: 'last_login', align: 'center'},
-  {title: t("Action"), key: 'actions', align: 'center'},
+  {title: t("USERNAME"), key: 'username', align: 'center'},
+  {title: t("LAST_LOGIN"), key: 'last_login', align: 'center'},
+  {title: t("ACTION"), key: 'actions', align: 'center'},
 ]
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
-
-const snackbar = useSnackbarStore()
 
 onBeforeMount(() => {
   fetchStaffs()
@@ -91,7 +90,7 @@ const fetchStaffs = () => {
 
 const formatDate = (dateString: string | undefined): string => {
   if (!dateString) {
-    return t("Not Login Yet")
+    return t("NOT_LOGIN_YET")
   }
   const date = new Date(dateString);
   const year = date.getFullYear();
@@ -200,17 +199,17 @@ const resetCreateUser = () => {
 const permKeyWrapper = (key: string) => {
   switch (key) {
     case 'oc_user':
-      return t("Ocserv User")
+      return t("OCSERV_USER")
     case "oc_group":
-      return t("Ocserv Group")
+      return t("OCSERV_GROUP")
     case "statistic":
-      return t("Statistic")
+      return t("STATISTICS")
     case "occtl":
-      return t("Occtl Commands")
+      return t("OCCTL_COMMANDS")
     case "system":
-      return t("Ocserv System")
+      return t("OCSERV_SYSTEM")
     case "see_server_log":
-      return t("Server Log")
+      return t("SERVER_LOG")
     default:
       return key
   }
@@ -244,10 +243,10 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
           <v-toolbar flat>
             <v-toolbar-title>
               <v-icon class="mb-1" color="medium-emphasis" icon="mdi-account-tie-hat" size="large" start></v-icon>
-              {{ t("Staffs") }}
+              {{ t("STAFFS") }}
             </v-toolbar-title>
             <v-btn
-                :text="t('Add Staff')"
+                :text="t('ADD_STAFF')"
                 border
                 class="me-2"
                 prepend-icon="mdi-plus"
@@ -256,9 +255,11 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
             />
           </v-toolbar>
         </template>
+
         <template #item.last_login="{ item }">
           {{ formatDate(item.last_login) }}
         </template>
+
         <template #item.actions="{ item }">
           <v-icon
               color="warning"
@@ -266,14 +267,12 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
               icon="mdi-door-closed-lock"
               @click="permission(item)"
           />
-
           <v-icon
               color="primary"
               end
               icon="mdi-key"
               @click="Object.assign(selectedUser, item); changePasswordDialog = true"
           />
-
           <v-icon
               color="error"
               end
@@ -281,6 +280,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
               @click="Object.assign(selectedUser, item); deleteDialog = true"
           />
         </template>
+
         <template v-slot:bottom>
           <div v-if="pageCount>1" class="text-center pt-2">
             <v-pagination
@@ -290,6 +290,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
             />
           </div>
         </template>
+
       </v-data-table>
     </v-card-text>
 
@@ -357,10 +358,9 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       </v-form>
     </template>
 
-
     <template #dialogAction>
       <v-btn
-          :text="t('Close')"
+          :text="t('CLOSE')"
           class="me-2"
           color="grey"
           variant="outlined"
@@ -381,8 +381,9 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
 
   <Modal :show="changePasswordDialog" width="350" @close="changePasswordDialog=!changePasswordDialog">
     <template #dialogTitle>
-      {{ t("CHANGE_STAFF_PASSWORD") }} <span class="text-capitalize">({{ selectedUser.username }})</span>
+      {{ t("CHANGE_STAFF_PASSWORD_TITLE") }} <span class="text-capitalize">({{ selectedUser.username }})</span>
     </template>
+
     <template #dialogText>
       <v-form v-model="changePasswordValid">
         <v-row align="center" justify="center">
@@ -398,9 +399,10 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         </v-row>
       </v-form>
     </template>
+
     <template #dialogAction>
       <v-btn
-          :text="t('Close')"
+          :text="t('CLOSE')"
           class="me-2"
           color="grey"
           variant="outlined"
@@ -417,16 +419,17 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       />
     </template>
   </Modal>
+
   <Modal :show="deleteDialog" width="auto" @close="deleteDialog=!deleteDialog">
     <template #dialogTitle>
-      {{ t("Delete Staff ") }} <span class="text-capitalize">({{ selectedUser.username }})</span>
+      {{ t("DELETE_STAFF_TITLE") }} <span class="text-capitalize">({{ selectedUser.username }})</span>
     </template>
     <template #dialogText>
-      {{ t('Do you want to delete the staff?') }}
+      {{ t('DO_YOU_WANT_TO_DELETE_THE_STAFF') }}?
     </template>
     <template #dialogAction>
       <v-btn
-          :text="t('Close')"
+          :text="t('CLOSE')"
           class="me-2"
           color="grey"
           variant="outlined"
@@ -434,7 +437,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       />
       <v-btn
           :loading="btnLoading"
-          :text="t('Delete')"
+          :text="t('DELETE')"
           class="me-1"
           color="error"
           variant="outlined"
@@ -442,9 +445,10 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       />
     </template>
   </Modal>
+
   <Modal :persistent="false" :show="permDialog" width="auto" @close="permDialog=!permDialog">
     <template #dialogTitle>
-      {{ t("Staff Permissions Routes Access") }}
+      {{ t("STAFF_PERMISSIONS_ROUTES_ACCESS_TITLE") }}
     </template>
     <template #dialogText>
       <v-row align="center" class="ms-auto mt-2" justify="center">
@@ -470,7 +474,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
 
     <template #dialogAction>
       <v-btn
-          :text="t('Close')"
+          :text="t('CLOSE')"
           class="me-2"
           color="grey"
           variant="outlined"
@@ -478,7 +482,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       />
       <v-btn
           :loading="btnLoading"
-          :text="t('Update')"
+          :text="t('UPDATE')"
           class="me-1"
           color="error"
           variant="outlined"

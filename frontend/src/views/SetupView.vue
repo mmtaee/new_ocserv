@@ -6,11 +6,12 @@ import {useConfigStore} from "@/stores/config.ts";
 import {useUserStore} from "@/stores/user.ts";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 
-const useIsMobile = useIsMobileStore()
-const loading = ref(false);
 
 const DesktopView = defineAsyncComponent(() => import("@/components/setup/desktop/index.vue"))
 const MobileView = null
+
+const useIsMobile = useIsMobileStore()
+const loading = ref(false);
 
 async function finalize(data: PanelSetupData) {
   loading.value = true
@@ -23,18 +24,13 @@ async function finalize(data: PanelSetupData) {
     configStore.setSetup(true)
     localStorage.setItem("token", res.data.token)
     router.push("/")
-  }).finally(()=>{
+  }).finally(() => {
     loading.value = false
   })
-
 }
 
 </script>
 
 <template>
-  <component :is="useIsMobile.isMobile ? MobileView : DesktopView" @finalize="finalize" :loading="loading" />
+  <component :is="useIsMobile.isMobile ? MobileView : DesktopView" :loading="loading" @finalize="finalize"/>
 </template>
-
-<style scoped>
-
-</style>

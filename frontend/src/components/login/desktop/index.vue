@@ -6,7 +6,19 @@ import type {PanelLogin} from "@/api";
 import {useConfigStore} from "@/stores/config.ts";
 import {storeToRefs} from "pinia";
 
+
+const Captcha = defineAsyncComponent(() => import('@/components/login/Captcha.vue'));
+
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+
 const emit = defineEmits(['login'])
+
 const {t} = useLocale()
 const valid = ref(true)
 const loginData: PanelLogin = reactive<PanelLogin>({
@@ -16,17 +28,6 @@ const loginData: PanelLogin = reactive<PanelLogin>({
 })
 const configStore = useConfigStore()
 const {config} = storeToRefs(configStore)
-
-
-defineProps({
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const Captcha = defineAsyncComponent(() => import('@/components/login/Captcha.vue'));
-
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
@@ -50,17 +51,14 @@ const btnDisable = computed(() => {
       min-width="500"
   >
     <v-card-text class="flex-grow-1 overflow-auto">
-
       <v-row align="center" justify="center">
-
         <v-col class="mt-5 ma-0 pa-0" cols="12" md="12" sm="12">
           <div style="text-align: center;">
               <span class="text-h5">
-                {{ t('Login') }}
+                {{ t('LOGIN') }}
               </span>
           </div>
         </v-col>
-
       </v-row>
 
       <v-divider class="mt-5"/>
@@ -133,12 +131,6 @@ const btnDisable = computed(() => {
       >
         {{ t('LOGIN') }}
       </v-btn>
-
     </v-card-actions>
-
   </v-card>
-
 </template>
-<style scoped>
-
-</style>

@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {PanelApi} from "@/api";
-import router from "../plugins/router.ts";
+import router from "@/plugins/router.ts";
 
 
 interface ConfigState {

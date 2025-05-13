@@ -22,7 +22,7 @@ const {t} = useLocale()
       </div>
       <br/>
       <div class="mx-5 text-subtitle-1 text-justify">
-        {{ t('LET’S_BEGIN_BY_COMPLETING_A_FEW_QUICK_CONFIGURATION_STEPS_TO_GET_YOUR_PANEL_UP_AND_RUNNING') }} .
+        {{ t('WELCOME_HELP') }} .
       </div>
     </v-col>
   </v-row>

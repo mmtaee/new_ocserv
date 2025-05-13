@@ -31,7 +31,7 @@ const sendResult = () => {
   emit('result', toRaw(formValues))
 }
 
-onMounted(()=>{
+onMounted(() => {
   if (props.data) {
     const combined = {
       ...structuredClone(toRaw(props.data.admin)),
@@ -61,8 +61,7 @@ onMounted(()=>{
       <v-col class="ma-0 pa-0" cols="12" md="12" sm="12">
         <p class="mx-8 my-4 text-grey-darken-1">
           <v-icon color="primary">mdi-bullhorn-outline</v-icon>
-          {{ t('CREATE_YOUR_ADMIN_ACCOUNT_AND_PROVIDE_YOUR_CAPTCHA_SITE_KEY_AND_SECRET_KEY') }}.
-          {{ t('THESE_ARE_REQUIRED_TO_PROTECT_THE_LOGIN_PAGE_FROM_AUTOMATED_BOTS') }}.
+          {{ t('ADMIN_SETUP_HELP') }}.
         </p>
       </v-col>
 

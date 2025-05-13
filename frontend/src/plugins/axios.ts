@@ -7,13 +7,12 @@ import axios, {
 } from 'axios'
 import {type SnackbarItem, useSnackbarStore} from "@/stores/snackbar.ts";
 
+
 const config: AxiosRequestConfig = {
     baseURL: `${import.meta.env.VITE_API_BASE_URL}` || 'http://localhost:8080'
 }
 
-
 const api: AxiosInstance = axios.create(config)
-
 
 api.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
