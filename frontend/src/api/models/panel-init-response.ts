@@ -25,7 +25,7 @@ export interface PanelInitResponse {
      * @type {string}
      * @memberof PanelInitResponse
      */
-    'google_captcha_secret_key'?: string;
+    'google_captcha_site_key'?: string;
     /**
      * 
      * @type {boolean}

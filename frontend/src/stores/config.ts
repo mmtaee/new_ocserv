@@ -19,7 +19,7 @@ export const useConfigStore = defineStore('config', {
             const api = new PanelApi()
             await api.panelInitGet().then((response) => {
                 this.setup = response.data.setup
-                this.googleCaptchaSiteKey = response.data?.google_captcha_secret_key || ''
+                this.googleCaptchaSiteKey = response.data?.google_captcha_site_key || ''
                 if (!this.setup) {
                     router.push('/setup')
                 }

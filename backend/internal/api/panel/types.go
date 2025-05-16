@@ -24,7 +24,7 @@ type UserResponse struct {
 
 type InitResponse struct {
 	Setup                bool   `json:"setup" validate:"required"`
-	GoogleCaptchaSiteKey string `json:"google_captcha_secret_key" validate:"omitempty"`
+	GoogleCaptchaSiteKey string `json:"google_captcha_site_key" validate:"omitempty"`
 }
 
 type Login struct {

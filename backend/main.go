@@ -49,7 +49,7 @@ func main() {
 		sig := <-quit
 
 		fmt.Println()
-		log.Printf("signal %v recieved\n", sig)
+		log.Printf("signal %v received\n", sig)
 		log.Println("initiating shutdown...")
 
 		routing.Shutdown()

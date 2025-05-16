@@ -593,7 +593,7 @@ const docTemplate = `{
                 "setup"
             ],
             "properties": {
-                "google_captcha_secret_key": {
+                "google_captcha_site_key": {
                     "type": "string"
                 },
                 "setup": {
