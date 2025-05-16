@@ -106,7 +106,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/panel.Login"
+                            "$ref": "#/definitions/panel.LoginData"
                         }
                     }
                 ],
@@ -594,7 +594,7 @@
                 }
             }
         },
-        "panel.Login": {
+        "panel.LoginData": {
             "type": "object",
             "required": [
                 "password",

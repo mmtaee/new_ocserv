@@ -27,7 +27,7 @@ type InitResponse struct {
 	GoogleCaptchaSiteKey string `json:"google_captcha_site_key" validate:"omitempty"`
 }
 
-type Login struct {
+type LoginData struct {
 	Username   string `json:"username" validate:"required,min=2,max=16" example:"john_doe" `
 	Password   string `json:"password" validate:"required,min=2,max=16" example:"doe123456"`
 	RememberMe bool   `json:"remember_me" desc:"remember for a month"`

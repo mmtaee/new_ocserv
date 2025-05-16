@@ -2,7 +2,7 @@
 import {computed, defineAsyncComponent, reactive, ref} from "vue";
 import {useLocale} from "vuetify/framework";
 import {requiredRule} from "@/utils/rules.ts";
-import type {PanelLogin} from "@/api";
+import type {PanelLoginData} from "@/api";
 import {useConfigStore} from "@/stores/config.ts";
 import {storeToRefs} from "pinia";
 
@@ -21,7 +21,7 @@ const emit = defineEmits(['login'])
 
 const {t} = useLocale()
 const valid = ref(true)
-const loginData: PanelLogin = reactive<PanelLogin>({
+const loginData: PanelLoginData = reactive<PanelLoginData>({
   username: "",
   password: "",
   remember_me: false,

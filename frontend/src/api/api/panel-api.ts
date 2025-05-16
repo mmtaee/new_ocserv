@@ -28,7 +28,7 @@ import type { PanelConfigResponse } from '../models';
 // @ts-ignore
 import type { PanelInitResponse } from '../models';
 // @ts-ignore
-import type { PanelLogin } from '../models';
+import type { PanelLoginData } from '../models';
 // @ts-ignore
 import type { PanelSetupData } from '../models';
 // @ts-ignore
@@ -138,11 +138,11 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Admin and Staff users login with Google captcha(captcha site key required in get config api)
          * @summary Admin and Staff users login
-         * @param {PanelLogin} request setup config data
+         * @param {PanelLoginData} request setup config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelLoginPost: async (request: PanelLogin, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        panelLoginPost: async (request: PanelLoginData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'request' is not null or undefined
             assertParamExists('panelLoginPost', 'request', request)
             const localVarPath = `/panel/login/`;
@@ -257,11 +257,11 @@ export const PanelApiFp = function(configuration?: Configuration) {
         /**
          * Admin and Staff users login with Google captcha(captcha site key required in get config api)
          * @summary Admin and Staff users login
-         * @param {PanelLogin} request setup config data
+         * @param {PanelLoginData} request setup config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelLoginPost(request: PanelLogin, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelUserResponse>> {
+        async panelLoginPost(request: PanelLoginData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelUserResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.panelLoginPost(request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PanelApi.panelLoginPost']?.[localVarOperationServerIndex]?.url;
@@ -363,10 +363,10 @@ export interface PanelApiPanelConfigPatchRequest {
 export interface PanelApiPanelLoginPostRequest {
     /**
      * setup config data
-     * @type {PanelLogin}
+     * @type {PanelLoginData}
      * @memberof PanelApiPanelLoginPost
      */
-    readonly request: PanelLogin
+    readonly request: PanelLoginData
 }
 
 /**

@@ -11,6 +11,12 @@ DATABASES=ocserv-test.db
 env $(cat .env | xargs) go run cmd/main.go
 
 swag init && go run main.go -debug -migrate && go run main.go -debug
+
+# test
+go install github.com/vektra/mockery/v2@latest
+
+mockery --all --output=./mocks --outpkg=mocks --recursive
+
 ```
 
 # Tips

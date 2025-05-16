@@ -4,7 +4,7 @@ export * from './oc-ocserv-default-configs';
 export * from './panel-config-data';
 export * from './panel-config-response';
 export * from './panel-init-response';
-export * from './panel-login';
+export * from './panel-login-data';
 export * from './panel-setup-data';
 export * from './panel-setup-data-admin';
 export * from './panel-setup-data-config';

@@ -14,7 +14,7 @@ models/oc-ocserv-default-configs.ts
 models/panel-config-data.ts
 models/panel-config-response.ts
 models/panel-init-response.ts
-models/panel-login.ts
+models/panel-login-data.ts
 models/panel-setup-data-admin.ts
 models/panel-setup-data-config.ts
 models/panel-setup-data.ts

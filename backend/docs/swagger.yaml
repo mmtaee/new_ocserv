@@ -127,7 +127,7 @@ definitions:
     required:
     - setup
     type: object
-  panel.Login:
+  panel.LoginData:
     properties:
       password:
         example: doe123456
@@ -313,7 +313,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/panel.Login'
+          $ref: '#/definitions/panel.LoginData'
       produces:
       - application/json
       responses:

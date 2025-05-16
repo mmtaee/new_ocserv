@@ -2,11 +2,13 @@
 import logoUrl from "@/assets/ocserv.png"
 import {useTheme} from "vuetify/framework";
 import {defineAsyncComponent, onBeforeMount, ref} from "vue";
+import {useUserStore} from "@/stores/user.ts";
 
 
 const theme = useTheme()
 const Logout = defineAsyncComponent(() => import("@/components/app/Logout.vue"))
 const logoutDialog = ref(false)
+const userStore = useUserStore()
 
 onBeforeMount(() => {
   theme.global.name.value = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
@@ -35,7 +37,7 @@ function toggleTheme() {
       <v-btn density="comfortable" icon @click="toggleTheme">
         <v-icon>mdi-theme-light-dark</v-icon>
       </v-btn>
-      <v-btn density="comfortable" icon @click="logoutDialog = true">
+      <v-btn v-if="userStore.getUser" density="comfortable" icon @click="logoutDialog = true">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </template>

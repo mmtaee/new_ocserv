@@ -34,17 +34,17 @@ func (_m *UserRepositoryInterface) ChangePassword(ctx context.Context, uid strin
 	return r0
 }
 
-// ChangeStaffPassword provides a mock function with given fields: ctx, id, password
-func (_m *UserRepositoryInterface) ChangeStaffPassword(ctx context.Context, id uint, password string) error {
-	ret := _m.Called(ctx, id, password)
+// ChangeStaffPassword provides a mock function with given fields: ctx, id, passwordHash, salt
+func (_m *UserRepositoryInterface) ChangeStaffPassword(ctx context.Context, id uint, passwordHash string, salt string) error {
+	ret := _m.Called(ctx, id, passwordHash, salt)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ChangeStaffPassword")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, uint, string) error); ok {
-		r0 = rf(ctx, id, password)
+	if rf, ok := ret.Get(0).(func(context.Context, uint, string, string) error); ok {
+		r0 = rf(ctx, id, passwordHash, salt)
 	} else {
 		r0 = ret.Error(0)
 	}

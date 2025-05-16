@@ -70,3 +70,7 @@ func Init(debug bool) {
 func Get() *Config {
 	return cfg
 }
+
+func Set(c *Config) {
+	cfg = c
+}

@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 	"ocserv/internal/models"
 	"ocserv/internal/repository"
@@ -11,16 +12,18 @@ import (
 )
 
 type Controller struct {
-	request   request.CustomRequestInterface
-	userRepo  repository.UserRepositoryInterface
-	tokenRepo repository.TokenRepositoryInterface
+	request    request.CustomRequestInterface
+	userRepo   repository.UserRepositoryInterface
+	tokenRepo  repository.TokenRepositoryInterface
+	cryptoRepo crypto.CustomPasswordInterface
 }
 
 func New() *Controller {
 	return &Controller{
-		request:   request.NewCustomRequest(),
-		userRepo:  repository.NewUserRepository(),
-		tokenRepo: repository.NewTokenRepository(),
+		request:    request.NewCustomRequest(),
+		userRepo:   repository.NewUserRepository(),
+		tokenRepo:  repository.NewTokenRepository(),
+		cryptoRepo: crypto.NewCustomPassword(),
 	}
 }
 
@@ -177,7 +180,9 @@ func (ctrl *Controller) ChangeStaffPassword(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 
-	err = ctrl.userRepo.ChangeStaffPassword(c.Request().Context(), uint(id), data.Password)
+	passwd := ctrl.cryptoRepo.CreatePassword(data.Password)
+
+	err = ctrl.userRepo.ChangeStaffPassword(c.Request().Context(), uint(id), passwd.Hash, passwd.Salt)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -199,7 +204,8 @@ func (ctrl *Controller) CreateStaff(c echo.Context) error {
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
-	passwd := crypto.CreatePassword(data.Password)
+	log.Println("data", data)
+	passwd := ctrl.cryptoRepo.CreatePassword(data.Password)
 
 	user := &models.User{
 		Username:    data.Username,

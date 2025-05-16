@@ -22,7 +22,9 @@ type Controller struct {
 	userRepo        repository.UserRepositoryInterface
 	tokenRepo       repository.TokenRepositoryInterface
 	panelRepo       repository.PanelRepositoryInterface
+	cryptoRepo      crypto.CustomPasswordInterface
 	ocservGroupRepo oc.OcservGroupServiceInterface
+	captchaVerifier captcha.GoogleCaptchaInterface
 }
 
 func New() *Controller {
@@ -31,7 +33,9 @@ func New() *Controller {
 		userRepo:        repository.NewUserRepository(),
 		tokenRepo:       repository.NewTokenRepository(),
 		panelRepo:       repository.NewPanelRepository(),
+		cryptoRepo:      crypto.NewCustomPassword(),
 		ocservGroupRepo: oc.NewOcGroupService(),
+		captchaVerifier: captcha.NewGoogleVerifier(),
 	}
 }
 
@@ -106,7 +110,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 		}
 	}()
 
-	passwordPKG := crypto.CreatePassword(data.Admin.Password)
+	passwordPKG := ctrl.cryptoRepo.CreatePassword(data.Admin.Password)
 	user, err := ctrl.userRepo.CreateAdmin(c.Request().Context(), &models.User{
 		Username: strings.ToLower(data.Admin.Username),
 		Password: passwordPKG.Hash,
@@ -138,11 +142,11 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
-// @Param        request    body  Login   true "setup config data"
+// @Param        request    body  LoginData   true "setup config data"
 // @Success      201  {object}  UserResponse
 // @Router       /panel/login/ [post]
 func (ctrl *Controller) Login(c echo.Context) error {
-	var data Login
+	var data LoginData
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
@@ -153,8 +157,9 @@ func (ctrl *Controller) Login(c echo.Context) error {
 	}
 
 	if secretKey := config.GoogleCaptchaSecretKey; secretKey != "" {
-		res := captcha.Verify(secretKey, data.Token)
-		if !res {
+		ctrl.captchaVerifier.SetSecretKey(secretKey)
+		ctrl.captchaVerifier.Verify(data.Token)
+		if !ctrl.captchaVerifier.IsValid() {
 			return ctrl.request.BadRequest(c, errors.New("captcha challenge failed"))
 		}
 	}

@@ -14,24 +14,27 @@ type CustomPassword struct {
 }
 
 type CustomPasswordInterface interface {
-	Salt(length int) string
-	Create(passwd, salt string) string
-	Check(passwd, hashedPassword, salt string) bool
+	CreatePassword(passwd string, saltLength ...int) CustomPassword
+	CheckPassword(passwd, hashedPassword, salt string) bool
 }
 
-func CreatePassword(passwd string, saltLength ...int) *CustomPassword {
+func NewCustomPassword() *CustomPassword {
+	return &CustomPassword{}
+}
+
+func (c *CustomPassword) CreatePassword(passwd string, saltLength ...int) CustomPassword {
 	length := 6
 	if len(saltLength) > 0 {
 		length = saltLength[0]
 	}
 	s := salt(length)
-	return &CustomPassword{
+	return CustomPassword{
 		Salt: s,
 		Hash: create(passwd, s),
 	}
 }
 
-func CheckPassword(passwd, hashedPassword, salt string) bool {
+func (c *CustomPassword) CheckPassword(passwd, hashedPassword, salt string) bool {
 	hash := create(passwd, salt)
 	if hashedPassword == hash {
 		return true

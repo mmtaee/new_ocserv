@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {defineAsyncComponent, ref} from "vue";
-import {PanelApi, type PanelLogin} from "@/api";
 import {useUserStore} from "@/stores/user.ts";
 import {useConfigStore} from "@/stores/config.ts";
 import router from "@/plugins/router.ts";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
+import type {PanelLogin} from "@/api/models/panel-login.ts";
+import {PanelApi} from "@/api";
 
 const DesktopView = defineAsyncComponent(() => import("@/components/login/desktop/index.vue"))
 const MobileView = defineAsyncComponent(() => import("@/components/login/mobile/index.vue"))

@@ -13,7 +13,8 @@ import (
 )
 
 type UserRepository struct {
-	db *gorm.DB
+	db         *gorm.DB
+	cryptoRepo crypto.CustomPasswordInterface
 }
 
 type UserRepositoryInterface interface {
@@ -25,12 +26,13 @@ type UserRepositoryInterface interface {
 	GetStaffs(ctx context.Context, pagination *request.Pagination, filters ...map[string]interface{}) (*[]models.User, int64, error)
 	UpdatePermission(ctx context.Context, id uint, perm models.Permission) error
 	Delete(ctx context.Context, id uint) error
-	ChangeStaffPassword(ctx context.Context, id uint, password string) error
+	ChangeStaffPassword(ctx context.Context, id uint, passwordHash, salt string) error
 }
 
 func NewUserRepository() *UserRepository {
 	return &UserRepository{
-		db: database.Get(),
+		db:         database.Get(),
+		cryptoRepo: crypto.NewCustomPassword(),
 	}
 }
 
@@ -77,11 +79,11 @@ func (r *UserRepository) ChangePassword(ctx context.Context, uid string, current
 		return err
 	}
 
-	if !crypto.CheckPassword(currentPassword, user.Password, user.Salt) {
+	if !r.cryptoRepo.CheckPassword(currentPassword, user.Password, user.Salt) {
 		return errors.New("invalid old password")
 	}
 
-	passwd := crypto.CreatePassword(newPassword)
+	passwd := r.cryptoRepo.CreatePassword(newPassword)
 	user.Password = passwd.Hash
 	user.Salt = passwd.Salt
 
@@ -126,10 +128,9 @@ func (r *UserRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&models.User{}, id).Error
 }
 
-func (r *UserRepository) ChangeStaffPassword(ctx context.Context, id uint, password string) error {
-	passwd := crypto.CreatePassword(password)
+func (r *UserRepository) ChangeStaffPassword(ctx context.Context, id uint, passwordHash, salt string) error {
 	return r.db.WithContext(ctx).Model(&models.User{}).Where("id = ?", id).Updates(map[string]interface{}{
-		"password": passwd.Hash,
-		"salt":     passwd.Salt,
+		"password": passwordHash,
+		"salt":     salt,
 	}).Error
 }

@@ -145,3 +145,59 @@ func TestControllerUpdateConfigSuccess(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"google_captcha_site_key":"updated-site"`)
 	assert.Contains(t, rec.Body.String(), `"google_captcha_secret_key":"updated-secret"`)
 }
+
+func TestLogin_Success(t *testing.T) {
+	mockRequest := new(mocks.CustomRequestInterface)
+	mockUserRepo := new(mocks.UserRepositoryInterface)
+	mockTokenRepo := new(mocks.TokenRepositoryInterface)
+	mockPanelRepo := new(mocks.PanelRepositoryInterface)
+	mockCrypto := new(mocks.CustomPasswordInterface)
+	mockOcservGroup := new(mocks.OcservGroupServiceInterface)
+	mockCaptcha := new(mocks.GoogleCaptchaInterface)
+
+	ctrl := &Controller{
+		request:         mockRequest,
+		userRepo:        mockUserRepo,
+		tokenRepo:       mockTokenRepo,
+		panelRepo:       mockPanelRepo,
+		cryptoRepo:      mockCrypto,
+		ocservGroupRepo: mockOcservGroup,
+		captchaVerifier: mockCaptcha,
+	}
+
+	loginInput := `{"username":"testuser", "password":"testpass", "token":"dummy-token"}`
+	c, w := setupEcho(http.MethodPost, "/user/login", loginInput)
+
+	loginData := &LoginData{
+		Username: "testuser",
+		Password: "testpass",
+		Token:    "dummy-token",
+	}
+
+	config := &models.Panel{GoogleCaptchaSecretKey: "captcha-key"}
+	mockRequest.On("DoValidate", c, mock.Anything).Run(func(args mock.Arguments) {
+		arg := args.Get(1).(*LoginData)
+		*arg = *loginData
+	}).Return(nil)
+
+	mockPanelRepo.On("GetConfig", mock.Anything).Return(config, nil)
+
+	mockCaptcha.On("SetSecretKey", "captcha-key").Return(mockCaptcha)
+	mockCaptcha.On("Verify", "dummy-token").Return(mockCaptcha)
+	mockCaptcha.On("IsValid").Return(true)
+
+	mockUser := &models.User{ID: 1, UID: "uid-123", Username: "testuser", IsAdmin: false}
+	mockUserRepo.On("GetUserByUsername", mock.Anything, "testuser").Return(mockUser, nil)
+
+	mockTokenRepo.On("CreateToken", mock.Anything, uint(1), "uid-123", true, false).Return("mock-token", nil)
+
+	err := ctrl.Login(c)
+
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, w.Code)
+	mockRequest.AssertExpectations(t)
+	mockUserRepo.AssertExpectations(t)
+	mockTokenRepo.AssertExpectations(t)
+	mockCaptcha.AssertExpectations(t)
+	mockPanelRepo.AssertExpectations(t)
+}
