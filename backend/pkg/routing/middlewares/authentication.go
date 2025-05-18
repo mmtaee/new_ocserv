@@ -1,9 +1,9 @@
 package middlewares
 
 import (
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
-	"net/http"
 	"ocserv/pkg/config"
 	"strings"
 )
@@ -14,20 +14,20 @@ func AuthMiddleware() echo.MiddlewareFunc {
 			cfg := config.Get()
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-				return echo.NewHTTPError(http.StatusUnauthorized, "missing or invalid Authorization header")
+				return UnauthorizedError(c, "missing or invalid Authorization header")
 			}
 
 			tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
 			token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
 				if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, echo.NewHTTPError(http.StatusUnauthorized, "unexpected signing method")
+					return nil, errors.New("unexpected signing method")
 				}
 				return []byte(cfg.JWTSecret), nil
 			})
 
 			if err != nil || !token.Valid {
-				return echo.NewHTTPError(http.StatusUnauthorized, "invalid or expired token")
+				return UnauthorizedError(c, "invalid or expired token")
 			}
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok {
@@ -35,10 +35,10 @@ func AuthMiddleware() echo.MiddlewareFunc {
 					c.Set("userUID", userUID)
 					c.Set("isAdmin", claims["isAdmin"])
 				} else {
-					return echo.NewHTTPError(http.StatusUnauthorized, "user ID not found in token")
+					return UnauthorizedError(c, "user ID not found in token")
 				}
 			} else {
-				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token claims")
+				return UnauthorizedError(c, "invalid token claims")
 			}
 
 			return next(c)

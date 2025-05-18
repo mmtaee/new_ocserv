@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 func AdminPermission() echo.MiddlewareFunc {
@@ -11,7 +10,7 @@ func AdminPermission() echo.MiddlewareFunc {
 			if c.Get("isAdmin").(bool) {
 				return next(c)
 			}
-			return echo.NewHTTPError(http.StatusForbidden, "Admin permission required")
+			return PermissionDeniedError(c, "Admin permission required")
 		}
 	}
 }

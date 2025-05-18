@@ -1,6 +1,7 @@
 .gitignore
 .npmignore
 api.ts
+api/ocserv-users-api.ts
 api/panel-api.ts
 api/user-api.ts
 common.ts
@@ -8,9 +9,12 @@ configuration.ts
 git_push.sh
 index.ts
 models/index.ts
+models/middlewares-unauthorized.ts
 models/models-permission.ts
 models/models-user.ts
 models/oc-ocserv-default-configs.ts
+models/oc-ocserv-user.ts
+models/ocserv-user-ocserv-users-response.ts
 models/panel-config-data.ts
 models/panel-config-response.ts
 models/panel-init-response.ts

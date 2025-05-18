@@ -15,6 +15,75 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/oc_users": {
+            "get": {
+                "description": "List of Ocserv Users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "List of Ocserv Users",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Page number, starting from 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Number of items per page",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Field to order by",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "Sort order, either ASC or DESC",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ocservUser.OcservUsersResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/config": {
             "get": {
                 "description": "Get panel Config",
@@ -217,7 +286,7 @@ const docTemplate = `{
         },
         "/user/staffs": {
             "get": {
-                "description": "List os Staffs",
+                "description": "List of Staffs",
                 "consumes": [
                     "application/json"
                 ],
@@ -227,7 +296,7 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "List os Staffs",
+                "summary": "List of Staffs",
                 "parameters": [
                     {
                         "minimum": 1,
@@ -410,19 +479,27 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "middlewares.Unauthorized": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Permission": {
             "type": "object",
             "properties": {
-                "oc_group": {
+                "oc_groups": {
                     "type": "boolean"
                 },
-                "oc_user": {
+                "oc_users": {
                     "type": "boolean"
                 },
                 "occtl": {
                     "type": "boolean"
                 },
-                "see_server_log": {
+                "see_server_logs": {
                     "type": "boolean"
                 },
                 "statistic": {
@@ -562,6 +639,83 @@ const docTemplate = `{
                 },
                 "tx-data-per-sec": {
                     "type": "integer"
+                }
+            }
+        },
+        "oc.OcservUser": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deactivated_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "expire_at": {
+                    "type": "string"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "is_locked": {
+                    "type": "boolean"
+                },
+                "is_online": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "rx": {
+                    "description": "Receive in bytes",
+                    "type": "integer"
+                },
+                "traffic_size": {
+                    "description": "in GiB  \u003e\u003e x * 1024 ** 3",
+                    "type": "integer"
+                },
+                "traffic_type": {
+                    "type": "string",
+                    "enum": [
+                        "Free",
+                        "MonthlyTransmit",
+                        "MonthlyReceive",
+                        "TotallyTransmit",
+                        "TotallyReceive"
+                    ]
+                },
+                "tx": {
+                    "description": "Transmit in bytes",
+                    "type": "integer"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "ocservUser.OcservUsersResponse": {
+            "type": "object",
+            "required": [
+                "meta"
+            ],
+            "properties": {
+                "meta": {
+                    "$ref": "#/definitions/request.Meta"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/oc.OcservUser"
+                    }
                 }
             }
         },

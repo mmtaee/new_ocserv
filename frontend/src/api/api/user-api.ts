@@ -106,8 +106,8 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
-         * List os Staffs
-         * @summary List os Staffs
+         * List of Staffs
+         * @summary List of Staffs
          * @param {number} [page] Page number, starting from 1
          * @param {number} [pageSize] Number of items per page
          * @param {string} [order] Field to order by
@@ -341,8 +341,8 @@ export const UserApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * List os Staffs
-         * @summary List os Staffs
+         * List of Staffs
+         * @summary List of Staffs
          * @param {number} [page] Page number, starting from 1
          * @param {number} [pageSize] Number of items per page
          * @param {string} [order] Field to order by
@@ -440,8 +440,8 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.userProfileGet(options).then((request) => request(axios, basePath));
         },
         /**
-         * List os Staffs
-         * @summary List os Staffs
+         * List of Staffs
+         * @summary List of Staffs
          * @param {UserApiUserStaffsGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -642,8 +642,8 @@ export class UserApi extends BaseAPI {
     }
 
     /**
-     * List os Staffs
-     * @summary List os Staffs
+     * List of Staffs
+     * @summary List of Staffs
      * @param {UserApiUserStaffsGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

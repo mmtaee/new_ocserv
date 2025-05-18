@@ -34,7 +34,7 @@ func New() *Controller {
 		tokenRepo:       repository.NewTokenRepository(),
 		panelRepo:       repository.NewPanelRepository(),
 		cryptoRepo:      crypto.NewCustomPassword(),
-		ocservGroupRepo: oc.NewOcGroupService(),
+		ocservGroupRepo: oc.NewOcservGroupService(),
 		captchaVerifier: captcha.NewGoogleVerifier(),
 	}
 }

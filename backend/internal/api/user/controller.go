@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/labstack/echo/v4"
-	"log"
 	"net/http"
 	"ocserv/internal/models"
 	"ocserv/internal/repository"
@@ -71,10 +70,10 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, nil)
 }
 
-// Staffs 		 List os Staffs
+// Staffs 		 List of Staffs
 //
-// @Summary      List os Staffs
-// @Description  List os Staffs
+// @Summary      List of Staffs
+// @Description  List of Staffs
 // @Tags         User
 // @Accept       json
 // @Produce      json
@@ -204,7 +203,6 @@ func (ctrl *Controller) CreateStaff(c echo.Context) error {
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
-	log.Println("data", data)
 	passwd := ctrl.cryptoRepo.CreatePassword(data.Password)
 
 	user := &models.User{

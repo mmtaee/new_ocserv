@@ -14,7 +14,17 @@
 
 
 
-export * from './api/ocserv-users-api';
-export * from './api/panel-api';
-export * from './api/user-api';
+/**
+ * 
+ * @export
+ * @interface MiddlewaresUnauthorized
+ */
+export interface MiddlewaresUnauthorized {
+    /**
+     * 
+     * @type {string}
+     * @memberof MiddlewaresUnauthorized
+     */
+    'error'?: string;
+}
 

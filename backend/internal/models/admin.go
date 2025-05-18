@@ -6,16 +6,17 @@ import (
 	"errors"
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
 type Permission struct {
-	OcUser       bool `json:"oc_user" validate:"omitempty"`
-	OcGroup      bool `json:"oc_group" validate:"omitempty"`
-	Statistic    bool `json:"statistic" validate:"omitempty"`
-	Occtl        bool `json:"occtl" validate:"omitempty"`
-	System       bool `json:"system" validate:"omitempty"`
-	SeeServerLog bool `json:"see_server_log" validate:"omitempty"`
+	OcUsers       bool `json:"oc_users" validate:"omitempty"`
+	OcGroups      bool `json:"oc_groups" validate:"omitempty"`
+	Statistic     bool `json:"statistic" validate:"omitempty"`
+	Occtl         bool `json:"occtl" validate:"omitempty"`
+	System        bool `json:"system" validate:"omitempty"`
+	SeeServerLogs bool `json:"see_server_logs" validate:"omitempty"`
 }
 
 type User struct {
@@ -55,27 +56,18 @@ func (p *Permission) Scan(value interface{}) error {
 }
 
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	log.Println("u: ", u.IsAdmin)
 	if u.IsAdmin {
 		u.Permissions = &Permission{
-			OcUser:       true,
-			OcGroup:      true,
-			Statistic:    true,
-			Occtl:        true,
-			System:       true,
-			SeeServerLog: true,
+			OcUsers:       true,
+			OcGroups:      true,
+			Statistic:     true,
+			Occtl:         true,
+			System:        true,
+			SeeServerLogs: true,
 		}
 	}
-	if u.Permissions == nil {
-		u.Permissions = &Permission{
-			OcUser:       false,
-			OcGroup:      false,
-			Statistic:    false,
-			Occtl:        false,
-			System:       false,
-			SeeServerLog: false,
-		}
-	}
-	return nil
+	return
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

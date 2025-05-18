@@ -1,14 +1,19 @@
 basePath: /api
 definitions:
+  middlewares.Unauthorized:
+    properties:
+      error:
+        type: string
+    type: object
   models.Permission:
     properties:
-      oc_group:
+      oc_groups:
         type: boolean
-      oc_user:
+      oc_users:
         type: boolean
       occtl:
         type: boolean
-      see_server_log:
+      see_server_logs:
         type: boolean
       statistic:
         type: boolean
@@ -103,6 +108,59 @@ definitions:
         type: boolean
       tx-data-per-sec:
         type: integer
+    type: object
+  oc.OcservUser:
+    properties:
+      created_at:
+        type: string
+      deactivated_at:
+        type: string
+      description:
+        type: string
+      expire_at:
+        type: string
+      group:
+        type: string
+      is_locked:
+        type: boolean
+      is_online:
+        type: boolean
+      password:
+        type: string
+      rx:
+        description: Receive in bytes
+        type: integer
+      traffic_size:
+        description: in GiB  >> x * 1024 ** 3
+        type: integer
+      traffic_type:
+        enum:
+        - Free
+        - MonthlyTransmit
+        - MonthlyReceive
+        - TotallyTransmit
+        - TotallyReceive
+        type: string
+      tx:
+        description: Transmit in bytes
+        type: integer
+      uid:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  ocservUser.OcservUsersResponse:
+    properties:
+      meta:
+        $ref: '#/definitions/request.Meta'
+      result:
+        items:
+          $ref: '#/definitions/oc.OcservUser'
+        type: array
+    required:
+    - meta
     type: object
   panel.ConfigData:
     properties:
@@ -250,6 +308,53 @@ info:
   title: Ocserv User management Example Api
   version: "1.0"
 paths:
+  /oc_users:
+    get:
+      consumes:
+      - application/json
+      description: List of Ocserv Users
+      parameters:
+      - description: Page number, starting from 1
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      - description: Field to order by
+        in: query
+        name: order
+        type: string
+      - description: Sort order, either ASC or DESC
+        enum:
+        - ASC
+        - DESC
+        in: query
+        name: sort
+        type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ocservUser.OcservUsersResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+      summary: List of Ocserv Users
+      tags:
+      - Ocserv Users
   /panel/config:
     get:
       consumes:
@@ -385,7 +490,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: List os Staffs
+      description: List of Staffs
       parameters:
       - description: Page number, starting from 1
         in: query
@@ -416,7 +521,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.StaffsResponse'
-      summary: List os Staffs
+      summary: List of Staffs
       tags:
       - User
     post:

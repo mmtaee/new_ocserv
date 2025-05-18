@@ -25,13 +25,13 @@ export interface ModelsPermission {
      * @type {boolean}
      * @memberof ModelsPermission
      */
-    'oc_group'?: boolean;
+    'oc_groups'?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof ModelsPermission
      */
-    'oc_user'?: boolean;
+    'oc_users'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -43,7 +43,7 @@ export interface ModelsPermission {
      * @type {boolean}
      * @memberof ModelsPermission
      */
-    'see_server_log'?: boolean;
+    'see_server_logs'?: boolean;
     /**
      * 
      * @type {boolean}

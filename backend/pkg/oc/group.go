@@ -23,14 +23,12 @@ type OcservGroupServiceInterface interface {
 
 var groupDir = "/etc/ocserv/groups"
 
-func NewOcGroupService() *OcservGroupService {
+func NewOcservGroupService() *OcservGroupService {
 	return &OcservGroupService{}
 }
 
 func (g *OcservGroupService) WithContext(ctx context.Context) *OcservGroupService {
-	return &OcservGroupService{
-		ctx: ctx,
-	}
+	return &OcservGroupService{ctx: ctx}
 }
 
 // UpdateDefaultGroup update or create defaults/group.conf and update configs
