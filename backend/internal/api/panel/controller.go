@@ -187,6 +187,8 @@ func (ctrl *Controller) Login(c echo.Context) error {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  ConfigResponse
 // @Router       /panel/config [get]
 func (ctrl *Controller) Config(c echo.Context) error {
@@ -207,7 +209,9 @@ func (ctrl *Controller) Config(c echo.Context) error {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
+// @Param        Authorization header string true "Bearer TOKEN"
 // @Param        request    body  ConfigData   true "update config data"
+// @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  ConfigResponse
 // @Router       /panel/config [patch]
 func (ctrl *Controller) UpdateConfig(c echo.Context) error {

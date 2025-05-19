@@ -33,6 +33,8 @@ func New() *Controller {
 // @Tags         User
 // @Accept       json
 // @Produce      json
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  models.User
 // @Router       /user/profile [get]
 func (ctrl *Controller) Profile(c echo.Context) error {
@@ -52,7 +54,9 @@ func (ctrl *Controller) Profile(c echo.Context) error {
 // @Tags         User
 // @Accept       json
 // @Produce      json
+// @Param        Authorization header string true "Bearer TOKEN"
 // @Param        request    body  ChangePasswordData   true "change user password data"
+// @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  nil
 // @Router       /user/password [post]
 func (ctrl *Controller) ChangePassword(c echo.Context) error {
@@ -81,6 +85,9 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 // @Param page_size query int false "Number of items per page" minimum(1) maximum(100)
 // @Param order query string false "Field to order by"
 // @Param sort query string false "Sort order, either ASC or DESC" Enums(ASC, DESC)
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
 // @Success      200  {object}  StaffsResponse
 // @Router       /user/staffs [get]
 func (ctrl *Controller) Staffs(c echo.Context) error {
@@ -112,7 +119,10 @@ func (ctrl *Controller) Staffs(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param 		 id path int true "User ID"
+// @Param        Authorization header string true "Bearer TOKEN"
 // @Param        request    body  models.Permission   true "user permission"
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
 // @Success      200  {object}  nil
 // @Router       /user/staffs/permissions/${id}/ [put]
 func (ctrl *Controller) UpdateStaffPermission(c echo.Context) error {
@@ -142,6 +152,9 @@ func (ctrl *Controller) UpdateStaffPermission(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param 		 id path int true "User ID"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
 // @Success      204  {object}  nil
 // @Router       /user/staffs/${id}/ [delete]
 func (ctrl *Controller) RemoveStaff(c echo.Context) error {
@@ -166,6 +179,9 @@ func (ctrl *Controller) RemoveStaff(c echo.Context) error {
 // @Produce      json
 // @Param 		 id path int true "User ID"
 // @Param        request    body  ChangeStaffPassword  true "user new password"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
 // @Success      200  {object}  nil
 // @Router       /user/staffs/{id}/password [post]
 func (ctrl *Controller) ChangeStaffPassword(c echo.Context) error {
@@ -196,6 +212,9 @@ func (ctrl *Controller) ChangeStaffPassword(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param        request    body  CreateStaffData  true "user create data"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
 // @Success      201  {object}  models.User
 // @Router       /user/staffs [post]
 func (ctrl *Controller) CreateStaff(c echo.Context) error {

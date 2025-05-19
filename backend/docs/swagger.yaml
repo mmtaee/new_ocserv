@@ -1,5 +1,10 @@
 basePath: /api
 definitions:
+  middlewares.PermissionDenied:
+    properties:
+      error:
+        type: string
+    type: object
   middlewares.Unauthorized:
     properties:
       error:
@@ -352,6 +357,10 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: List of Ocserv Users
       tags:
       - Ocserv Users
@@ -360,6 +369,12 @@ paths:
       consumes:
       - application/json
       description: Get panel Config
+      parameters:
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -367,6 +382,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
       summary: Get panel Config
       tags:
       - Panel
@@ -375,6 +394,11 @@ paths:
       - application/json
       description: Update Config panel
       parameters:
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: update config data
         in: body
         name: request
@@ -388,6 +412,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
       summary: Update Config panel
       tags:
       - Panel
@@ -457,6 +485,11 @@ paths:
       - application/json
       description: User Change Password
       parameters:
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: change user password data
         in: body
         name: request
@@ -468,6 +501,10 @@ paths:
       responses:
         "200":
           description: OK
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
       summary: User Change Password
       tags:
       - User
@@ -476,6 +513,12 @@ paths:
       consumes:
       - application/json
       description: Get user Profile
+      parameters:
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -483,6 +526,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
       summary: Get user Profile
       tags:
       - User
@@ -514,6 +561,11 @@ paths:
         in: query
         name: sort
         type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -521,6 +573,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.StaffsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: List of Staffs
       tags:
       - User
@@ -535,6 +595,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/user.CreateStaffData'
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -542,6 +607,14 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Create Admin or Staff
       tags:
       - User
@@ -556,11 +629,24 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "204":
           description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Remove Staff
       tags:
       - User
@@ -581,11 +667,24 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/user.ChangeStaffPassword'
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Change Staff Password
       tags:
       - User
@@ -600,6 +699,11 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: user permission
         in: body
         name: request
@@ -611,6 +715,14 @@ paths:
       responses:
         "200":
           description: OK
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Update Staff Permission
       tags:
       - User

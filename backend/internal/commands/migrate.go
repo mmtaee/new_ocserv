@@ -5,12 +5,14 @@ import (
 	"log"
 	"ocserv/internal/models"
 	"ocserv/pkg/database"
+	"ocserv/pkg/oc"
 )
 
 var tables = []interface{}{
 	&models.User{},
 	&models.UserToken{},
 	&models.Panel{},
+	oc.OcservUser{},
 }
 
 func Migrate() {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"ocserv/pkg/request"
 )
 
@@ -28,6 +29,8 @@ func (o *OcservUserService) GetUsers(ctx context.Context, pagination *request.Pa
 
 	offset := (pagination.Page - 1) * pagination.PageSize
 	order := fmt.Sprintf("%s %s", pagination.Order, pagination.Sort)
+
+	log.Println(pagination.PageSize)
 
 	var ocservUsers []OcservUser
 	err := o.db.WithContext(ctx).Model(&ocservUsers).Order(order).Limit(pagination.PageSize).Offset(offset).Scan(&ocservUsers).Error
