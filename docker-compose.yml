@@ -10,7 +10,7 @@ volumes:
 services:
   ocserv:
     build:
-      context: ./backend
+      context: .
       dockerfile: ${DOCKERFILE:-Dockerfile}
     container_name: ocserv-api
     restart: unless-stopped
@@ -26,17 +26,11 @@ services:
       - "443:433/udp"
       - "443:443/tcp"
     environment:
-      host: 0.0.0.0
-      ALLOW_ORIGINS:
+      HOST: 0.0.0.0
+      PORT: 8080
       SECRET_KEY: SECRET_KEY
+      ALLOW_ORIGINS: http://localhost:5173
+      JWT_SECRET: JWT_SECRET1234
+      DATABASES: ocserv-test.db
       DEBUG: ${DEBUG:-false}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 20s         # Check every 20 seconds
-      retries: 5            # Retry 5 times before marking the service as unhealthy
-      timeout: 20s          # Wait for 20 seconds for a response
-      start_period: 20s     # Wait for 20 seconds before starting the health check
 
