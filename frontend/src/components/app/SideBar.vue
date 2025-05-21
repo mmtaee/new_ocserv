@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onBeforeMount, reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import avatarUrl from "@/assets/torvalds.jpg"
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 import {useLocale} from "vuetify/framework";
@@ -60,7 +60,7 @@ const userSidebarItems = reactive<sideBar[]>([
 ])
 
 
-onBeforeMount(() => {
+onMounted(() => {
   let user = userStore.getUser
   if (user) {
     if (user.is_admin) {

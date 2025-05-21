@@ -5,6 +5,7 @@ import {type ModelsUser, UserApi, type UserChangeStaffPassword, type UserCreateS
 import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useI18n} from "vue-i18n";
 import {requiredRule} from "@/utils/rules.ts";
+import {getAuthorization} from "@/utils/request.ts";
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
@@ -27,10 +28,10 @@ const selectedUser = reactive<ModelsUser>({
   is_admin: false,
   last_login: "",
   permission: {
-    oc_group: false,
-    oc_user: false,
+    oc_groups: false,
+    oc_users: false,
     occtl: false,
-    see_server_log: false,
+    see_server_logs: false,
     statistic: false,
     system: false,
   },
@@ -41,10 +42,10 @@ const selectedUser = reactive<ModelsUser>({
 const createUser = reactive<UserCreateStaffData>({
   password: "",
   permission: {
-    oc_group: false,
-    oc_user: false,
+    oc_groups: false,
+    oc_users: false,
     occtl: false,
-    see_server_log: false,
+    see_server_logs: false,
     statistic: false,
     system: false,
   },
@@ -77,7 +78,7 @@ const permission = (user: ModelsUser) => {
 const fetchStaffs = () => {
   loading.value = true
   const api = new UserApi()
-  api.userStaffsGet().then((res) => {
+  api.userStaffsGet(getAuthorization()).then((res) => {
     Object.assign(staffData, res.data.result)
     page.value = res.data.meta.page
     pageSize.value = res.data.meta.page_size
@@ -106,6 +107,7 @@ const addStaff = () => {
   btnLoading.value = true
   const api = new UserApi()
   api.userStaffsPost({
+    ...getAuthorization(),
     request: createUser,
   }).then((res) => {
     resetCreateUser()
@@ -132,6 +134,7 @@ const updatePerm = () => {
   btnLoading.value = true
   const api = new UserApi()
   api.userStaffsPermissionsIdPut({
+    ...getAuthorization(),
     id: selectedUser?.id,
     request: selectedUser?.permission,
   }).then(() => {
@@ -145,7 +148,10 @@ const updatePerm = () => {
 const changePassword = () => {
   btnLoading.value = true
   const api = new UserApi()
-  api.userStaffsIdPasswordPost({id: selectedUser.id, request: newPassword}).then(_ => {
+  api.userStaffsIdPasswordPost({
+    ...getAuthorization(),
+    id: selectedUser.id, request: newPassword
+  }).then(_ => {
     changePasswordDialog.value = false
     snackbar.show({
       id: 1,
@@ -163,6 +169,7 @@ const remove = () => {
   btnLoading.value = false
   const api = new UserApi()
   api.userStaffsIdDelete({
+    ...getAuthorization(),
     id: selectedUser.id,
   }).then(_ => {
     let index = staffData.findIndex(i => i.id === selectedUser.id)

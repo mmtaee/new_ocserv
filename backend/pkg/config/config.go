@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -47,6 +48,10 @@ func Init(debug bool) {
 	databases := os.Getenv("DATABASES")
 	if databases == "" {
 		databases = "ocserv.db"
+	}
+
+	if dockerized := os.Getenv("DOCKERIZED"); dockerized == "true" {
+		databases = fmt.Sprintf("/db/%s", databases)
 	}
 
 	jwtSecret := os.Getenv("JWT_SECRET")

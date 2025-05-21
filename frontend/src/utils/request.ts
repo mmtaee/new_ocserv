@@ -1,5 +1,12 @@
-function Authorization(): string {
-    return "Bearer " + localStorage.getItem("token");
+interface Authorization {
+    authorization: string;
 }
 
-export {Authorization}
+function getAuthorization(): Authorization {
+    const token = localStorage.getItem("token");
+    return {
+        authorization: `Bearer ${token ?? ""}`,
+    };
+}
+
+export { getAuthorization };

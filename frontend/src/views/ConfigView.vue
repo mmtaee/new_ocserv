@@ -4,6 +4,7 @@ import {PanelApi, type PanelConfigData} from "@/api";
 import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useLocale} from "vuetify/framework";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
+import {getAuthorization} from "@/utils/request.ts";
 
 
 const DesktopView = defineAsyncComponent(() => import("@/components/config/desktop/index.vue"))
@@ -22,7 +23,7 @@ const settings = reactive<PanelConfigData>({
 
 onMounted(async () => {
   const api = new PanelApi()
-  const response = await api.panelConfigGet()
+  const response = await api.panelConfigGet(getAuthorization())
 
   Object.assign(settings, response.data)
 })
@@ -31,6 +32,7 @@ const save = (settings: PanelConfigData) => {
   loading.value = true
   const api = new PanelApi()
   api.panelConfigPatch({
+    ...getAuthorization(),
     request: settings,
   }).then((response) => {
     Object.assign(settings, response.data)

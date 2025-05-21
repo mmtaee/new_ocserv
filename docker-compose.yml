@@ -18,6 +18,7 @@ services:
     volumes:
       - ocserv:/etc/ocserv
       - ocserv-log:/var/log/ocserv
+      - ./volumes/db:/db
       - shared-ssl:/etc/ocserv/certs
     networks:
       - ocserv
@@ -26,6 +27,7 @@ services:
       - "443:433/udp"
       - "443:443/tcp"
     environment:
+      DOCKERIZED: true
       HOST: 0.0.0.0
       PORT: 8080
       SECRET_KEY: SECRET_KEY
@@ -33,4 +35,6 @@ services:
       JWT_SECRET: JWT_SECRET1234
       DATABASES: ocserv-test.db
       DEBUG: ${DEBUG:-false}
+    env_file:
+      - .env
 

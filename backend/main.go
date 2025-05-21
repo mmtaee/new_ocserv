@@ -30,6 +30,11 @@ func main() {
 	flag.BoolVar(&drop, "drop", false, "drop models table from database")
 	flag.Parse()
 
+	osDebug := os.Getenv("DEBUG")
+	if osDebug == "true" {
+		debug = true
+	}
+
 	config.Init(debug)
 	database.Connect(debug)
 	defer database.Close()

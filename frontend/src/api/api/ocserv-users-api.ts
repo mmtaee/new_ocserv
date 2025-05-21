@@ -22,9 +22,17 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
+import type { MiddlewaresPermissionDenied } from '../models';
+// @ts-ignore
 import type { MiddlewaresUnauthorized } from '../models';
 // @ts-ignore
+import type { OcOcservUser } from '../models';
+// @ts-ignore
+import type { OcservUserCreateOcservUserData } from '../models';
+// @ts-ignore
 import type { OcservUserOcservUsersResponse } from '../models';
+// @ts-ignore
+import type { RequestErrorResponse } from '../models';
 /**
  * OcservUsersApi - axios parameter creator
  * @export
@@ -87,6 +95,48 @@ export const OcservUsersApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Create Ocserv Users
+         * @summary Create Ocserv Users
+         * @param {string} authorization Bearer TOKEN
+         * @param {OcservUserCreateOcservUserData} request create ocserv user data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ocUsersPost: async (authorization: string, request: OcservUserCreateOcservUserData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('ocUsersPost', 'authorization', authorization)
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('ocUsersPost', 'request', request)
+            const localVarPath = `/oc_users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -114,6 +164,20 @@ export const OcservUsersApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['OcservUsersApi.ocUsersGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Create Ocserv Users
+         * @summary Create Ocserv Users
+         * @param {string} authorization Bearer TOKEN
+         * @param {OcservUserCreateOcservUserData} request create ocserv user data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async ocUsersPost(authorization: string, request: OcservUserCreateOcservUserData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OcOcservUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.ocUsersPost(authorization, request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OcservUsersApi.ocUsersPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -133,6 +197,16 @@ export const OcservUsersApiFactory = function (configuration?: Configuration, ba
          */
         ocUsersGet(requestParameters: OcservUsersApiOcUsersGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<OcservUserOcservUsersResponse> {
             return localVarFp.ocUsersGet(requestParameters.authorization, requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create Ocserv Users
+         * @summary Create Ocserv Users
+         * @param {OcservUsersApiOcUsersPostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ocUsersPost(requestParameters: OcservUsersApiOcUsersPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<OcOcservUser> {
+            return localVarFp.ocUsersPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -180,6 +254,27 @@ export interface OcservUsersApiOcUsersGetRequest {
 }
 
 /**
+ * Request parameters for ocUsersPost operation in OcservUsersApi.
+ * @export
+ * @interface OcservUsersApiOcUsersPostRequest
+ */
+export interface OcservUsersApiOcUsersPostRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof OcservUsersApiOcUsersPost
+     */
+    readonly authorization: string
+
+    /**
+     * create ocserv user data
+     * @type {OcservUserCreateOcservUserData}
+     * @memberof OcservUsersApiOcUsersPost
+     */
+    readonly request: OcservUserCreateOcservUserData
+}
+
+/**
  * OcservUsersApi - object-oriented interface
  * @export
  * @class OcservUsersApi
@@ -196,6 +291,18 @@ export class OcservUsersApi extends BaseAPI {
      */
     public ocUsersGet(requestParameters: OcservUsersApiOcUsersGetRequest, options?: RawAxiosRequestConfig) {
         return OcservUsersApiFp(this.configuration).ocUsersGet(requestParameters.authorization, requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create Ocserv Users
+     * @summary Create Ocserv Users
+     * @param {OcservUsersApiOcUsersPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OcservUsersApi
+     */
+    public ocUsersPost(requestParameters: OcservUsersApiOcUsersPostRequest, options?: RawAxiosRequestConfig) {
+        return OcservUsersApiFp(this.configuration).ocUsersPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

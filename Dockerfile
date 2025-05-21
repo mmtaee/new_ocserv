@@ -25,7 +25,7 @@ RUN apt update && apt install -y --no-install-recommends ocserv ca-certificates 
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir /app
+RUN mkdir /app /db
 
 COPY script/entrypoint.sh /entrypoint.sh
 
@@ -37,7 +37,7 @@ RUN chmod +x /entrypoint.sh /server.sh /ocserv_api
 
 EXPOSE 443/tcp 443/udp
 
-VOLUME ["/etc/ocserv", "/app", "/var/log/ocserv"]
+VOLUME ["/etc/ocserv", "/app", "/var/log/ocserv", "/db"]
 
 ENTRYPOINT ["/entrypoint.sh"]
 

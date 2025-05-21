@@ -1,7 +1,9 @@
 package user
 
 import (
+	"errors"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 	"net/http"
 	"ocserv/internal/models"
 	"ocserv/internal/repository"
@@ -43,6 +45,9 @@ func (ctrl *Controller) Profile(c echo.Context) error {
 
 	user, err := ctrl.userRepo.GetUserById(c.Request().Context(), userUID)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusUnauthorized, nil)
+		}
 		return ctrl.request.BadRequest(c, err)
 	}
 	return c.JSON(http.StatusOK, user)

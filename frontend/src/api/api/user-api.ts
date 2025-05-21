@@ -22,9 +22,15 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
+import type { MiddlewaresPermissionDenied } from '../models';
+// @ts-ignore
+import type { MiddlewaresUnauthorized } from '../models';
+// @ts-ignore
 import type { ModelsPermission } from '../models';
 // @ts-ignore
 import type { ModelsUser } from '../models';
+// @ts-ignore
+import type { RequestErrorResponse } from '../models';
 // @ts-ignore
 import type { UserChangePasswordData } from '../models';
 // @ts-ignore
@@ -42,11 +48,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * User Change Password
          * @summary User Change Password
+         * @param {string} authorization Bearer TOKEN
          * @param {UserChangePasswordData} request change user password data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userPasswordPost: async (request: UserChangePasswordData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userPasswordPost: async (authorization: string, request: UserChangePasswordData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userPasswordPost', 'authorization', authorization)
             // verify required parameter 'request' is not null or undefined
             assertParamExists('userPasswordPost', 'request', request)
             const localVarPath = `/user/password`;
@@ -65,6 +74,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -78,10 +90,13 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * Get user Profile
          * @summary Get user Profile
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userProfileGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userProfileGet: async (authorization: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userProfileGet', 'authorization', authorization)
             const localVarPath = `/user/profile`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -96,6 +111,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -108,6 +126,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * List of Staffs
          * @summary List of Staffs
+         * @param {string} authorization Bearer TOKEN
          * @param {number} [page] Page number, starting from 1
          * @param {number} [pageSize] Number of items per page
          * @param {string} [order] Field to order by
@@ -115,7 +134,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsGet: async (page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userStaffsGet: async (authorization: string, page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userStaffsGet', 'authorization', authorization)
             const localVarPath = `/user/staffs`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -146,6 +167,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -159,12 +183,15 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * Remove Staff by given id
          * @summary Remove Staff
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsIdDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userStaffsIdDelete: async (id: number, authorization: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('userStaffsIdDelete', 'id', id)
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userStaffsIdDelete', 'authorization', authorization)
             const localVarPath = `/user/staffs/${id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -180,6 +207,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -193,13 +223,16 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * Change Staff Password by given id
          * @summary Change Staff Password
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {UserChangeStaffPassword} request user new password
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsIdPasswordPost: async (id: number, request: UserChangeStaffPassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userStaffsIdPasswordPost: async (id: number, authorization: string, request: UserChangeStaffPassword, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('userStaffsIdPasswordPost', 'id', id)
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userStaffsIdPasswordPost', 'authorization', authorization)
             // verify required parameter 'request' is not null or undefined
             assertParamExists('userStaffsIdPasswordPost', 'request', request)
             const localVarPath = `/user/staffs/{id}/password`
@@ -219,6 +252,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -233,13 +269,16 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * Update Staff Permission by given id
          * @summary Update Staff Permission
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {ModelsPermission} request user permission
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsPermissionsIdPut: async (id: number, request: ModelsPermission, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userStaffsPermissionsIdPut: async (id: number, authorization: string, request: ModelsPermission, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('userStaffsPermissionsIdPut', 'id', id)
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userStaffsPermissionsIdPut', 'authorization', authorization)
             // verify required parameter 'request' is not null or undefined
             assertParamExists('userStaffsPermissionsIdPut', 'request', request)
             const localVarPath = `/user/staffs/permissions/${id}/`
@@ -259,6 +298,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -272,11 +314,14 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * Create Admin or Staff
          * @summary Create Admin or Staff
+         * @param {string} authorization Bearer TOKEN
          * @param {UserCreateStaffData} request user create data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsPost: async (request: UserCreateStaffData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userStaffsPost: async (authorization: string, request: UserCreateStaffData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('userStaffsPost', 'authorization', authorization)
             // verify required parameter 'request' is not null or undefined
             assertParamExists('userStaffsPost', 'request', request)
             const localVarPath = `/user/staffs`;
@@ -295,6 +340,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -318,12 +366,13 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * User Change Password
          * @summary User Change Password
+         * @param {string} authorization Bearer TOKEN
          * @param {UserChangePasswordData} request change user password data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userPasswordPost(request: UserChangePasswordData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userPasswordPost(request, options);
+        async userPasswordPost(authorization: string, request: UserChangePasswordData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userPasswordPost(authorization, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userPasswordPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -331,11 +380,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * Get user Profile
          * @summary Get user Profile
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userProfileGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ModelsUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userProfileGet(options);
+        async userProfileGet(authorization: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ModelsUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userProfileGet(authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userProfileGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -343,6 +393,7 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * List of Staffs
          * @summary List of Staffs
+         * @param {string} authorization Bearer TOKEN
          * @param {number} [page] Page number, starting from 1
          * @param {number} [pageSize] Number of items per page
          * @param {string} [order] Field to order by
@@ -350,8 +401,8 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userStaffsGet(page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserStaffsResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsGet(page, pageSize, order, sort, options);
+        async userStaffsGet(authorization: string, page?: number, pageSize?: number, order?: string, sort?: UserStaffsGetSortEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserStaffsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsGet(authorization, page, pageSize, order, sort, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -360,11 +411,12 @@ export const UserApiFp = function(configuration?: Configuration) {
          * Remove Staff by given id
          * @summary Remove Staff
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userStaffsIdDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdDelete(id, options);
+        async userStaffsIdDelete(id: number, authorization: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdDelete(id, authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsIdDelete']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -373,12 +425,13 @@ export const UserApiFp = function(configuration?: Configuration) {
          * Change Staff Password by given id
          * @summary Change Staff Password
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {UserChangeStaffPassword} request user new password
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userStaffsIdPasswordPost(id: number, request: UserChangeStaffPassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdPasswordPost(id, request, options);
+        async userStaffsIdPasswordPost(id: number, authorization: string, request: UserChangeStaffPassword, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsIdPasswordPost(id, authorization, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsIdPasswordPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -387,12 +440,13 @@ export const UserApiFp = function(configuration?: Configuration) {
          * Update Staff Permission by given id
          * @summary Update Staff Permission
          * @param {number} id User ID
+         * @param {string} authorization Bearer TOKEN
          * @param {ModelsPermission} request user permission
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userStaffsPermissionsIdPut(id: number, request: ModelsPermission, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPermissionsIdPut(id, request, options);
+        async userStaffsPermissionsIdPut(id: number, authorization: string, request: ModelsPermission, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPermissionsIdPut(id, authorization, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsPermissionsIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -400,12 +454,13 @@ export const UserApiFp = function(configuration?: Configuration) {
         /**
          * Create Admin or Staff
          * @summary Create Admin or Staff
+         * @param {string} authorization Bearer TOKEN
          * @param {UserCreateStaffData} request user create data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userStaffsPost(request: UserCreateStaffData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ModelsUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPost(request, options);
+        async userStaffsPost(authorization: string, request: UserCreateStaffData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ModelsUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userStaffsPost(authorization, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userStaffsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -428,16 +483,17 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @throws {RequiredError}
          */
         userPasswordPost(requestParameters: UserApiUserPasswordPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userPasswordPost(requestParameters.request, options).then((request) => request(axios, basePath));
+            return localVarFp.userPasswordPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
         /**
          * Get user Profile
          * @summary Get user Profile
+         * @param {UserApiUserProfileGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userProfileGet(options?: RawAxiosRequestConfig): AxiosPromise<ModelsUser> {
-            return localVarFp.userProfileGet(options).then((request) => request(axios, basePath));
+        userProfileGet(requestParameters: UserApiUserProfileGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<ModelsUser> {
+            return localVarFp.userProfileGet(requestParameters.authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * List of Staffs
@@ -446,8 +502,8 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userStaffsGet(requestParameters: UserApiUserStaffsGetRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<UserStaffsResponse> {
-            return localVarFp.userStaffsGet(requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(axios, basePath));
+        userStaffsGet(requestParameters: UserApiUserStaffsGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserStaffsResponse> {
+            return localVarFp.userStaffsGet(requestParameters.authorization, requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(axios, basePath));
         },
         /**
          * Remove Staff by given id
@@ -457,7 +513,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @throws {RequiredError}
          */
         userStaffsIdDelete(requestParameters: UserApiUserStaffsIdDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userStaffsIdDelete(requestParameters.id, options).then((request) => request(axios, basePath));
+            return localVarFp.userStaffsIdDelete(requestParameters.id, requestParameters.authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * Change Staff Password by given id
@@ -467,7 +523,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @throws {RequiredError}
          */
         userStaffsIdPasswordPost(requestParameters: UserApiUserStaffsIdPasswordPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userStaffsIdPasswordPost(requestParameters.id, requestParameters.request, options).then((request) => request(axios, basePath));
+            return localVarFp.userStaffsIdPasswordPost(requestParameters.id, requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
         /**
          * Update Staff Permission by given id
@@ -477,7 +533,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @throws {RequiredError}
          */
         userStaffsPermissionsIdPut(requestParameters: UserApiUserStaffsPermissionsIdPutRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userStaffsPermissionsIdPut(requestParameters.id, requestParameters.request, options).then((request) => request(axios, basePath));
+            return localVarFp.userStaffsPermissionsIdPut(requestParameters.id, requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
         /**
          * Create Admin or Staff
@@ -487,7 +543,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @throws {RequiredError}
          */
         userStaffsPost(requestParameters: UserApiUserStaffsPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<ModelsUser> {
-            return localVarFp.userStaffsPost(requestParameters.request, options).then((request) => request(axios, basePath));
+            return localVarFp.userStaffsPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -499,6 +555,13 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
  */
 export interface UserApiUserPasswordPostRequest {
     /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserPasswordPost
+     */
+    readonly authorization: string
+
+    /**
      * change user password data
      * @type {UserChangePasswordData}
      * @memberof UserApiUserPasswordPost
@@ -507,11 +570,32 @@ export interface UserApiUserPasswordPostRequest {
 }
 
 /**
+ * Request parameters for userProfileGet operation in UserApi.
+ * @export
+ * @interface UserApiUserProfileGetRequest
+ */
+export interface UserApiUserProfileGetRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserProfileGet
+     */
+    readonly authorization: string
+}
+
+/**
  * Request parameters for userStaffsGet operation in UserApi.
  * @export
  * @interface UserApiUserStaffsGetRequest
  */
 export interface UserApiUserStaffsGetRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserStaffsGet
+     */
+    readonly authorization: string
+
     /**
      * Page number, starting from 1
      * @type {number}
@@ -553,6 +637,13 @@ export interface UserApiUserStaffsIdDeleteRequest {
      * @memberof UserApiUserStaffsIdDelete
      */
     readonly id: number
+
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserStaffsIdDelete
+     */
+    readonly authorization: string
 }
 
 /**
@@ -567,6 +658,13 @@ export interface UserApiUserStaffsIdPasswordPostRequest {
      * @memberof UserApiUserStaffsIdPasswordPost
      */
     readonly id: number
+
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserStaffsIdPasswordPost
+     */
+    readonly authorization: string
 
     /**
      * user new password
@@ -590,6 +688,13 @@ export interface UserApiUserStaffsPermissionsIdPutRequest {
     readonly id: number
 
     /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserStaffsPermissionsIdPut
+     */
+    readonly authorization: string
+
+    /**
      * user permission
      * @type {ModelsPermission}
      * @memberof UserApiUserStaffsPermissionsIdPut
@@ -603,6 +708,13 @@ export interface UserApiUserStaffsPermissionsIdPutRequest {
  * @interface UserApiUserStaffsPostRequest
  */
 export interface UserApiUserStaffsPostRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof UserApiUserStaffsPost
+     */
+    readonly authorization: string
+
     /**
      * user create data
      * @type {UserCreateStaffData}
@@ -627,18 +739,19 @@ export class UserApi extends BaseAPI {
      * @memberof UserApi
      */
     public userPasswordPost(requestParameters: UserApiUserPasswordPostRequest, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userPasswordPost(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+        return UserApiFp(this.configuration).userPasswordPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Get user Profile
      * @summary Get user Profile
+     * @param {UserApiUserProfileGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public userProfileGet(options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userProfileGet(options).then((request) => request(this.axios, this.basePath));
+    public userProfileGet(requestParameters: UserApiUserProfileGetRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userProfileGet(requestParameters.authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -649,8 +762,8 @@ export class UserApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public userStaffsGet(requestParameters: UserApiUserStaffsGetRequest = {}, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userStaffsGet(requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(this.axios, this.basePath));
+    public userStaffsGet(requestParameters: UserApiUserStaffsGetRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userStaffsGet(requestParameters.authorization, requestParameters.page, requestParameters.pageSize, requestParameters.order, requestParameters.sort, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -662,7 +775,7 @@ export class UserApi extends BaseAPI {
      * @memberof UserApi
      */
     public userStaffsIdDelete(requestParameters: UserApiUserStaffsIdDeleteRequest, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userStaffsIdDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+        return UserApiFp(this.configuration).userStaffsIdDelete(requestParameters.id, requestParameters.authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -674,7 +787,7 @@ export class UserApi extends BaseAPI {
      * @memberof UserApi
      */
     public userStaffsIdPasswordPost(requestParameters: UserApiUserStaffsIdPasswordPostRequest, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userStaffsIdPasswordPost(requestParameters.id, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+        return UserApiFp(this.configuration).userStaffsIdPasswordPost(requestParameters.id, requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -686,7 +799,7 @@ export class UserApi extends BaseAPI {
      * @memberof UserApi
      */
     public userStaffsPermissionsIdPut(requestParameters: UserApiUserStaffsPermissionsIdPutRequest, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userStaffsPermissionsIdPut(requestParameters.id, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+        return UserApiFp(this.configuration).userStaffsPermissionsIdPut(requestParameters.id, requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -698,7 +811,7 @@ export class UserApi extends BaseAPI {
      * @memberof UserApi
      */
     public userStaffsPost(requestParameters: UserApiUserStaffsPostRequest, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).userStaffsPost(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+        return UserApiFp(this.configuration).userStaffsPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

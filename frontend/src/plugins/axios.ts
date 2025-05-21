@@ -1,7 +1,6 @@
 import axios, {
     type AxiosInstance,
     type AxiosRequestConfig,
-    type AxiosRequestHeaders,
     type AxiosResponse,
     type InternalAxiosRequestConfig
 } from 'axios'
@@ -16,11 +15,11 @@ const api: AxiosInstance = axios.create(config)
 
 api.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-        config.headers = config.headers ?? {} as AxiosRequestHeaders
-        const token = localStorage.getItem('token')
-        if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`
-        }
+        // config.headers = config.headers ?? {} as AxiosRequestHeaders
+        // const token = localStorage.getItem('token')
+        // if (token) {
+        //     config.headers["Authorization"] = `Bearer ${token}`
+        // }
         return config
     },
     (error) => {

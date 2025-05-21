@@ -4,6 +4,7 @@ import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useLocale} from "vuetify/framework";
 import {defineAsyncComponent, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
+import {getAuthorization} from "@/utils/request.ts";
 
 const DesktopView = defineAsyncComponent(() => import("@/components/change_password/desktop/index.vue"))
 const MobileView = null
@@ -17,6 +18,7 @@ const save = (password: UserChangePasswordData) => {
   loading.value = true
   const api = new UserApi()
   api.userPasswordPost({
+    ...getAuthorization(),
     request: password
   }).then((_) => {
     snackbar.show({

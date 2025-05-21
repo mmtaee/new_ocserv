@@ -22,6 +22,8 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
+import type { MiddlewaresUnauthorized } from '../models';
+// @ts-ignore
 import type { PanelConfigData } from '../models';
 // @ts-ignore
 import type { PanelConfigResponse } from '../models';
@@ -33,6 +35,8 @@ import type { PanelLoginData } from '../models';
 import type { PanelSetupData } from '../models';
 // @ts-ignore
 import type { PanelUserResponse } from '../models';
+// @ts-ignore
+import type { RequestErrorResponse } from '../models';
 /**
  * PanelApi - axios parameter creator
  * @export
@@ -42,10 +46,13 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Get panel Config
          * @summary Get panel Config
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelConfigGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        panelConfigGet: async (authorization: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('panelConfigGet', 'authorization', authorization)
             const localVarPath = `/panel/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -60,6 +67,9 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
 
 
     
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -72,11 +82,14 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * Update Config panel
          * @summary Update Config panel
+         * @param {string} authorization Bearer TOKEN
          * @param {PanelConfigData} request update config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelConfigPatch: async (request: PanelConfigData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        panelConfigPatch: async (authorization: string, request: PanelConfigData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('panelConfigPatch', 'authorization', authorization)
             // verify required parameter 'request' is not null or undefined
             assertParamExists('panelConfigPatch', 'request', request)
             const localVarPath = `/panel/config`;
@@ -95,6 +108,9 @@ export const PanelApiAxiosParamCreator = function (configuration?: Configuration
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -220,11 +236,12 @@ export const PanelApiFp = function(configuration?: Configuration) {
         /**
          * Get panel Config
          * @summary Get panel Config
+         * @param {string} authorization Bearer TOKEN
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelConfigGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigGet(options);
+        async panelConfigGet(authorization: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigGet(authorization, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PanelApi.panelConfigGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -232,12 +249,13 @@ export const PanelApiFp = function(configuration?: Configuration) {
         /**
          * Update Config panel
          * @summary Update Config panel
+         * @param {string} authorization Bearer TOKEN
          * @param {PanelConfigData} request update config data
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async panelConfigPatch(request: PanelConfigData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigPatch(request, options);
+        async panelConfigPatch(authorization: string, request: PanelConfigData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.panelConfigPatch(authorization, request, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PanelApi.panelConfigPatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -293,11 +311,12 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
         /**
          * Get panel Config
          * @summary Get panel Config
+         * @param {PanelApiPanelConfigGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        panelConfigGet(options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
-            return localVarFp.panelConfigGet(options).then((request) => request(axios, basePath));
+        panelConfigGet(requestParameters: PanelApiPanelConfigGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
+            return localVarFp.panelConfigGet(requestParameters.authorization, options).then((request) => request(axios, basePath));
         },
         /**
          * Update Config panel
@@ -307,7 +326,7 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
          * @throws {RequiredError}
          */
         panelConfigPatch(requestParameters: PanelApiPanelConfigPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<PanelConfigResponse> {
-            return localVarFp.panelConfigPatch(requestParameters.request, options).then((request) => request(axios, basePath));
+            return localVarFp.panelConfigPatch(requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
         /**
          * Get panel Init Config
@@ -342,11 +361,32 @@ export const PanelApiFactory = function (configuration?: Configuration, basePath
 };
 
 /**
+ * Request parameters for panelConfigGet operation in PanelApi.
+ * @export
+ * @interface PanelApiPanelConfigGetRequest
+ */
+export interface PanelApiPanelConfigGetRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof PanelApiPanelConfigGet
+     */
+    readonly authorization: string
+}
+
+/**
  * Request parameters for panelConfigPatch operation in PanelApi.
  * @export
  * @interface PanelApiPanelConfigPatchRequest
  */
 export interface PanelApiPanelConfigPatchRequest {
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof PanelApiPanelConfigPatch
+     */
+    readonly authorization: string
+
     /**
      * update config data
      * @type {PanelConfigData}
@@ -393,12 +433,13 @@ export class PanelApi extends BaseAPI {
     /**
      * Get panel Config
      * @summary Get panel Config
+     * @param {PanelApiPanelConfigGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PanelApi
      */
-    public panelConfigGet(options?: RawAxiosRequestConfig) {
-        return PanelApiFp(this.configuration).panelConfigGet(options).then((request) => request(this.axios, this.basePath));
+    public panelConfigGet(requestParameters: PanelApiPanelConfigGetRequest, options?: RawAxiosRequestConfig) {
+        return PanelApiFp(this.configuration).panelConfigGet(requestParameters.authorization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -410,7 +451,7 @@ export class PanelApi extends BaseAPI {
      * @memberof PanelApi
      */
     public panelConfigPatch(requestParameters: PanelApiPanelConfigPatchRequest, options?: RawAxiosRequestConfig) {
-        return PanelApiFp(this.configuration).panelConfigPatch(requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+        return PanelApiFp(this.configuration).panelConfigPatch(requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

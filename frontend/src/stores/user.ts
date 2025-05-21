@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import {type ModelsUser, UserApi} from "@/api";
+import {getAuthorization} from "@/utils/request.ts";
 
 export const useUserStore = defineStore('user', {
     state: (): { user: ModelsUser | null } => ({
@@ -12,7 +13,7 @@ export const useUserStore = defineStore('user', {
         },
         async fetchUser() {
             const api = new UserApi();
-            const response = await api.userProfileGet();
+            const response = await api.userProfileGet(getAuthorization());
             this.setUser(response.data);
         },
         async logout() {
