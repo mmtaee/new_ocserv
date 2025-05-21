@@ -167,6 +167,48 @@ definitions:
     required:
     - meta
     type: object
+  ocservUser.createOcservUserData:
+    properties:
+      description:
+        example: User for testing VPN access
+        maxLength: 1024
+        type: string
+      expire_at:
+        example: "2025-12-31T23:59:59Z"
+        type: string
+      group:
+        example: default
+        type: string
+      password:
+        example: strongpassword123
+        minLength: 6
+        type: string
+      traffic_size:
+        description: 10 GiB
+        example: 10737418240
+        type: integer
+      traffic_type:
+        enum:
+        - Free
+        - MonthlyTransmit
+        - MonthlyReceive
+        - TotallyTransmit
+        - TotallyReceive
+        example: MonthlyTransmit
+        type: string
+      username:
+        example: john_doe
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - expire_at
+    - group
+    - password
+    - traffic_size
+    - traffic_type
+    - username
+    type: object
   panel.ConfigData:
     properties:
       google_captcha_secret_key:
@@ -253,6 +295,20 @@ definitions:
     required:
     - token
     - user
+    type: object
+  request.ErrorResponse:
+    properties:
+      error:
+        items:
+          type: string
+        type: array
+      message:
+        items:
+          type: string
+        type: array
+    required:
+    - error
+    - message
     type: object
   request.Meta:
     properties:
@@ -353,6 +409,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/ocservUser.OcservUsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -362,6 +422,44 @@ paths:
           schema:
             $ref: '#/definitions/middlewares.PermissionDenied'
       summary: List of Ocserv Users
+      tags:
+      - Ocserv Users
+    post:
+      consumes:
+      - application/json
+      description: Create Ocserv Users
+      parameters:
+      - description: create ocserv user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ocservUser.createOcservUserData'
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/oc.OcservUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
+      summary: Create Ocserv Users
       tags:
       - Ocserv Users
   /panel/config:
@@ -382,6 +480,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -412,6 +514,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/panel.ConfigResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -431,6 +537,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/panel.InitResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
       summary: Get panel Init Config
       tags:
       - Panel
@@ -454,6 +564,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/panel.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
       summary: Admin and Staff users login
       tags:
       - Panel
@@ -476,6 +590,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/panel.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
       summary: Setup panel with admin user
       tags:
       - Panel
@@ -501,6 +619,10 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -526,6 +648,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -573,6 +699,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user.StaffsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -607,6 +737,10 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -639,6 +773,10 @@ paths:
       responses:
         "204":
           description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -677,6 +815,10 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -715,6 +857,10 @@ paths:
       responses:
         "200":
           description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
         "401":
           description: Unauthorized
           schema:

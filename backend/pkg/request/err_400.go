@@ -8,14 +8,12 @@ import (
 )
 
 type ErrorResponse struct {
-	Error string `json:"error" validate:"required"`
+	Error   []string `json:"error" validate:"required"`
+	Message []string `json:"message" validate:"required"`
 }
 
 func (r *Request) BadRequest(c echo.Context, err interface{}, msg ...string) error {
-	var response struct {
-		Error   []string
-		Message []string
-	}
+	var response ErrorResponse
 
 	switch err.(type) {
 	case error:

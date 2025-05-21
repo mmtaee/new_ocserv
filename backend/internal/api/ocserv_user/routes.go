@@ -11,5 +11,6 @@ func Routes(e *echo.Group) {
 	group := e.Group("/oc_users", middlewares.AuthMiddleware(), middlewares.RoutePermission())
 
 	group.GET("", controller.GetUsers)
+	group.POST("", controller.CreateUser)
 
 }

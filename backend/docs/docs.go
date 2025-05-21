@@ -75,6 +75,69 @@ const docTemplate = `{
                             "$ref": "#/definitions/ocservUser.OcservUsersResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.PermissionDenied"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Ocserv Users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "Create Ocserv Users",
+                "parameters": [
+                    {
+                        "description": "create ocserv user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ocservUser.createOcservUserData"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/oc.OcservUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -117,6 +180,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/panel.ConfigResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
                         }
                     },
                     "401": {
@@ -164,6 +233,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/panel.ConfigResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -191,6 +266,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/panel.InitResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
                         }
                     }
                 }
@@ -226,6 +307,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/panel.UserResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
                     }
                 }
             }
@@ -259,6 +346,12 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/panel.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
                         }
                     }
                 }
@@ -299,6 +392,12 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -335,6 +434,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
                         }
                     },
                     "401": {
@@ -406,6 +511,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/user.StaffsResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -457,6 +568,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.User"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -504,6 +621,12 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
                     },
                     "401": {
                         "description": "Unauthorized",
@@ -562,6 +685,12 @@ const docTemplate = `{
                     "200": {
                         "description": "OK"
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -618,6 +747,12 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
                     },
                     "401": {
                         "description": "Unauthorized",
@@ -884,6 +1019,59 @@ const docTemplate = `{
                 }
             }
         },
+        "ocservUser.createOcservUserData": {
+            "type": "object",
+            "required": [
+                "expire_at",
+                "group",
+                "password",
+                "traffic_size",
+                "traffic_type",
+                "username"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 1024,
+                    "example": "User for testing VPN access"
+                },
+                "expire_at": {
+                    "type": "string",
+                    "example": "2025-12-31T23:59:59Z"
+                },
+                "group": {
+                    "type": "string",
+                    "example": "default"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "strongpassword123"
+                },
+                "traffic_size": {
+                    "description": "10 GiB",
+                    "type": "integer",
+                    "example": 10737418240
+                },
+                "traffic_type": {
+                    "type": "string",
+                    "enum": [
+                        "Free",
+                        "MonthlyTransmit",
+                        "MonthlyReceive",
+                        "TotallyTransmit",
+                        "TotallyReceive"
+                    ],
+                    "example": "MonthlyTransmit"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 3,
+                    "example": "john_doe"
+                }
+            }
+        },
         "panel.ConfigData": {
             "type": "object",
             "properties": {
@@ -1007,6 +1195,27 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/models.User"
+                }
+            }
+        },
+        "request.ErrorResponse": {
+            "type": "object",
+            "required": [
+                "error",
+                "message"
+            ],
+            "properties": {
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

@@ -46,6 +46,7 @@ func New() *Controller {
 // @Tags         Panel
 // @Accept       json
 // @Produce      json
+// @Failure      400 {object} request.ErrorResponse
 // @Success      200  {object}  InitResponse
 // @Router       /panel/init [get]
 func (ctrl *Controller) Init(c echo.Context) error {
@@ -73,6 +74,7 @@ func (ctrl *Controller) Init(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param        request    body  SetupData   true "setup config data"
+// @Failure      400 {object} request.ErrorResponse
 // @Success      201  {object}  UserResponse
 // @Router       /panel/setup/ [post]
 func (ctrl *Controller) Setup(c echo.Context) error {
@@ -143,6 +145,7 @@ func (ctrl *Controller) Setup(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param        request    body  LoginData   true "setup config data"
+// @Failure      400 {object} request.ErrorResponse
 // @Success      201  {object}  UserResponse
 // @Router       /panel/login/ [post]
 func (ctrl *Controller) Login(c echo.Context) error {
@@ -188,6 +191,7 @@ func (ctrl *Controller) Login(c echo.Context) error {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      400 {object} request.ErrorResponse
 // @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  ConfigResponse
 // @Router       /panel/config [get]
@@ -211,6 +215,7 @@ func (ctrl *Controller) Config(c echo.Context) error {
 // @Produce      json
 // @Param        Authorization header string true "Bearer TOKEN"
 // @Param        request    body  ConfigData   true "update config data"
+// @Failure      400 {object} request.ErrorResponse
 // @Failure      401 {object} middlewares.Unauthorized
 // @Success      200  {object}  ConfigResponse
 // @Router       /panel/config [patch]
