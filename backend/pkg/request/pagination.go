@@ -16,13 +16,8 @@ type Pagination struct {
 type Meta struct {
 	Page         int   `json:"page" validate:"required"`
 	PageSize     int   `json:"page_size" validate:"required"`
-	TotalRecords int64 `json:"total_records" validate:"omitempty"`
+	TotalRecords int64 `json:"total_records" validate:"required"`
 }
-
-//type ResponseWithPagination struct {
-//	Meta   Meta        `json:"meta"`
-//	Result interface{} `json:"result"`
-//}
 
 func (r *Request) Pagination() *Pagination {
 	return &Pagination{

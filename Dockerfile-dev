@@ -43,8 +43,6 @@ RUN chmod +x /entrypoint.sh /server.sh /ocserv_api
 
 EXPOSE 443/tcp 443/udp
 
-RUN apt update && apt install -y
-
 VOLUME ["/etc/ocserv", "/app", "/var/log/ocserv"]
 
 ENTRYPOINT ["/entrypoint.sh"]

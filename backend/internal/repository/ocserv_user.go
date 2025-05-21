@@ -2,12 +2,15 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"ocserv/pkg/database"
 	"ocserv/pkg/oc"
 	"ocserv/pkg/request"
 	"slices"
+	"strings"
 )
 
 type OcservUserRepository struct {
@@ -77,17 +80,19 @@ func (o *OcservUserRepository) GetUsersWithOnlineAttr(ctx context.Context, pagin
 		}
 	}
 
-	return nil, 0, nil
+	return users, count, nil
 }
 
 func (o *OcservUserRepository) CreateUser(ctx context.Context, user *oc.OcservUser) (*oc.OcservUser, error) {
 	err := o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(user).Error; err != nil {
 			// create error
+			log.Println("create error: ", err)
 			return err
 		}
 
 		if err := o.ocUserRepo.CreateUser(ctx, user.Username, user.Password, user.Group); err != nil {
+			log.Println("CreateUser in os rollback error: ", err)
 			// rollback create
 			return err
 		}
@@ -97,6 +102,10 @@ func (o *OcservUserRepository) CreateUser(ctx context.Context, user *oc.OcservUs
 	})
 
 	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			return nil, errors.New("user with that user name already exists")
+		}
+		log.Println("return transaction error: ", err)
 		return nil, err
 	}
 	return user, nil

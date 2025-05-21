@@ -40,6 +40,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'StaffsPage',
         component: () => import('../views/StaffView.vue'),
     },
+    {
+        path: '/oc_user',
+        name: 'OcservUserPage',
+        component: () => import('../views/OcservUserView.vue'),
+    },
     // {
     //     path: '/error',
     //     name: 'ErrorPage',

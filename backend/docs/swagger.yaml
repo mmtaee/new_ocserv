@@ -174,7 +174,7 @@ definitions:
         maxLength: 1024
         type: string
       expire_at:
-        example: "2025-12-31T23:59:59Z"
+        example: "2025-12-31"
         type: string
       group:
         example: default
@@ -321,6 +321,7 @@ definitions:
     required:
     - page
     - page_size
+    - total_records
     type: object
   user.ChangePasswordData:
     properties:

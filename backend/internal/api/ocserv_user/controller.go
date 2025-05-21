@@ -6,6 +6,7 @@ import (
 	"ocserv/internal/repository"
 	"ocserv/pkg/oc"
 	"ocserv/pkg/request"
+	"time"
 )
 
 type Controller struct {
@@ -27,10 +28,10 @@ func New() *Controller {
 // @Tags         Ocserv Users
 // @Accept       json
 // @Produce      json
-// @Param page query int false "Page number, starting from 1" minimum(1)
-// @Param page_size query int false "Number of items per page" minimum(1) maximum(100)
-// @Param order query string false "Field to order by"
-// @Param sort query string false "Sort order, either ASC or DESC" Enums(ASC, DESC)
+// @Param 		 page query int false "Page number, starting from 1" minimum(1)
+// @Param 		 page_size query int false "Number of items per page" minimum(1) maximum(100)
+// @Param 		 order query string false "Field to order by"
+// @Param 		 sort query string false "Sort order, either ASC or DESC" Enums(ASC, DESC)
 // @Param        Authorization header string true "Bearer TOKEN"
 // @Failure      400 {object} request.ErrorResponse
 // @Failure      401 {object} middlewares.Unauthorized
@@ -77,12 +78,16 @@ func (ctrl *Controller) CreateUser(c echo.Context) error {
 	if data.TrafficSize == 0 {
 		data.TrafficSize = 10 * 1024 * 1024 * 1024
 	}
+	parsed, err := time.Parse("2006-01-02", data.ExpireAt)
+	if err != nil {
+		parsed, _ = time.Parse("2006-01-02", time.Now().AddDate(0, 0, 30).Format("2006-01-02"))
+	}
 
 	ocUser := oc.OcservUser{
 		Group:       data.Group,
 		Username:    data.Username,
 		Password:    data.Password,
-		ExpireAt:    data.ExpireAt,
+		ExpireAt:    &parsed,
 		TrafficType: data.TrafficType,
 		TrafficSize: data.TrafficSize,
 		Description: data.Description,

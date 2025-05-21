@@ -37,6 +37,6 @@ export interface RequestMeta {
      * @type {number}
      * @memberof RequestMeta
      */
-    'total_records'?: number;
+    'total_records': number;
 }
 

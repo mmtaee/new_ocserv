@@ -1,11 +1,18 @@
 <script lang="ts" setup>
 import {computed, defineAsyncComponent, onBeforeMount, reactive, ref} from "vue";
 import type {DataTableHeader} from 'vuetify'
-import {type ModelsUser, UserApi, type UserChangeStaffPassword, type UserCreateStaffData} from "@/api";
+import {
+  type ModelsUser,
+  type RequestMeta,
+  UserApi,
+  type UserChangeStaffPassword,
+  type UserCreateStaffData
+} from "@/api";
 import {useSnackbarStore} from "@/stores/snackbar.ts";
 import {useI18n} from "vue-i18n";
 import {requiredRule} from "@/utils/rules.ts";
 import {getAuthorization} from "@/utils/request.ts";
+import {formatDate} from "@/utils/dates.ts"
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
@@ -13,10 +20,12 @@ const {t} = useI18n()
 const snackbar = useSnackbarStore()
 const loading = ref(false)
 const btnLoading = ref(false)
-const totalItems = ref(0)
-const page = ref(1)
-const pageSize = ref(10)
-const totalRecord = ref(0)
+
+const meta = reactive<RequestMeta>({
+  page: 1,
+  page_size: 10,
+  total_records: 0
+})
 const pageCount = ref(0)
 const permDialog = ref(false)
 const deleteDialog = ref(false)
@@ -60,7 +69,7 @@ const headers: DataTableHeader[] = [
   {title: t("ID"), key: 'id', align: 'center'},
   {title: t("USERNAME"), key: 'username', align: 'center'},
   {title: t("LAST_LOGIN"), key: 'last_login', align: 'center'},
-  {title: t("ACTION"), key: 'actions', align: 'center'},
+  {title: t("ACTIONS"), key: 'actions', align: 'center'},
 ]
 const rules = {
   required: (v: string) => requiredRule(v, t),
@@ -78,30 +87,21 @@ const permission = (user: ModelsUser) => {
 const fetchStaffs = () => {
   loading.value = true
   const api = new UserApi()
-  api.userStaffsGet(getAuthorization()).then((res) => {
-    Object.assign(staffData, res.data.result)
-    page.value = res.data.meta.page
-    pageSize.value = res.data.meta.page_size
-    totalRecord.value = res.data.meta?.total_records || 0
-    pageCount.value = Math.ceil(totalRecord.value / pageSize.value);
+  api.userStaffsGet(
+      {
+        ...getAuthorization(),
+        page: meta.page,
+        pageSize: meta.page_size,
+      }
+  ).then((res) => {
+    staffData.splice(0, staffData.length, ...res.data.result || [])
+    Object.assign(meta, res.data.meta)
+    pageCount.value = Math.ceil(meta.total_records / meta.page_size);
   }).finally(() => {
     loading.value = false
   })
 }
 
-const formatDate = (dateString: string | undefined): string => {
-  if (!dateString) {
-    return t("NOT_LOGIN_YET")
-  }
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
-}
 
 const addStaff = () => {
   btnLoading.value = true
@@ -240,7 +240,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
       <v-data-table
           :headers="headers"
           :items="staffData"
-          :items-length="totalItems"
+          :items-length="meta.total_records"
           :loading="loading"
           :no-data-text="t('No Data Found')"
           disable-sort
@@ -264,7 +264,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         </template>
 
         <template #item.last_login="{ item }">
-          {{ formatDate(item.last_login) }}
+          {{ formatDate(item.last_login, t("NOT_LOGIN_YET")) }}
         </template>
 
         <template #item.actions="{ item }">
@@ -291,7 +291,7 @@ const sortedUpdatePermissionKeys = computed<(keyof typeof selectedUser.permissio
         <template v-slot:bottom>
           <div v-if="pageCount>1" class="text-center pt-2">
             <v-pagination
-                v-model="page"
+                v-model="meta.page"
                 :length="pageCount"
                 @update:modelValue="fetchStaffs"
             />

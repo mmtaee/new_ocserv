@@ -1037,7 +1037,7 @@ const docTemplate = `{
                 },
                 "expire_at": {
                     "type": "string",
-                    "example": "2025-12-31T23:59:59Z"
+                    "example": "2025-12-31"
                 },
                 "group": {
                     "type": "string",
@@ -1223,7 +1223,8 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "page",
-                "page_size"
+                "page_size",
+                "total_records"
             ],
             "properties": {
                 "page": {
