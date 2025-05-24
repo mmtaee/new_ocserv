@@ -155,6 +155,26 @@ definitions:
         type: string
       username:
         type: string
+    required:
+    - created_at
+    - group
+    - is_locked
+    - is_online
+    - password
+    - rx
+    - traffic_size
+    - traffic_type
+    - tx
+    - uid
+    - username
+    type: object
+  ocservUser.LockOcservUserData:
+    properties:
+      lock:
+        example: false
+        type: boolean
+    required:
+    - lock
     type: object
   ocservUser.OcservUsersResponse:
     properties:
@@ -202,7 +222,6 @@ definitions:
         minLength: 3
         type: string
     required:
-    - expire_at
     - group
     - password
     - traffic_size
@@ -461,6 +480,48 @@ paths:
           schema:
             $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Create Ocserv Users
+      tags:
+      - Ocserv Users
+  /oc_users/{uid}/lock:
+    post:
+      consumes:
+      - application/json
+      description: Lock Or Unlock Ocserv Users
+      parameters:
+      - description: Ocserv User UID
+        in: path
+        name: uid
+        required: true
+        type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: lock or unlock ocserv user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ocservUser.LockOcservUserData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
+      summary: Lock Or Unlock Ocserv Users
       tags:
       - Ocserv Users
   /panel/config:

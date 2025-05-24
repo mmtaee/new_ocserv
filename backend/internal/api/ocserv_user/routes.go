@@ -12,5 +12,6 @@ func Routes(e *echo.Group) {
 
 	group.GET("", controller.GetUsers)
 	group.POST("", controller.CreateUser)
+	group.POST("/:uid/lock", controller.Lock)
 
 }

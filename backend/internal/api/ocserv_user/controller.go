@@ -2,6 +2,7 @@ package ocservUser
 
 import (
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 	"ocserv/internal/repository"
 	"ocserv/pkg/oc"
@@ -39,7 +40,11 @@ func New() *Controller {
 // @Success      200  {object}  OcservUsersResponse
 // @Router       /oc_users [get]
 func (ctrl *Controller) GetUsers(c echo.Context) error {
-	pagination := ctrl.request.Pagination()
+	pagination := ctrl.request.Pagination(c)
+
+	log.Println(&pagination)
+	log.Println(*pagination)
+
 	ocUsers, count, err := ctrl.ocservUserRepo.GetUsersWithOnlineAttr(c.Request().Context(), pagination)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
@@ -99,4 +104,31 @@ func (ctrl *Controller) CreateUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, ocUserCreated)
+}
+
+// Lock			 Unlock Or Lock Ocserv Users
+//
+// @Summary      Lock Or Unlock Ocserv Users
+// @Description  Lock Or Unlock Ocserv Users
+// @Tags         Ocserv Users
+// @Accept       json
+// @Produce      json
+// @Param 		 uid path string true "Ocserv User UID"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Param        request body  LockOcservUserData   true "lock or unlock ocserv user data"
+// @Failure      400 {object} request.ErrorResponse
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
+// @Success      200  {object}  nil
+// @Router       /oc_users/{uid}/lock [post]
+func (ctrl *Controller) Lock(c echo.Context) error {
+	var data LockOcservUserData
+
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	userUID := c.Param("uid")
+	log.Println(userUID)
+	return c.NoContent(http.StatusOK)
 }

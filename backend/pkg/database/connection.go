@@ -12,7 +12,7 @@ var DB *gorm.DB
 func Connect(debug bool) {
 	cfg := config.Get()
 
-	log.Println("Connecting to database...")
+	log.Printf("Connecting to database %s ...", cfg.Databases)
 	db, err := gorm.Open(sqlite.Open(cfg.Databases), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database")

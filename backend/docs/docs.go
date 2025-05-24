@@ -153,6 +153,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/oc_users/{uid}/lock": {
+            "post": {
+                "description": "Lock Or Unlock Ocserv Users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "Lock Or Unlock Ocserv Users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ocserv User UID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "lock or unlock ocserv user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ocservUser.LockOcservUserData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.PermissionDenied"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/config": {
             "get": {
                 "description": "Get panel Config",
@@ -944,6 +1007,19 @@ const docTemplate = `{
         },
         "oc.OcservUser": {
             "type": "object",
+            "required": [
+                "created_at",
+                "group",
+                "is_locked",
+                "is_online",
+                "password",
+                "rx",
+                "traffic_size",
+                "traffic_type",
+                "tx",
+                "uid",
+                "username"
+            ],
             "properties": {
                 "created_at": {
                     "type": "string"
@@ -1002,6 +1078,18 @@ const docTemplate = `{
                 }
             }
         },
+        "ocservUser.LockOcservUserData": {
+            "type": "object",
+            "required": [
+                "lock"
+            ],
+            "properties": {
+                "lock": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
         "ocservUser.OcservUsersResponse": {
             "type": "object",
             "required": [
@@ -1022,7 +1110,6 @@ const docTemplate = `{
         "ocservUser.createOcservUserData": {
             "type": "object",
             "required": [
-                "expire_at",
                 "group",
                 "password",
                 "traffic_size",
