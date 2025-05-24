@@ -10,9 +10,17 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  width : {
+  width: {
     type: String,
     default: "auto"
+  },
+  divider: {
+    type: Boolean,
+    default: true
+  },
+  hide_action: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -24,7 +32,7 @@ watch(() => props.show, (newVal) => {
   showDialog.value = newVal
 })
 
-const close = ()=>{
+const close = () => {
   emit("close", true)
 }
 
@@ -34,8 +42,8 @@ const close = ()=>{
   <v-dialog
       v-model="showDialog"
       :persistent="persistent"
-      transition="dialog-top-transition"
       :width="width"
+      transition="dialog-top-transition"
       @update:modelValue="close"
   >
     <v-card>
@@ -47,11 +55,12 @@ const close = ()=>{
         <slot name="dialogText"/>
       </v-card-text>
 
-      <v-divider class="mb-3" />
+      <v-divider v-if="divider" class="mb-3"/>
 
-      <v-card-actions class="justify-end me-2 mb-2">
+      <v-card-actions v-if="!hide_action" class="justify-end me-2 mb-2">
         <slot name="dialogAction"/>
       </v-card-actions>
+
     </v-card>
   </v-dialog>
 </template>

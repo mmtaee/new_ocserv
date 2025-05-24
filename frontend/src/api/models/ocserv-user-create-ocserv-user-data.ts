@@ -31,7 +31,7 @@ export interface OcservUserCreateOcservUserData {
      * @type {string}
      * @memberof OcservUserCreateOcservUserData
      */
-    'expire_at': string;
+    'expire_at'?: string;
     /**
      * 
      * @type {string}

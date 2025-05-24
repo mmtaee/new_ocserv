@@ -30,6 +30,8 @@ import type { OcOcservUser } from '../models';
 // @ts-ignore
 import type { OcservUserCreateOcservUserData } from '../models';
 // @ts-ignore
+import type { OcservUserLockOcservUserData } from '../models';
+// @ts-ignore
 import type { OcservUserOcservUsersResponse } from '../models';
 // @ts-ignore
 import type { RequestErrorResponse } from '../models';
@@ -137,6 +139,52 @@ export const OcservUsersApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Lock Or Unlock Ocserv Users
+         * @summary Lock Or Unlock Ocserv Users
+         * @param {string} uid Ocserv User UID
+         * @param {string} authorization Bearer TOKEN
+         * @param {OcservUserLockOcservUserData} request lock or unlock ocserv user data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ocUsersUidLockPost: async (uid: string, authorization: string, request: OcservUserLockOcservUserData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'uid' is not null or undefined
+            assertParamExists('ocUsersUidLockPost', 'uid', uid)
+            // verify required parameter 'authorization' is not null or undefined
+            assertParamExists('ocUsersUidLockPost', 'authorization', authorization)
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('ocUsersUidLockPost', 'request', request)
+            const localVarPath = `/oc_users/{uid}/lock`
+                .replace(`{${"uid"}}`, encodeURIComponent(String(uid)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            if (authorization != null) {
+                localVarHeaderParameter['Authorization'] = String(authorization);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -178,6 +226,21 @@ export const OcservUsersApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['OcservUsersApi.ocUsersPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Lock Or Unlock Ocserv Users
+         * @summary Lock Or Unlock Ocserv Users
+         * @param {string} uid Ocserv User UID
+         * @param {string} authorization Bearer TOKEN
+         * @param {OcservUserLockOcservUserData} request lock or unlock ocserv user data
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async ocUsersUidLockPost(uid: string, authorization: string, request: OcservUserLockOcservUserData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.ocUsersUidLockPost(uid, authorization, request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OcservUsersApi.ocUsersUidLockPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -207,6 +270,16 @@ export const OcservUsersApiFactory = function (configuration?: Configuration, ba
          */
         ocUsersPost(requestParameters: OcservUsersApiOcUsersPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<OcOcservUser> {
             return localVarFp.ocUsersPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lock Or Unlock Ocserv Users
+         * @summary Lock Or Unlock Ocserv Users
+         * @param {OcservUsersApiOcUsersUidLockPostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ocUsersUidLockPost(requestParameters: OcservUsersApiOcUsersUidLockPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.ocUsersUidLockPost(requestParameters.uid, requestParameters.authorization, requestParameters.request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -275,6 +348,34 @@ export interface OcservUsersApiOcUsersPostRequest {
 }
 
 /**
+ * Request parameters for ocUsersUidLockPost operation in OcservUsersApi.
+ * @export
+ * @interface OcservUsersApiOcUsersUidLockPostRequest
+ */
+export interface OcservUsersApiOcUsersUidLockPostRequest {
+    /**
+     * Ocserv User UID
+     * @type {string}
+     * @memberof OcservUsersApiOcUsersUidLockPost
+     */
+    readonly uid: string
+
+    /**
+     * Bearer TOKEN
+     * @type {string}
+     * @memberof OcservUsersApiOcUsersUidLockPost
+     */
+    readonly authorization: string
+
+    /**
+     * lock or unlock ocserv user data
+     * @type {OcservUserLockOcservUserData}
+     * @memberof OcservUsersApiOcUsersUidLockPost
+     */
+    readonly request: OcservUserLockOcservUserData
+}
+
+/**
  * OcservUsersApi - object-oriented interface
  * @export
  * @class OcservUsersApi
@@ -303,6 +404,18 @@ export class OcservUsersApi extends BaseAPI {
      */
     public ocUsersPost(requestParameters: OcservUsersApiOcUsersPostRequest, options?: RawAxiosRequestConfig) {
         return OcservUsersApiFp(this.configuration).ocUsersPost(requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lock Or Unlock Ocserv Users
+     * @summary Lock Or Unlock Ocserv Users
+     * @param {OcservUsersApiOcUsersUidLockPostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OcservUsersApi
+     */
+    public ocUsersUidLockPost(requestParameters: OcservUsersApiOcUsersUidLockPostRequest, options?: RawAxiosRequestConfig) {
+        return OcservUsersApiFp(this.configuration).ocUsersUidLockPost(requestParameters.uid, requestParameters.authorization, requestParameters.request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

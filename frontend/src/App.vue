@@ -24,25 +24,26 @@ const checkIsMobile = () => {
   useIsMobile.setIsMobile(
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       ||
-      window.innerWidth <= 870
+      window.innerWidth <= 890
   )
 }
 
 </script>
 
 <template>
+
   <v-app :theme="theme.global.name.value">
 
     <SideBar/>
     <AppBar/>
 
-    <v-main>
+    <v-main scrollable>
       <CenterLayout>
         <RouterView/>
       </CenterLayout>
     </v-main>
 
     <GlobalSnackbar/>
-    
+
   </v-app>
 </template>

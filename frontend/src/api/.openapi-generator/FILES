@@ -16,6 +16,7 @@ models/models-user.ts
 models/oc-ocserv-default-configs.ts
 models/oc-ocserv-user.ts
 models/ocserv-user-create-ocserv-user-data.ts
+models/ocserv-user-lock-ocserv-user-data.ts
 models/ocserv-user-ocserv-users-response.ts
 models/panel-config-data.ts
 models/panel-config-response.ts

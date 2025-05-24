@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import {
+  type OcOcservUser,
   type OcservUserCreateOcservUserData,
   OcservUserCreateOcservUserDataTrafficTypeEnum,
   type OcservUserOcservUsersResponse
 } from "@/api";
 import type {DataTableHeader} from "vuetify/framework";
 import {useI18n} from "vue-i18n";
-import {defineAsyncComponent, reactive, ref} from "vue";
-import {requiredRule} from "@/utils/rules.ts";
-import {formatDay} from "@/utils/dates.ts"
+import {defineAsyncComponent, ref} from "vue";
+import {bytesToGB} from "@/utils/convertors.ts";
 
-const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
+
+const Pagination = defineAsyncComponent(() => import("@/components/common/Pagination.vue"))
+const Actions = defineAsyncComponent(() => import("@/components/oc_user/desktop/Actions.vue"))
+const Create = defineAsyncComponent(() => import("@/components/oc_user/desktop/Create.vue"))
 
 defineProps<{
   data: OcservUserOcservUsersResponse
@@ -20,61 +23,43 @@ defineProps<{
   btnLoading: boolean
 }>()
 
-const emit = defineEmits(["fetchOcUser", "fetchOcGroups", "addStaff"])
+const emit = defineEmits(["fetchOcUser", "fetchOcGroups", "addUser", "updateUser"])
 
-const {t} = useI18n()
 const addDialog = ref(false)
-const menu = ref(false)
-const today = new Date()
-const futureDate = new Date(today)
-futureDate.setDate(futureDate.getDate() + 30)
-const formattedFutureDate = futureDate.toISOString().split('T')[0]
+const {t} = useI18n()
+
 const headers: DataTableHeader[] = [
-  {title: t("GROUP"), key: 'group', align: 'center'},
-  {title: t("USERNAME"), key: 'username', align: 'center'},
-  {title: t("PASSWORD"), key: 'password', align: 'center'},
-  {title: t("DATES"), key: 'created_at', align: 'center'},
-  {title: t("TRAFFICS"), key: 'traffic_type', align: 'center'},
-  {title: t("TRANSMISSION"), key: 'rx', align: 'center'},
-  {title: t("DESCRIPTION"), key: 'description', align: 'center'},
-  {title: t("STATUS"), key: 'is_online', align: 'center'},
+  {title: t("USER"), key: 'user', align: 'start'},
+  {title: t("TRAFFICS"), key: 'traffics', align: 'start'},
+  {title: t("TRANSMISSION"), key: 'transmission', align: 'start'},
+  {title: t("STATUS"), key: 'status', align: 'center'},
   {title: t("ACTIONS"), key: 'actions', align: 'center'},
 ]
-const createUserValid = ref(true)
-const createUser = reactive<OcservUserCreateOcservUserData>({
-  group: "defaults",
-  username: "",
-  password: "",
-  traffic_size: 0,
-  traffic_type: OcservUserCreateOcservUserDataTrafficTypeEnum.FREE,
-  expire_at: formattedFutureDate
-})
-const rules = {
-  required: (v: string) => requiredRule(v, t),
-}
 
-const fetchOcUser = () => {
-  emit("fetchOcUser")
+
+const fetchOcUser = (page: number, itemPerPage: number, desc: boolean) => {
+  emit("fetchOcUser", page, itemPerPage, desc)
 }
 
 const fetchOcGroups = () => {
   emit("fetchOcGroups")
 }
 
-const addStaff = () => {
-  emit("addStaff", createUser)
+
+const addUser = (user: OcservUserCreateOcservUserData) => {
+  emit("addUser", user)
 }
 
-const resetCreateUser = () => {
-  Object.assign(createUser, {
-    group: "defaults",
-    username: "",
-    password: "",
-    traffic_size: 0,
-    traffic_type: OcservUserCreateOcservUserDataTrafficTypeEnum.FREE,
-    expire_at: formattedFutureDate
-  })
+const updateUser = (user: OcOcservUser) => {
+  emit("updateUser", user)
 }
+
+
+const closeDialogs = () => {
+  addDialog.value = false
+}
+
+defineExpose([closeDialogs])
 
 </script>
 
@@ -93,7 +78,7 @@ const resetCreateUser = () => {
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title class="text-capitalize">
-              <v-icon class="mb-1" color="medium-emphasis" icon="mdi-account-tie-hat" size="large" start></v-icon>
+              <v-icon class="mb-1" color="medium-emphasis" icon="mdi-account-network" size="large" start></v-icon>
               {{ t("OCSERV_USERS") }}
             </v-toolbar-title>
             <v-btn
@@ -107,39 +92,88 @@ const resetCreateUser = () => {
           </v-toolbar>
         </template>
 
-        <!--        <template #item.last_login="{ item }">-->
-        <!--          {{ formatDate(item.last_login) }}-->
-        <!--        </template>-->
+        <template #item.user="{ item }">
+          <div>
+            <span class="text-primary text-capitalize">{{ t("GROUP") }}: </span>
+            <span class="text-grey-darken-2">{{ item.group }}</span>
+          </div>
+          <div>
+            <span class="text-primary text-capitalize">{{ t("USERNAME") }}: </span>
+            <span class="text-grey-darken-2">{{ item.username }}</span>
+          </div>
+          <div>
+            <span class="text-primary text-capitalize">{{ t("PASSWORD") }}: </span>
+            <span class="text-grey-darken-2">{{ item.password }}</span>
+          </div>
+        </template>
 
-        <!--        <template #item.actions="{ item }">-->
-        <!--          <v-icon-->
-        <!--              color="warning"-->
-        <!--              end-->
-        <!--              icon="mdi-door-closed-lock"-->
-        <!--              @click="permission(item)"-->
-        <!--          />-->
-        <!--          <v-icon-->
-        <!--              color="primary"-->
-        <!--              end-->
-        <!--              icon="mdi-key"-->
-        <!--              @click="Object.assign(selectedUser, item); changePasswordDialog = true"-->
-        <!--          />-->
-        <!--          <v-icon-->
-        <!--              color="error"-->
-        <!--              end-->
-        <!--              icon="mdi-delete"-->
-        <!--              @click="Object.assign(selectedUser, item); deleteDialog = true"-->
-        <!--          />-->
-        <!--        </template>-->
+        <template #item.traffics="{ item }">
+          <div>
+            <span class="text-primary text-capitalize">{{ t("TYPE") }}: </span>
+            <span class="text-grey-darken-2">{{ item.traffic_type }}</span>
+          </div>
+
+          <div>
+            <span class="text-primary text-capitalize">{{ t("SIZE_USAGE") }}: </span>
+            <span class="text-grey-darken-2">
+              {{
+                item.traffic_type == OcservUserCreateOcservUserDataTrafficTypeEnum.FREE ? '-' : item.traffic_size + ' (GB)'
+              }}
+            </span>
+          </div>
+        </template>
+
+
+        <template #item.transmission="{ item }">
+          <div>
+            <span class="text-primary text-capitalize">{{ t("RX") }}: </span>
+            <span class="text-grey-darken-2">{{ bytesToGB(item.rx) }} (GB)</span>
+          </div>
+
+          <div>
+            <span class="text-primary text-capitalize">{{ t("TX") }}: </span>
+            <span class="text-grey-darken-2">{{ bytesToGB(item.tx) }} (GB)</span>
+          </div>
+        </template>
+
+        <template #item.status="{ item }">
+          <v-tooltip v-if="item.is_locked" :text="t('IS_LOCKED')">
+            <template #activator="{ props }">
+              <v-icon color="red" v-bind="props">mdi-lock-alert</v-icon>
+            </template>
+          </v-tooltip>
+
+          <v-tooltip v-else :text="t('IS_ACTIVE')">
+            <template #activator="{ props }">
+              <v-icon color="green" v-bind="props">mdi-lock-open-alert</v-icon>
+            </template>
+          </v-tooltip>
+
+          <v-tooltip v-if="item.is_online" :text="t('ONLINE')">
+            <template #activator="{ props }">
+              <v-icon class="ms-2" color="green" v-bind="props">mdi-lan-connect</v-icon>
+            </template>
+          </v-tooltip>
+
+          <v-tooltip v-else :text="t('OFFLINE')">
+            <template #activator="{ props }">
+              <v-icon class="ms-2" color="red" v-bind="props">mdi-lan-disconnect</v-icon>
+            </template>
+          </v-tooltip>
+        </template>
+
+
+        <template #item.actions="{ item }">
+          <Actions :item="item" @updateUser="updateUser"/>
+        </template>
 
         <template v-slot:bottom>
-          <div v-if="data.meta.total_records>1" class="text-center pt-2">
-            <v-pagination
-                v-model="data.meta.page"
-                :length="pageCount"
-                @update:modelValue="fetchOcUser"
-            />
-          </div>
+          <Pagination
+              :page="data.meta.page"
+              :pageCount="pageCount"
+              :totalRecords="data.meta.total_records"
+              @reFetch="fetchOcUser"
+          />
         </template>
 
       </v-data-table>
@@ -147,120 +181,13 @@ const resetCreateUser = () => {
 
   </v-card>
 
-  <Modal :persistent="false" :show="addDialog" width="750" @close="addDialog=!addDialog">
-    <template #dialogTitle>
-      {{ t("CREATE_OCSERV_USER") }}
-    </template>
-
-    <template #dialogText>
-      <v-form v-model="createUserValid">
-        <v-row align="center" class="pa-1" justify="start">
-
-          <v-col cols="12" md="4" sm="6">
-            <v-select
-                v-model="createUser.group"
-                :items="groups"
-                :no-data-text="t('NO_GROUP_FOUND')"
-                :rules="[rules.required]"
-                density="comfortable"
-                variant="underlined"
-            />
-          </v-col>
-
-
-          <v-col cols="12" md="4" sm="6">
-            <v-text-field
-                v-model="createUser.username"
-                :label="t('USERNAME')"
-                :rules="[rules.required]"
-                clearable
-                density="comfortable"
-                variant="underlined"
-            />
-          </v-col>
-
-          <v-col cols="12" md="4" sm="6">
-            <v-text-field
-                v-model="createUser.password"
-                :label="t('PASSWORD')"
-                :rules="[rules.required]"
-                density="comfortable"
-                variant="underlined"
-            />
-          </v-col>
-
-          <v-col cols="12" md="4" sm="6">
-            <v-menu
-                v-model="menu"
-                :close-on-content-click="false"
-                offset-y
-                transition="scale-transition"
-            >
-              <template #activator="{ props }">
-                <v-text-field
-                    v-model="createUser.expire_at"
-                    :label="t('EXPIRE_AT')"
-                    :rules="[rules.required]"
-                    density="comfortable"
-                    readonly
-                    v-bind="props"
-                    variant="underlined"
-                />
-              </template>
-              <v-date-picker
-                  v-model="createUser.expire_at"
-                  elevation="24"
-                  header=""
-                  title=""
-                  @update:model-value="createUser.expire_at=formatDay(createUser.expire_at); menu = false"
-              />
-            </v-menu>
-          </v-col>
-
-          <v-col cols="12" md="4" sm="6">
-            <v-number-input
-                v-model="createUser.traffic_size"
-                :label="t('TRAFFIC_SIZE')"
-                :min="0"
-                :rules="[rules.required]"
-                controlVariant="hidden"
-                density="comfortable"
-                variant="underlined"
-            />
-          </v-col>
-
-          <v-col cols="12" md="4" sm="6">
-            <v-select
-                v-model="createUser.traffic_type"
-                :items="Object.values(OcservUserCreateOcservUserDataTrafficTypeEnum)"
-                :rules="[rules.required]"
-                density="comfortable"
-                variant="underlined"
-            />
-          </v-col>
-        </v-row>
-      </v-form>
-    </template>
-
-    <template #dialogAction>
-      <v-btn
-          :text="t('CLOSE')"
-          class="me-2"
-          color="grey"
-          variant="outlined"
-          @click="addDialog=false;resetCreateUser()"
-      />
-      <v-btn
-          :disabled="!createUserValid"
-          :loading="btnLoading"
-          :text="t('ADD_STAFF')"
-          class="me-1"
-          color="success"
-          variant="outlined"
-          @click="addStaff"
-      />
-    </template>
-
-  </Modal>
-
+  <Create
+      v-model="addDialog"
+      :btnLoading="btnLoading"
+      :data="data"
+      :groups="groups"
+      :loading="loading"
+      :pageCount="pageCount"
+      @addUser="addUser"
+  />
 </template>

@@ -5,6 +5,7 @@ export * from './models-user';
 export * from './oc-ocserv-default-configs';
 export * from './oc-ocserv-user';
 export * from './ocserv-user-create-ocserv-user-data';
+export * from './ocserv-user-lock-ocserv-user-data';
 export * from './ocserv-user-ocserv-users-response';
 export * from './panel-config-data';
 export * from './panel-config-response';

@@ -2,10 +2,10 @@
 import {defineAsyncComponent, onBeforeMount, reactive, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 import {
+  type OcOcservUser,
   type OcservUserCreateOcservUserData,
   type OcservUserOcservUsersResponse,
-  OcservUsersApi,
-  type RequestMeta
+  OcservUsersApi
 } from "@/api";
 import {getAuthorization} from "@/utils/request.ts";
 
@@ -15,36 +15,33 @@ const MobileView = defineAsyncComponent(() => import("@/components/oc_user/mobil
 const useIsMobile = useIsMobileStore()
 const loading = ref(true)
 const btnLoading = ref(false)
-const meta = reactive<RequestMeta>({
-  page: 1,
-  page_size: 10,
-  total_records: 0
-})
+
 const pageCount = ref(0)
 const data = reactive<OcservUserOcservUsersResponse>({
   meta: {
     page: 1,
-    page_size: 10,
+    page_size: 5,
     total_records: 0
   },
   result: undefined
 })
 
 const groups = reactive<string[]>([])
-
+const childRef = ref()
 
 onBeforeMount(() => {
-  fetchOcUser()
+  fetchOcUser(data.meta.page, data.meta.page_size, false)
 })
 
-const fetchOcUser = () => {
+const fetchOcUser = (page: number, pageSize: number, desc: boolean) => {
   loading.value = true
   const api = new OcservUsersApi()
   api.ocUsersGet(
       {
         ...getAuthorization(),
-        page: meta.page,
-        pageSize: meta.page_size,
+        page: page,
+        pageSize: pageSize,
+        sort: desc ? "DESC" : "ASC"
       }
   ).then((res) => {
     Object.assign(data, res.data)
@@ -60,23 +57,28 @@ const fetchOcGroups = () => {
   groups.unshift("defaults")
 }
 
-const addStaff = (data: OcservUserCreateOcservUserData) => {
+const addUser = (updateData: OcservUserCreateOcservUserData) => {
   btnLoading.value = true
   const api = new OcservUsersApi()
   api.ocUsersPost({
     ...getAuthorization(),
-    request: data,
-  }).then((_) => {
-    Object.assign(meta, {
-      page: 1,
-      page_size: 10,
-      total_records: 0
-    })
-    fetchOcUser()
+    request: updateData,
+  }).then((res) => {
+    childRef.value?.closeDialogs()
+    data.result?.unshift(res.data)
   }).finally(() => {
     btnLoading.value = false
   })
+}
 
+const updateUser = (user: OcOcservUser) => {
+  const result = data.result
+  if (!result) return
+
+  const index = result.findIndex((u) => u.uid === user.uid)
+  if (index >= 0) {
+    data.result?.splice(index, 1, user)
+  }
 }
 
 </script>
@@ -84,13 +86,15 @@ const addStaff = (data: OcservUserCreateOcservUserData) => {
 <template>
   <component
       :is="useIsMobile.isMobile ? MobileView: DesktopView"
+      ref="childRef"
       :btnLoading="btnLoading"
       :data="data"
       :groups="groups"
       :loading="loading"
       :pageCount="pageCount"
-      @addStaff="addStaff"
+      @addUser="addUser"
       @fetchOcGroups="fetchOcGroups"
       @fetchOcUser="fetchOcUser"
+      @updateUser="updateUser"
   />
 </template>

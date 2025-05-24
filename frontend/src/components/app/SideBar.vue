@@ -97,6 +97,7 @@ watch(
     {immediate: true}
 )
 
+
 </script>
 
 <template>
@@ -104,7 +105,10 @@ watch(
       v-if="user"
       v-model="drawer"
       :rail="rail"
+      floating
       permanent
+      persistent
+      width="210"
       @click="useIsMobile.isMobile? false : rail = false"
   >
     <v-list>

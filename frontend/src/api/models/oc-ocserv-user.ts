@@ -25,7 +25,7 @@ export interface OcOcservUser {
      * @type {string}
      * @memberof OcOcservUser
      */
-    'created_at'?: string;
+    'created_at': string;
     /**
      * 
      * @type {string}
@@ -49,55 +49,55 @@ export interface OcOcservUser {
      * @type {string}
      * @memberof OcOcservUser
      */
-    'group'?: string;
+    'group': string;
     /**
      * 
      * @type {boolean}
      * @memberof OcOcservUser
      */
-    'is_locked'?: boolean;
+    'is_locked': boolean;
     /**
      * 
      * @type {boolean}
      * @memberof OcOcservUser
      */
-    'is_online'?: boolean;
+    'is_online': boolean;
     /**
      * 
      * @type {string}
      * @memberof OcOcservUser
      */
-    'password'?: string;
+    'password': string;
     /**
      * Receive in bytes
      * @type {number}
      * @memberof OcOcservUser
      */
-    'rx'?: number;
+    'rx': number;
     /**
      * in GiB  >> x * 1024 ** 3
      * @type {number}
      * @memberof OcOcservUser
      */
-    'traffic_size'?: number;
+    'traffic_size': number;
     /**
      * 
      * @type {string}
      * @memberof OcOcservUser
      */
-    'traffic_type'?: OcOcservUserTrafficTypeEnum;
+    'traffic_type': OcOcservUserTrafficTypeEnum;
     /**
      * Transmit in bytes
      * @type {number}
      * @memberof OcOcservUser
      */
-    'tx'?: number;
+    'tx': number;
     /**
      * 
      * @type {string}
      * @memberof OcOcservUser
      */
-    'uid'?: string;
+    'uid': string;
     /**
      * 
      * @type {string}
@@ -109,7 +109,7 @@ export interface OcOcservUser {
      * @type {string}
      * @memberof OcOcservUser
      */
-    'username'?: string;
+    'username': string;
 }
 
 export const OcOcservUserTrafficTypeEnum = {
