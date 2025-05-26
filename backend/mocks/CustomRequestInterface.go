@@ -59,17 +59,17 @@ func (_m *CustomRequestInterface) DoValidate(_a0 echo.Context, _a1 interface{}) 
 	return r0
 }
 
-// Pagination provides a mock function with no fields
-func (_m *CustomRequestInterface) Pagination() *request.Pagination {
-	ret := _m.Called()
+// Pagination provides a mock function with given fields: c
+func (_m *CustomRequestInterface) Pagination(c echo.Context) *request.Pagination {
+	ret := _m.Called(c)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Pagination")
 	}
 
 	var r0 *request.Pagination
-	if rf, ok := ret.Get(0).(func() *request.Pagination); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(echo.Context) *request.Pagination); ok {
+		r0 = rf(c)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*request.Pagination)

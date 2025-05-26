@@ -23,3 +23,11 @@ type createOcservUserData struct {
 type LockOcservUserData struct {
 	Lock *bool `json:"lock" validate:"required" example:"false"`
 }
+
+type UpdateOcservUserData struct {
+	Group       string `json:"group" validate:"required" example:"default"`
+	Password    string `json:"password" validate:"required,min=6" example:"strongpassword123"`
+	TrafficType string `json:"traffic_type" validate:"required,oneof=Free MonthlyTransmit MonthlyReceive TotallyTransmit TotallyReceive" example:"MonthlyTransmit"`
+	TrafficSize int    `json:"traffic_size" validate:"required,gt=0" example:"10737418240"` // 10 GiB
+	Description string `json:"description,omitempty" validate:"omitempty,max=1024" example:"User for testing VPN access"`
+}

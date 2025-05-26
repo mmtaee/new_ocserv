@@ -80,6 +80,66 @@ func (_m *OcservGroupServiceInterface) GetGroup(name string) (*oc.OcservDefaultC
 	return r0, r1
 }
 
+// GetGroupNames provides a mock function with no fields
+func (_m *OcservGroupServiceInterface) GetGroupNames() (*[]string, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetGroupNames")
+	}
+
+	var r0 *[]string
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (*[]string, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() *[]string); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetGroups provides a mock function with no fields
+func (_m *OcservGroupServiceInterface) GetGroups() (*[]oc.GroupInfo, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetGroups")
+	}
+
+	var r0 *[]oc.GroupInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (*[]oc.GroupInfo, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() *[]oc.GroupInfo); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]oc.GroupInfo)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // UpdateDefaultGroup provides a mock function with given fields: group
 func (_m *OcservGroupServiceInterface) UpdateDefaultGroup(group *oc.OcservDefaultConfigs) error {
 	ret := _m.Called(group)

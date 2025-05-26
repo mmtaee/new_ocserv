@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -245,4 +246,50 @@ func occtlExec(c context.Context, command string) ([]byte, error) {
 		return nil, err
 	}
 	return output, nil
+}
+
+// createOrUpdate handler for group files
+func createOrUpdate(group *OcservDefaultConfigs, path string) error {
+	// os.O_WRONLY: Open the file write-only.
+	// os.O_CREATE: Create the file if it doesn't exist.
+	// os.O_TRUNC: Truncate the file (i.e., make it empty) if it exists.
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to create file: %w", err)
+	}
+	defer func() {
+		if closeErr := file.Close(); closeErr != nil {
+			log.Println(fmt.Sprintf("failed to close file: %v", closeErr))
+		}
+	}()
+	return groupWriter(file, group)
+}
+
+// getGroupList handler to get group name and path
+func getGroupList() ([]GroupInfo, error) {
+	var groupsInfo []GroupInfo
+
+	err := filepath.Walk(groupDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			groupsInfo = append(groupsInfo, GroupInfo{
+				Name: info.Name(),
+				Path: path,
+			})
+		}
+		return nil
+	})
+	return groupsInfo, err
+}
+
+// getGroupConfig handler to get group config with path entry
+func getGroupConfig(path string) (*OcservDefaultConfigs, error) {
+	groupConf, err := parseConfigFile(path)
+	if err != nil {
+		fmt.Printf("Error parsing file %s: %v\n", path, err)
+		return nil, err
+	}
+	return groupConf, nil
 }

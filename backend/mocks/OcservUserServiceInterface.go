@@ -38,6 +38,60 @@ func (_m *OcservUserServiceInterface) CreateUser(ctx context.Context, username s
 	return r0
 }
 
+// DeleteUser provides a mock function with given fields: ctx, username
+func (_m *OcservUserServiceInterface) DeleteUser(ctx context.Context, username string) error {
+	ret := _m.Called(ctx, username)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, username)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// LockUser provides a mock function with given fields: ctx, username, lock
+func (_m *OcservUserServiceInterface) LockUser(ctx context.Context, username string, lock bool) error {
+	ret := _m.Called(ctx, username, lock)
+
+	if len(ret) == 0 {
+		panic("no return value specified for LockUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, bool) error); ok {
+		r0 = rf(ctx, username, lock)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Update provides a mock function with given fields: c, username, password, group
+func (_m *OcservUserServiceInterface) Update(c context.Context, username string, password string, group string) error {
+	ret := _m.Called(c, username, password, group)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(c, username, password, group)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // NewOcservUserServiceInterface creates a new instance of OcservUserServiceInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewOcservUserServiceInterface(t interface {

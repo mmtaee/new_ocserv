@@ -2,7 +2,6 @@ package ocservUser
 
 import (
 	"github.com/labstack/echo/v4"
-	"log"
 	"net/http"
 	"ocserv/internal/repository"
 	"ocserv/pkg/oc"
@@ -42,9 +41,6 @@ func New() *Controller {
 func (ctrl *Controller) GetUsers(c echo.Context) error {
 	pagination := ctrl.request.Pagination(c)
 
-	log.Println(&pagination)
-	log.Println(*pagination)
-
 	ocUsers, count, err := ctrl.ocservUserRepo.GetUsersWithOnlineAttr(c.Request().Context(), pagination)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
@@ -80,12 +76,17 @@ func (ctrl *Controller) CreateUser(c echo.Context) error {
 		return ctrl.request.BadRequest(c, err)
 	}
 
+	// TODO: check existence of  group
+
 	if data.TrafficSize == 0 {
 		data.TrafficSize = 10 * 1024 * 1024 * 1024
 	}
 	parsed, err := time.Parse("2006-01-02", data.ExpireAt)
 	if err != nil {
-		parsed, _ = time.Parse("2006-01-02", time.Now().AddDate(0, 0, 30).Format("2006-01-02"))
+		parsed, _ = time.Parse(
+			"2006-01-02",
+			time.Now().AddDate(0, 0, 30).Format("2006-01-02"),
+		)
 	}
 
 	ocUser := oc.OcservUser{
@@ -123,12 +124,35 @@ func (ctrl *Controller) CreateUser(c echo.Context) error {
 // @Router       /oc_users/{uid}/lock [post]
 func (ctrl *Controller) Lock(c echo.Context) error {
 	var data LockOcservUserData
-
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
 
 	userUID := c.Param("uid")
-	log.Println(userUID)
-	return c.NoContent(http.StatusOK)
+	err := ctrl.ocservUserRepo.LockUser(c.Request().Context(), userUID, *data.Lock)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
+func (ctrl *Controller) Update(c echo.Context) error {
+	var data UpdateOcservUserData
+	if err := ctrl.request.DoValidate(c, &data); err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+
+	//userUID := c.Param("uid")
+	return nil
+}
+
+func (ctrl *Controller) Delete(c echo.Context) error {
+	//userUID := c.Param("uid")
+	return nil
+}
+
+func (ctrl *Controller) Disconnect(c echo.Context) error {
+	// 	userUID := c.Param("username")
+	return nil
 }

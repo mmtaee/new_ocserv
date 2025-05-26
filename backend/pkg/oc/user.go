@@ -12,6 +12,9 @@ type OcservUserService struct {
 
 type OcservUserServiceInterface interface {
 	CreateUser(ctx context.Context, username, password string, group ...string) error
+	Update(c context.Context, username, password, group string) error
+	LockUser(ctx context.Context, username string, lock bool) error
+	DeleteUser(ctx context.Context, username string) error
 }
 
 func NewOcservUserService(db *gorm.DB) *OcservUserService {
@@ -23,22 +26,7 @@ var (
 	passwdFile  = "/etc/ocserv/ocpasswd" // ocpasswd file path
 )
 
-// CreateUser  ocserv user creation with password and group
 func (o *OcservUserService) CreateUser(ctx context.Context, username, password string, group ...string) error {
-	//userGroup := "defaults"
-	//if len(group) > 0 {
-	//	userGroup = group[0]
-	//}
-	//userGroup = fmt.Sprintf("-g %s", userGroup)
-	//command := fmt.Sprintf("/usr/bin/echo -e \"%s\\n%s\\n\" | %s %s -c %s %s",
-	//	password,
-	//	password,
-	//	ocpasswdCMD,
-	//	group,
-	//	passwdFile,
-	//	username,
-	//)
-	//return exec.CommandContext(ctx, "sh", "-c", command).Run()
 	userGroup := "defaults"
 	if len(group) > 0 {
 		userGroup = group[0]
@@ -68,4 +56,34 @@ func (o *OcservUserService) CreateUser(ctx context.Context, username, password s
 	}
 
 	return nil
+}
+
+func (o *OcservUserService) Update(c context.Context, username, password, group string) error {
+	return o.CreateUser(c, username, password, group)
+}
+
+func (o *OcservUserService) LockUser(ctx context.Context, username string, lock bool) error {
+	action := "-l"
+	if !lock {
+		action = "-u"
+	}
+
+	args := []string{
+		action,
+		"-c",
+		passwdFile,
+		username,
+	}
+
+	return exec.CommandContext(ctx, ocpasswdCMD, args...).Run()
+}
+
+func (o *OcservUserService) DeleteUser(ctx context.Context, username string) error {
+	args := []string{
+		"-c",
+		passwdFile,
+		"-d",
+		username,
+	}
+	return exec.CommandContext(ctx, ocpasswdCMD, args...).Run()
 }

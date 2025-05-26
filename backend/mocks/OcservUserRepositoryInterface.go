@@ -120,6 +120,24 @@ func (_m *OcservUserRepositoryInterface) GetUsersWithOnlineAttr(ctx context.Cont
 	return r0, r1, r2
 }
 
+// LockUser provides a mock function with given fields: ctx, userID, lock
+func (_m *OcservUserRepositoryInterface) LockUser(ctx context.Context, userID string, lock bool) error {
+	ret := _m.Called(ctx, userID, lock)
+
+	if len(ret) == 0 {
+		panic("no return value specified for LockUser")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, bool) error); ok {
+		r0 = rf(ctx, userID, lock)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // NewOcservUserRepositoryInterface creates a new instance of OcservUserRepositoryInterface. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewOcservUserRepositoryInterface(t interface {

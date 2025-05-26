@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"log"
 	"ocserv/pkg/database"
 	"ocserv/pkg/oc"
@@ -23,6 +24,7 @@ type OcservUserRepositoryInterface interface {
 	GetUsers(ctx context.Context, pagination *request.Pagination) (*[]oc.OcservUser, int64, error)
 	GetUsersWithOnlineAttr(ctx context.Context, pagination *request.Pagination) (*[]oc.OcservUser, int64, error)
 	CreateUser(ctx context.Context, user *oc.OcservUser) (*oc.OcservUser, error)
+	LockUser(ctx context.Context, userID string, lock bool) error
 }
 
 func NewOcservUserRepository() *OcservUserRepository {
@@ -93,11 +95,9 @@ func (o *OcservUserRepository) CreateUser(ctx context.Context, user *oc.OcservUs
 
 		if err := o.ocUserRepo.CreateUser(ctx, user.Username, user.Password, user.Group); err != nil {
 			log.Println("CreateUser in os rollback error: ", err)
-			// rollback create
 			return err
 		}
 
-		// commit transaction
 		return nil
 	})
 
@@ -109,4 +109,27 @@ func (o *OcservUserRepository) CreateUser(ctx context.Context, user *oc.OcservUs
 		return nil, err
 	}
 	return user, nil
+}
+
+func (o *OcservUserRepository) LockUser(ctx context.Context, userID string, lock bool) error {
+	return o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var ocUser oc.OcservUser
+
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("uid = ?", userID).
+			First(&ocUser).Error; err != nil {
+			return err
+		}
+
+		if err := o.ocUserRepo.LockUser(ctx, ocUser.Username, lock); err != nil {
+			return err
+		}
+
+		ocUser.IsLocked = true
+		if err := tx.Save(&ocUser).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

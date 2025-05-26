@@ -4,19 +4,28 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"ocserv/pkg/config"
 	"os"
+	"sort"
+	"sync"
 )
 
 type OcservGroupService struct {
 	ctx context.Context
 }
 
+type GroupInfo struct {
+	Name   string
+	Path   string
+	Config OcservDefaultConfigs
+}
+
 type OcservGroupServiceInterface interface {
 	WithContext(ctx context.Context) *OcservGroupService
 	UpdateDefaultGroup(group *OcservDefaultConfigs) error
 	GetGroup(name string) (*OcservDefaultConfigs, error)
+	GetGroups() (*[]GroupInfo, error)
+	GetGroupNames() (*[]string, error)
 	CreateOrUpdateGroup(name string, group *OcservDefaultConfigs) error
 	Delete(name string) error
 }
@@ -34,7 +43,6 @@ func (g *OcservGroupService) WithContext(ctx context.Context) *OcservGroupServic
 // UpdateDefaultGroup update or create defaults/group.conf and update configs
 func (g *OcservGroupService) UpdateDefaultGroup(group *OcservDefaultConfigs) error {
 	groupPath := "/etc/ocserv/defaults/group.conf"
-	// TODO: remove for prod
 	if config.Get().Debug {
 		groupPath = "/tmp/group.conf"
 	}
@@ -102,19 +110,74 @@ func (g *OcservGroupService) Delete(name string) error {
 	return runWithContext(g.ctx, func() error { return op() })
 }
 
-// createOrUpdate handler for group files
-func createOrUpdate(group *OcservDefaultConfigs, path string) error {
-	// os.O_WRONLY: Open the file write-only.
-	// os.O_CREATE: Create the file if it doesn't exist.
-	// os.O_TRUNC: Truncate the file (i.e., make it empty) if it exists.
-	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to create file: %w", err)
+// GetGroups ocserv group with full info(name, path, configs)
+func (g *OcservGroupService) GetGroups() (*[]GroupInfo, error) {
+	var (
+		result []GroupInfo
+		err    error
+		wg     sync.WaitGroup
+	)
+
+	op := func() ([]GroupInfo, error) {
+		return getGroupList()
 	}
-	defer func() {
-		if closeErr := file.Close(); closeErr != nil {
-			log.Println(fmt.Sprintf("failed to close file: %v", closeErr))
+
+	if g.ctx == nil {
+		result, err = op()
+	} else {
+		result, err = runWithContextResult(g.ctx, func() ([]GroupInfo, error) { return op() })
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	for _, v := range result {
+		wg.Add(1)
+
+		go func(v GroupInfo) {
+			defer wg.Done()
+			conf, err := getGroupConfig(v.Path)
+			if err != nil {
+				return
+			}
+			v.Config = *conf
+		}(v)
+	}
+
+	wg.Wait()
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Name < result[j].Name
+	})
+	return &result, nil
+}
+
+// GetGroupNames list of groups name that in service exists
+func (g *OcservGroupService) GetGroupNames() (*[]string, error) {
+	var (
+		groups []string
+		result []GroupInfo
+		err    error
+	)
+
+	op := func() ([]GroupInfo, error) {
+		return getGroupList()
+	}
+
+	if g.ctx == nil {
+		result, err = op()
+		if err != nil {
+			return nil, err
 		}
-	}()
-	return groupWriter(file, group)
+	} else {
+		result, err = runWithContextResult(g.ctx, func() ([]GroupInfo, error) { return op() })
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for _, v := range result {
+		groups = append(groups, v.Name)
+	}
+	return &groups, nil
 }
