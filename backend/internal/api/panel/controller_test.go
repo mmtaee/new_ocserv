@@ -15,6 +15,26 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	panelRepo       = new(mocks.PanelRepositoryInterface)
+	mockRequest     = new(mocks.CustomRequestInterface)
+	mockUserRepo    = new(mocks.UserRepositoryInterface)
+	mockTokenRepo   = new(mocks.TokenRepositoryInterface)
+	mockPanelRepo   = new(mocks.PanelRepositoryInterface)
+	mockCrypto      = new(mocks.CustomPasswordInterface)
+	mockOcservGroup = new(mocks.OcservGroupServiceInterface)
+	mockCaptcha     = new(mocks.GoogleCaptchaInterface)
+	ctrl            = &Controller{
+		request:         mockRequest,
+		panelRepo:       panelRepo,
+		userRepo:        mockUserRepo,
+		tokenRepo:       mockTokenRepo,
+		cryptoRepo:      mockCrypto,
+		ocservGroupRepo: mockOcservGroup,
+		captchaVerifier: mockCaptcha,
+	}
+)
+
 func setupEcho(method, path string, body string) (echo.Context, *httptest.ResponseRecorder) {
 	e := echo.New()
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
@@ -25,14 +45,6 @@ func setupEcho(method, path string, body string) (echo.Context, *httptest.Respon
 }
 
 func TestControllerInitConfigExists(t *testing.T) {
-	panelRepo := new(mocks.PanelRepositoryInterface)
-	mockRequest := new(mocks.CustomRequestInterface)
-
-	ctrl := &Controller{
-		request:   mockRequest,
-		panelRepo: panelRepo,
-	}
-
 	panelRepo.On("GetConfig", mock.Anything).Return(&models.Panel{
 		GoogleCaptchaSiteKey: "test-key",
 	}, nil)
@@ -47,14 +59,6 @@ func TestControllerInitConfigExists(t *testing.T) {
 }
 
 func TestControllerInitConfigNotFound(t *testing.T) {
-	panelRepo := new(mocks.PanelRepositoryInterface)
-	mockRequest := new(mocks.CustomRequestInterface)
-
-	ctrl := &Controller{
-		request:   mockRequest,
-		panelRepo: panelRepo,
-	}
-
 	panelRepo.On("GetConfig", mock.Anything).Return(nil, gorm.ErrRecordNotFound)
 
 	c, rec := setupEcho(http.MethodGet, "/panel/init", "")
@@ -72,16 +76,7 @@ func TestControllerSetupConfigAlreadyExists(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	panelRepo := new(mocks.PanelRepositoryInterface)
-	mockRequest := new(mocks.CustomRequestInterface)
-
-	ctrl := &Controller{
-		request:   mockRequest,
-		panelRepo: panelRepo,
-	}
-
 	expectedErr := errors.New("config db exists")
-
 	mockRequest.On("DoValidate", mock.Anything, mock.Anything).Return(nil)
 	panelRepo.On("GetConfig", mock.Anything).Return(&models.Panel{}, nil)
 	mockRequest.On("BadRequest", mock.Anything, expectedErr).Return(c.JSON(http.StatusBadRequest, map[string]string{"error": expectedErr.Error()}))
@@ -97,14 +92,6 @@ func TestControllerSetupConfigAlreadyExists(t *testing.T) {
 }
 
 func TestControllerConfigSuccess(t *testing.T) {
-	panelRepo := new(mocks.PanelRepositoryInterface)
-	mockRequest := new(mocks.CustomRequestInterface)
-
-	ctrl := &Controller{
-		request:   mockRequest,
-		panelRepo: panelRepo,
-	}
-
 	panelRepo.On("GetConfig", mock.Anything).Return(&models.Panel{
 		GoogleCaptchaSiteKey:   "site",
 		GoogleCaptchaSecretKey: "secret",
@@ -120,16 +107,7 @@ func TestControllerConfigSuccess(t *testing.T) {
 }
 
 func TestControllerUpdateConfigSuccess(t *testing.T) {
-	panelRepo := new(mocks.PanelRepositoryInterface)
-	mockRequest := new(mocks.CustomRequestInterface)
-
-	ctrl := &Controller{
-		request:   mockRequest,
-		panelRepo: panelRepo,
-	}
-
 	mockRequest.On("DoValidate", mock.Anything, mock.Anything).Return(nil)
-
 	panelRepo.On("Update", mock.Anything, mock.Anything).Return(&models.Panel{
 		GoogleCaptchaSiteKey:   "updated-site",
 		GoogleCaptchaSecretKey: "updated-secret",
@@ -147,24 +125,6 @@ func TestControllerUpdateConfigSuccess(t *testing.T) {
 }
 
 func TestLogin_Success(t *testing.T) {
-	mockRequest := new(mocks.CustomRequestInterface)
-	mockUserRepo := new(mocks.UserRepositoryInterface)
-	mockTokenRepo := new(mocks.TokenRepositoryInterface)
-	mockPanelRepo := new(mocks.PanelRepositoryInterface)
-	mockCrypto := new(mocks.CustomPasswordInterface)
-	mockOcservGroup := new(mocks.OcservGroupServiceInterface)
-	mockCaptcha := new(mocks.GoogleCaptchaInterface)
-
-	ctrl := &Controller{
-		request:         mockRequest,
-		userRepo:        mockUserRepo,
-		tokenRepo:       mockTokenRepo,
-		panelRepo:       mockPanelRepo,
-		cryptoRepo:      mockCrypto,
-		ocservGroupRepo: mockOcservGroup,
-		captchaVerifier: mockCaptcha,
-	}
-
 	loginInput := `{"username":"testuser", "password":"testpass", "token":"dummy-token"}`
 	c, w := setupEcho(http.MethodPost, "/user/login", loginInput)
 
