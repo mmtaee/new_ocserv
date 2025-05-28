@@ -153,6 +153,124 @@ const docTemplate = `{
                 }
             }
         },
+        "/oc_users/{uid}": {
+            "delete": {
+                "description": "Ocserv User delete",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "Ocserv User delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ocserv User UID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.PermissionDenied"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Ocserv User update",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "Ocserv User update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ocserv User UID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "update ocserv user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ocservUser.UpdateOcservUserData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/oc.OcservUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.PermissionDenied"
+                        }
+                    }
+                }
+            }
+        },
         "/oc_users/{uid}/lock": {
             "post": {
                 "description": "Lock Or Unlock Ocserv Users",
@@ -189,6 +307,60 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/ocservUser.LockOcservUserData"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/request.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.Unauthorized"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/middlewares.PermissionDenied"
+                        }
+                    }
+                }
+            }
+        },
+        "/oc_users/{username}/disconnect": {
+            "post": {
+                "description": "Ocserv Users disconnect",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ocserv Users"
+                ],
+                "summary": "Ocserv Users disconnect",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ocserv User UID",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer TOKEN",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1104,6 +1276,41 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/oc.OcservUser"
                     }
+                }
+            }
+        },
+        "ocservUser.UpdateOcservUserData": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 1024,
+                    "example": "User for testing VPN access"
+                },
+                "group": {
+                    "type": "string",
+                    "example": "default"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "strongpassword123"
+                },
+                "traffic_size": {
+                    "description": "10 GiB",
+                    "type": "integer",
+                    "example": 10737418240
+                },
+                "traffic_type": {
+                    "type": "string",
+                    "enum": [
+                        "Free",
+                        "MonthlyTransmit",
+                        "MonthlyReceive",
+                        "TotallyTransmit",
+                        "TotallyReceive"
+                    ],
+                    "example": "MonthlyTransmit"
                 }
             }
         },

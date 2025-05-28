@@ -1,11 +1,14 @@
 package ocservUser
 
 import (
+	"errors"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 	"net/http"
 	"ocserv/internal/repository"
 	"ocserv/pkg/oc"
 	"ocserv/pkg/request"
+	"slices"
 	"time"
 )
 
@@ -137,22 +140,101 @@ func (ctrl *Controller) Lock(c echo.Context) error {
 	return c.JSON(http.StatusNoContent, nil)
 }
 
+// Update		 Ocserv User update
+//
+// @Summary      Ocserv User update
+// @Description  Ocserv User update
+// @Tags         Ocserv Users
+// @Accept       json
+// @Produce      json
+// @Param 		 uid path string true "Ocserv User UID"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Param        request body  UpdateOcservUserData   true "update ocserv user data"
+// @Failure      400 {object} request.ErrorResponse
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
+// @Success      200  {object}  oc.OcservUser
+// @Router       /oc_users/{uid} [patch]
 func (ctrl *Controller) Update(c echo.Context) error {
 	var data UpdateOcservUserData
 	if err := ctrl.request.DoValidate(c, &data); err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}
 
-	//userUID := c.Param("uid")
-	return nil
+	userUID := c.Param("uid")
+
+	ocUser, err := ctrl.ocservUserRepo.GetUserByID(c.Request().Context(), userUID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, nil)
+		}
+		return ctrl.request.BadRequest(c, err)
+	}
+	if data.Group != nil {
+		ocUser.Group = *data.Group
+	}
+	if data.Password != nil {
+		ocUser.Password = *data.Password
+	}
+	if data.Description != nil {
+		ocUser.Description = *data.Description
+	}
+	if data.TrafficSize != nil {
+		ocUser.TrafficSize = *data.TrafficSize
+	}
+	if data.TrafficType != nil && slices.Contains([]string{"Free", "MonthlyTransmit", "MonthlyReceive", "TotallyTransmit", "TotallyReceive"}, *data.TrafficType) {
+		ocUser.TrafficType = *data.TrafficType
+	}
+
+	ocUser, err = ctrl.ocservUserRepo.UpdateUser(c.Request().Context(), ocUser)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, ocUser)
 }
 
+// Delete		 Ocserv User delete
+//
+// @Summary      Ocserv User delete
+// @Description  Ocserv User delete
+// @Tags         Ocserv Users
+// @Accept       json
+// @Produce      json
+// @Param 		 uid path string true "Ocserv User UID"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      400 {object} request.ErrorResponse
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
+// @Success      204  {object} nil
+// @Router       /oc_users/{uid} [delete]
 func (ctrl *Controller) Delete(c echo.Context) error {
-	//userUID := c.Param("uid")
-	return nil
+	userUID := c.Param("uid")
+	err := ctrl.ocservUserRepo.DeleteUser(c.Request().Context(), userUID)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusNoContent, nil)
 }
 
+// Disconnect	 Ocserv Users disconnect
+//
+// @Summary      Ocserv Users disconnect
+// @Description  Ocserv Users disconnect
+// @Tags         Ocserv Users
+// @Accept       json
+// @Produce      json
+// @Param 		 uid path string true "Ocserv User UID"
+// @Param        Authorization header string true "Bearer TOKEN"
+// @Failure      400 {object} request.ErrorResponse
+// @Failure      401 {object} middlewares.Unauthorized
+// @Failure      403 {object} middlewares.PermissionDenied
+// @Success      200  {object}  nil
+// @Router       /oc_users/{username}/disconnect [post]
 func (ctrl *Controller) Disconnect(c echo.Context) error {
-	// 	userUID := c.Param("username")
-	return nil
+	userUID := c.Param("username")
+	err := ctrl.ocservUserRepo.DisconnectUser(c.Request().Context(), userUID)
+	if err != nil {
+		return ctrl.request.BadRequest(c, err)
+	}
+	return c.JSON(http.StatusOK, nil)
 }

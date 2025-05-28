@@ -24,7 +24,11 @@ type OcservUserRepositoryInterface interface {
 	GetUsers(ctx context.Context, pagination *request.Pagination) (*[]oc.OcservUser, int64, error)
 	GetUsersWithOnlineAttr(ctx context.Context, pagination *request.Pagination) (*[]oc.OcservUser, int64, error)
 	CreateUser(ctx context.Context, user *oc.OcservUser) (*oc.OcservUser, error)
+	GetUserByID(ctx context.Context, userID string) (*oc.OcservUser, error)
 	LockUser(ctx context.Context, userID string, lock bool) error
+	UpdateUser(ctx context.Context, ocUser *oc.OcservUser) (*oc.OcservUser, error)
+	DeleteUser(ctx context.Context, userID string) error
+	DisconnectUser(ctx context.Context, username string) error
 }
 
 func NewOcservUserRepository() *OcservUserRepository {
@@ -111,6 +115,15 @@ func (o *OcservUserRepository) CreateUser(ctx context.Context, user *oc.OcservUs
 	return user, nil
 }
 
+func (o *OcservUserRepository) GetUserByID(ctx context.Context, userID string) (*oc.OcservUser, error) {
+	var ocUser oc.OcservUser
+	err := o.db.WithContext(ctx).Where("uid = ?", userID).First(&ocUser).Error
+	if err != nil {
+		return nil, err
+	}
+	return &ocUser, nil
+}
+
 func (o *OcservUserRepository) LockUser(ctx context.Context, userID string, lock bool) error {
 	return o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var ocUser oc.OcservUser
@@ -132,4 +145,46 @@ func (o *OcservUserRepository) LockUser(ctx context.Context, userID string, lock
 
 		return nil
 	})
+}
+
+func (o *OcservUserRepository) UpdateUser(ctx context.Context, ocUser *oc.OcservUser) (*oc.OcservUser, error) {
+	err := o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+
+		if err := o.ocUserRepo.Update(ctx, ocUser.Username, ocUser.Password, ocUser.Group); err != nil {
+			return err
+		}
+
+		if err := tx.Save(&ocUser).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return ocUser, err
+}
+
+func (o *OcservUserRepository) DeleteUser(ctx context.Context, userID string) error {
+	err := o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var ocUser oc.OcservUser
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("uid = ?", userID).
+			First(&ocUser).Error; err != nil {
+			return err
+		}
+
+		if err := o.ocUserRepo.DeleteUser(ctx, ocUser.Username); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return err
+}
+
+func (o *OcservUserRepository) DisconnectUser(ctx context.Context, username string) error {
+	_, err := o.ocOcctlRepo.WithContext(ctx).DisconnectUser(username)
+	if err != nil {
+		return errors.New("failed to disconnect user " + username)
+	}
+	return nil
 }

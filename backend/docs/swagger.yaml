@@ -187,6 +187,33 @@ definitions:
     required:
     - meta
     type: object
+  ocservUser.UpdateOcservUserData:
+    properties:
+      description:
+        example: User for testing VPN access
+        maxLength: 1024
+        type: string
+      group:
+        example: default
+        type: string
+      password:
+        example: strongpassword123
+        minLength: 6
+        type: string
+      traffic_size:
+        description: 10 GiB
+        example: 10737418240
+        type: integer
+      traffic_type:
+        enum:
+        - Free
+        - MonthlyTransmit
+        - MonthlyReceive
+        - TotallyTransmit
+        - TotallyReceive
+        example: MonthlyTransmit
+        type: string
+    type: object
   ocservUser.createOcservUserData:
     properties:
       description:
@@ -482,6 +509,85 @@ paths:
       summary: Create Ocserv Users
       tags:
       - Ocserv Users
+  /oc_users/{uid}:
+    delete:
+      consumes:
+      - application/json
+      description: Ocserv User delete
+      parameters:
+      - description: Ocserv User UID
+        in: path
+        name: uid
+        required: true
+        type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
+      summary: Ocserv User delete
+      tags:
+      - Ocserv Users
+    patch:
+      consumes:
+      - application/json
+      description: Ocserv User update
+      parameters:
+      - description: Ocserv User UID
+        in: path
+        name: uid
+        required: true
+        type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: update ocserv user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ocservUser.UpdateOcservUserData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/oc.OcservUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
+      summary: Ocserv User update
+      tags:
+      - Ocserv Users
   /oc_users/{uid}/lock:
     post:
       consumes:
@@ -522,6 +628,42 @@ paths:
           schema:
             $ref: '#/definitions/middlewares.PermissionDenied'
       summary: Lock Or Unlock Ocserv Users
+      tags:
+      - Ocserv Users
+  /oc_users/{username}/disconnect:
+    post:
+      consumes:
+      - application/json
+      description: Ocserv Users disconnect
+      parameters:
+      - description: Ocserv User UID
+        in: path
+        name: uid
+        required: true
+        type: string
+      - description: Bearer TOKEN
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/request.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/middlewares.Unauthorized'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/middlewares.PermissionDenied'
+      summary: Ocserv Users disconnect
       tags:
       - Ocserv Users
   /panel/config:

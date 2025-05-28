@@ -14,6 +14,7 @@ type OcctlService struct {
 type OcctlServiceInterface interface {
 	WithContext(ctx context.Context) *OcctlService
 	GetOnlineUsers() ([]string, error)
+	DisconnectUser(username string) (string, error)
 }
 
 func NewOcctlService() *OcctlService {
@@ -53,10 +54,12 @@ func (o *OcctlService) GetOnlineUsers() ([]string, error) {
 		err     error
 	)
 
+	command := "-j show users | jq -r '.[].username'"
+
 	if o.ctx == nil {
-		result, err = doExec("-j show users | jq -r '.[].username'")
+		result, err = doExec(command)
 	} else {
-		result, err = doExecWithContext(o.ctx, "-j show users")
+		result, err = doExecWithContext(o.ctx, command)
 	}
 
 	if err != nil {
@@ -72,4 +75,20 @@ func (o *OcctlService) GetOnlineUsers() ([]string, error) {
 		users = append(users, user.Username)
 	}
 	return users, nil
+}
+
+// DisconnectUser disconnect user
+func (o *OcctlService) DisconnectUser(username string) (string, error) {
+	var (
+		result []byte
+		err    error
+	)
+
+	command := fmt.Sprintf("disconnect %s", username)
+	if o.ctx == nil {
+		result, err = doExec(command)
+	} else {
+		result, err = doExecWithContext(o.ctx, command)
+	}
+	return string(result), err
 }
