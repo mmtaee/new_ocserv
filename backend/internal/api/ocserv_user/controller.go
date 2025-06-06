@@ -223,7 +223,7 @@ func (ctrl *Controller) Delete(c echo.Context) error {
 // @Tags         Ocserv Users
 // @Accept       json
 // @Produce      json
-// @Param 		 uid path string true "Ocserv User UID"
+// @Param 		 username path string true "Ocserv Username"
 // @Param        Authorization header string true "Bearer TOKEN"
 // @Failure      400 {object} request.ErrorResponse
 // @Failure      401 {object} middlewares.Unauthorized

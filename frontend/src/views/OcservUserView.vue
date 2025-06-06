@@ -2,22 +2,27 @@
 import {defineAsyncComponent, onBeforeMount, reactive, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobile.js.ts";
 import {
-  type OcOcservUser,
   type OcservUserCreateOcservUserData,
+  type OcservUserLockOcservUserData,
   type OcservUserOcservUsersResponse,
-  OcservUsersApi
+  OcservUsersApi,
+  type OcservUserUpdateOcservUserData
 } from "@/api";
 import {getAuthorization} from "@/utils/request.ts";
+import {useI18n} from "vue-i18n";
+import type {OcservDataInterface} from "@/utils/interfaces.ts";
+
 
 const DesktopView = defineAsyncComponent(() => import("@/components/oc_user/desktop/index.vue"))
 const MobileView = defineAsyncComponent(() => import("@/components/oc_user/mobile/index.vue"))
 
+const {t} = useI18n()
 const useIsMobile = useIsMobileStore()
 const loading = ref(true)
 const btnLoading = ref(false)
 
 const pageCount = ref(0)
-const data = reactive<OcservUserOcservUsersResponse>({
+const ocservUsers = reactive<OcservUserOcservUsersResponse>({
   meta: {
     page: 1,
     page_size: 5,
@@ -30,7 +35,7 @@ const groups = reactive<string[]>([])
 const childRef = ref()
 
 onBeforeMount(() => {
-  fetchOcUser(data.meta.page, data.meta.page_size, false)
+  fetchOcUser(ocservUsers.meta.page, ocservUsers.meta.page_size, false)
 })
 
 const fetchOcUser = (page: number, pageSize: number, desc: boolean) => {
@@ -44,8 +49,8 @@ const fetchOcUser = (page: number, pageSize: number, desc: boolean) => {
         sort: desc ? "DESC" : "ASC"
       }
   ).then((res) => {
-    Object.assign(data, res.data)
-    pageCount.value = Math.ceil(data.meta.total_records / data.meta.page_size);
+    Object.assign(ocservUsers, res.data)
+    pageCount.value = Math.ceil(ocservUsers.meta.total_records / ocservUsers.meta.page_size);
   }).finally(() => {
     loading.value = false
   })
@@ -57,27 +62,82 @@ const fetchOcGroups = () => {
   groups.unshift("defaults")
 }
 
-const addUser = (updateData: OcservUserCreateOcservUserData) => {
+const createUser = (createData: OcservUserCreateOcservUserData) => {
   btnLoading.value = true
   const api = new OcservUsersApi()
   api.ocUsersPost({
     ...getAuthorization(),
-    request: updateData,
+    request: createData,
   }).then((res) => {
+    ocservUsers.result?.unshift(res.data)
     childRef.value?.closeDialogs()
-    data.result?.unshift(res.data)
+    // TODO: add snackbar create
   }).finally(() => {
     btnLoading.value = false
   })
 }
 
-const updateUser = (user: OcOcservUser) => {
-  const result = data.result
-  if (!result) return
+const updateUser = (uid: string, user: OcservUserUpdateOcservUserData) => {
+  // btnLoading.value = true
+  //
+  // const result = data.result
+  // if (!result) return
+  //
+  // const index = result.findIndex((u) => u.uid === user.uid)
+  // if (index >= 0) {
+  //   data.result?.splice(index, 1, user)
+  // }
+}
 
-  const index = result.findIndex((u) => u.uid === user.uid)
-  if (index >= 0) {
-    data.result?.splice(index, 1, user)
+const lockOrUnlock = (uid: string, data: OcservUserLockOcservUserData) => {
+  btnLoading.value = true
+  const api = new OcservUsersApi()
+  api.ocUsersUidLockPost({
+    uid: uid,
+    ...getAuthorization(),
+    request: data,
+  }).then(() => {
+    const result = ocservUsers.result
+    if (!result) return
+    const index = result.findIndex((u) => u.uid === uid)
+    if (index >= 0) {
+      result[index].is_locked = data.lock
+    }
+    childRef.value?.closeDialogs()
+  }).finally(() => {
+    btnLoading.value = false
+  })
+}
+
+
+const deleteUser = (uid: string) => {
+}
+
+const doAction = (action: string, data: OcservDataInterface) => {
+  switch (action) {
+    case "create":
+      createUser(data.data as OcservUserCreateOcservUserData)
+      break
+    case "update":
+      if (data.uid) {
+        updateUser(data.uid, data.data as OcservUserUpdateOcservUserData)
+        break
+      }
+      throw new Error('uid not implemented.')
+    case "lock":
+      if (data.uid) {
+        lockOrUnlock(data?.uid, data.data as OcservUserLockOcservUserData)
+        break
+      }
+      throw new Error('uid not implemented.')
+    case "delete":
+      if (data.uid) {
+        deleteUser(data.uid)
+        break
+      }
+      throw new Error('uid not implemented.')
+    default:
+      throw new Error('action not implemented.')
   }
 }
 
@@ -88,13 +148,12 @@ const updateUser = (user: OcOcservUser) => {
       :is="useIsMobile.isMobile ? MobileView: DesktopView"
       ref="childRef"
       :btnLoading="btnLoading"
-      :data="data"
+      :data="ocservUsers"
       :groups="groups"
       :loading="loading"
       :pageCount="pageCount"
-      @addUser="addUser"
+      @doAction="doAction"
       @fetchOcGroups="fetchOcGroups"
       @fetchOcUser="fetchOcUser"
-      @updateUser="updateUser"
   />
 </template>

@@ -138,7 +138,7 @@ func (o *OcservUserRepository) LockUser(ctx context.Context, userID string, lock
 			return err
 		}
 
-		ocUser.IsLocked = true
+		ocUser.IsLocked = lock
 		if err := tx.Save(&ocUser).Error; err != nil {
 			return err
 		}

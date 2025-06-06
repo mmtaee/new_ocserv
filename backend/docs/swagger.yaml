@@ -636,9 +636,9 @@ paths:
       - application/json
       description: Ocserv Users disconnect
       parameters:
-      - description: Ocserv User UID
+      - description: Ocserv Username
         in: path
-        name: uid
+        name: username
         required: true
         type: string
       - description: Bearer TOKEN

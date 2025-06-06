@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   type OcOcservUser,
-  type OcservUserCreateOcservUserData,
+  OcOcservUserTrafficTypeEnum,
   OcservUserCreateOcservUserDataTrafficTypeEnum,
   type OcservUserOcservUsersResponse
 } from "@/api";
@@ -9,11 +9,14 @@ import type {DataTableHeader} from "vuetify/framework";
 import {useI18n} from "vue-i18n";
 import {defineAsyncComponent, ref} from "vue";
 import {bytesToGB} from "@/utils/convertors.ts";
+import type {OcservDataInterface} from "@/utils/interfaces.ts";
 
 
 const Pagination = defineAsyncComponent(() => import("@/components/common/Pagination.vue"))
-const Actions = defineAsyncComponent(() => import("@/components/oc_user/desktop/Actions.vue"))
+// const Actions = defineAsyncComponent(() => import("@/components/oc_user/desktop/Actions.vue"))
 const Create = defineAsyncComponent(() => import("@/components/oc_user/desktop/Create.vue"))
+const Detail = defineAsyncComponent(() => import("@/components/oc_user/desktop/Detail.vue"))
+const Lock = defineAsyncComponent(() => import("@/components/oc_user/desktop/Lock.vue"))
 
 defineProps<{
   data: OcservUserOcservUsersResponse
@@ -23,10 +26,29 @@ defineProps<{
   btnLoading: boolean
 }>()
 
-const emit = defineEmits(["fetchOcUser", "fetchOcGroups", "addUser", "updateUser"])
-
-const addDialog = ref(false)
+const emit = defineEmits(["fetchOcUser", "fetchOcGroups", "doAction"])
 const {t} = useI18n()
+
+const detailDialog = ref(false)
+const addDialog = ref(false)
+const lockDialog = ref(false)
+const editDialog = ref(false)
+const activitiesDialog = ref(false)
+const statisticsDialog = ref(false)
+
+const selectedItem = ref<OcOcservUser>({
+  created_at: "",
+  group: "",
+  is_locked: false,
+  is_online: false,
+  password: "",
+  rx: 0,
+  traffic_size: 0,
+  traffic_type: OcOcservUserTrafficTypeEnum.MONTHLY_TRANSMITx1,
+  tx: 0,
+  uid: "",
+  username: ""
+})
 
 const headers: DataTableHeader[] = [
   {title: t("USER"), key: 'user', align: 'start'},
@@ -45,21 +67,37 @@ const fetchOcGroups = () => {
   emit("fetchOcGroups")
 }
 
-
-const addUser = (user: OcservUserCreateOcservUserData) => {
-  emit("addUser", user)
+const doAction = (action: string, data: OcservDataInterface) => {
+  console.log("doAction", action, data)
+  emit("doAction", action, data)
 }
 
-const updateUser = (user: OcOcservUser) => {
-  emit("updateUser", user)
-}
+// const addUser = (user: OcservUserCreateOcservUserData) => {
+//   emit("addUser", user)
+// }
+//
+// const updateUser = (user: OcOcservUser) => {
+//   emit("updateUser", user)
+// }
 
+
+const selectedItemFill = (item: OcOcservUser) => {
+  if (selectedItem.value) {
+    Object.assign(selectedItem.value, item)
+  } else {
+    selectedItem.value = {...item}
+  }
+}
 
 const closeDialogs = () => {
+  console.log("closeDialogs")
   addDialog.value = false
+  detailDialog.value = false
+  lockDialog.value = false
+  // TODO: add other dialog false
 }
 
-defineExpose([closeDialogs])
+defineExpose({closeDialogs})
 
 </script>
 
@@ -123,7 +161,6 @@ defineExpose([closeDialogs])
           </div>
         </template>
 
-
         <template #item.transmission="{ item }">
           <div>
             <span class="text-primary text-capitalize">{{ t("RX") }}: </span>
@@ -162,9 +199,40 @@ defineExpose([closeDialogs])
           </v-tooltip>
         </template>
 
-
         <template #item.actions="{ item }">
-          <Actions :item="item" @updateUser="updateUser"/>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text"></v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="selectedItemFill(item) ;detailDialog=true">
+                <v-list-item-title>{{ t('MORE_DETAIL') }}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item v-if="item.is_online">
+                <!--TODO: disconnect action here-->
+                <v-list-item-title>{{ t('DISCONNECT') }}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="selectedItemFill(item);lockDialog=true">
+                <v-list-item-title>{{ item.is_locked ? t('UNLOCK') : t('LOCK') }}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="editDialog=true">
+                <v-list-item-title>{{ t('EDIT') }}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>{{ t('ACTIVITIES') }}</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title>{{ t('STATISTICS') }}</v-list-item-title>
+              </v-list-item>
+
+            </v-list>
+          </v-menu>
         </template>
 
         <template v-slot:bottom>
@@ -187,7 +255,21 @@ defineExpose([closeDialogs])
       :data="data"
       :groups="groups"
       :loading="loading"
-      :pageCount="pageCount"
-      @addUser="addUser"
+      @doAction="doAction"
   />
+
+  <Detail
+      v-model="detailDialog"
+      :item="selectedItem"
+      @closeDialogs="closeDialogs"
+  />
+
+  <Lock
+      v-model="lockDialog"
+      :item="selectedItem"
+      @closeDialogs="closeDialogs"
+      @doAction="doAction"
+  />
+
+  
 </template>

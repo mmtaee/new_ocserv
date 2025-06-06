@@ -14,13 +14,12 @@ const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout
 const props = defineProps<{
   data: OcservUserOcservUsersResponse
   loading?: boolean
-  pageCount?: number
   groups?: string[]
   btnLoading: boolean
   modelValue: boolean
 }>()
 
-const emit = defineEmits(["update:modelValue", "addUser"])
+const emit = defineEmits(["update:modelValue", "doAction"])
 
 
 const {t} = useI18n()
@@ -46,7 +45,9 @@ const rules = {
 }
 
 const addUser = () => {
-  emit("addUser", createUser)
+  emit("doAction", "create", {
+    data: createUser
+  })
 }
 
 

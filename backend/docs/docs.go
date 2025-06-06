@@ -350,8 +350,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Ocserv User UID",
-                        "name": "uid",
+                        "description": "Ocserv Username",
+                        "name": "username",
                         "in": "path",
                         "required": true
                     },
