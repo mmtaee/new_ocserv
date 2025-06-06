@@ -168,5 +168,6 @@
   "SIZE_USAGE": "Max Usage Size",
   "MAX_TRAFFIC_SIZE": "Maximum traffic size",
   "MAX_TRAFFIC_SIZE_HINT": "No maximum traffic limit for free type",
-  "OCSERV_USER_EDIT_TITLE": "Ocserv user edit title"
+  "OCSERV_USER_EDIT_TITLE": "Ocserv user edit title",
+  "UPDATE_OCSERV_USER": "Update Ocserv user"
 }

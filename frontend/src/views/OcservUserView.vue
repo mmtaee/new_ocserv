@@ -36,6 +36,7 @@ const childRef = ref()
 
 onBeforeMount(() => {
   fetchOcUser(ocservUsers.meta.page, ocservUsers.meta.page_size, false)
+  fetchOcGroups()
 })
 
 const fetchOcUser = (page: number, pageSize: number, desc: boolean) => {
@@ -78,15 +79,27 @@ const createUser = (createData: OcservUserCreateOcservUserData) => {
 }
 
 const updateUser = (uid: string, user: OcservUserUpdateOcservUserData) => {
-  // btnLoading.value = true
-  //
-  // const result = data.result
-  // if (!result) return
-  //
-  // const index = result.findIndex((u) => u.uid === user.uid)
-  // if (index >= 0) {
-  //   data.result?.splice(index, 1, user)
-  // }
+  btnLoading.value = true
+
+  const api = new OcservUsersApi()
+  api.ocUsersUidPatch({
+    uid: uid,
+    ...getAuthorization(),
+    request: user,
+  }).then((res) => {
+    console.log(res.data)
+    const result = ocservUsers.result
+    if (result) {
+      const index = result.findIndex((u) => u.uid === uid)
+      if (index >= 0) {
+        result?.splice(index, 1, res.data)
+      }
+    }
+    childRef.value?.closeDialogs()
+  }).finally(() => {
+    btnLoading.value = false
+
+  })
 }
 
 const lockOrUnlock = (uid: string, data: OcservUserLockOcservUserData) => {
@@ -153,7 +166,6 @@ const doAction = (action: string, data: OcservDataInterface) => {
       :loading="loading"
       :pageCount="pageCount"
       @doAction="doAction"
-      @fetchOcGroups="fetchOcGroups"
       @fetchOcUser="fetchOcUser"
   />
 </template>

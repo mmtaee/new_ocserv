@@ -13,12 +13,11 @@ import type {OcservDataInterface} from "@/utils/interfaces.ts";
 
 
 const Pagination = defineAsyncComponent(() => import("@/components/common/Pagination.vue"))
-// const Actions = defineAsyncComponent(() => import("@/components/oc_user/desktop/Actions.vue"))
 const Create = defineAsyncComponent(() => import("@/components/oc_user/desktop/Create.vue"))
 const Detail = defineAsyncComponent(() => import("@/components/oc_user/desktop/Detail.vue"))
 const Lock = defineAsyncComponent(() => import("@/components/oc_user/desktop/Lock.vue"))
 
-defineProps<{
+const props = defineProps<{
   data: OcservUserOcservUsersResponse
   loading?: boolean
   pageCount?: number
@@ -33,8 +32,8 @@ const detailDialog = ref(false)
 const addDialog = ref(false)
 const lockDialog = ref(false)
 const editDialog = ref(false)
-const activitiesDialog = ref(false)
-const statisticsDialog = ref(false)
+// const activitiesDialog = ref(false)
+// const statisticsDialog = ref(false)
 
 const selectedItem = ref<OcOcservUser>({
   created_at: "",
@@ -44,7 +43,7 @@ const selectedItem = ref<OcOcservUser>({
   password: "",
   rx: 0,
   traffic_size: 0,
-  traffic_type: OcOcservUserTrafficTypeEnum.MONTHLY_TRANSMITx1,
+  traffic_type: OcOcservUserTrafficTypeEnum.MONTHLY_TRANSMIT,
   tx: 0,
   uid: "",
   username: ""
@@ -64,7 +63,9 @@ const fetchOcUser = (page: number, itemPerPage: number, desc: boolean) => {
 }
 
 const fetchOcGroups = () => {
-  emit("fetchOcGroups")
+  if (props.groups == null) {
+    emit("fetchOcGroups")
+  }
 }
 
 const doAction = (action: string, data: OcservDataInterface) => {
@@ -90,11 +91,10 @@ const selectedItemFill = (item: OcOcservUser) => {
 }
 
 const closeDialogs = () => {
-  console.log("closeDialogs")
   addDialog.value = false
   detailDialog.value = false
   lockDialog.value = false
-  // TODO: add other dialog false
+  editDialog.value = false
 }
 
 defineExpose({closeDialogs})
@@ -219,7 +219,7 @@ defineExpose({closeDialogs})
                 <v-list-item-title>{{ item.is_locked ? t('UNLOCK') : t('LOCK') }}</v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="editDialog=true">
+              <v-list-item @click="fetchOcGroups();selectedItemFill(item);editDialog=true">
                 <v-list-item-title>{{ t('EDIT') }}</v-list-item-title>
               </v-list-item>
 
@@ -249,27 +249,32 @@ defineExpose({closeDialogs})
 
   </v-card>
 
-  <Create
-      v-model="addDialog"
-      :btnLoading="btnLoading"
-      :data="data"
-      :groups="groups"
-      :loading="loading"
-      @doAction="doAction"
-  />
 
   <Detail
       v-model="detailDialog"
       :item="selectedItem"
-      @closeDialogs="closeDialogs"
   />
 
   <Lock
       v-model="lockDialog"
       :item="selectedItem"
-      @closeDialogs="closeDialogs"
       @doAction="doAction"
   />
 
-  
+  <Create
+      v-model="addDialog"
+      :btnLoading="btnLoading"
+      :groups="groups"
+      @doAction="doAction"
+  />
+
+  <Create
+      v-model="editDialog"
+      :btnLoading="btnLoading"
+      :data="selectedItem"
+      :groups="groups"
+      :update="true"
+      @doAction="doAction"
+  />
+
 </template>

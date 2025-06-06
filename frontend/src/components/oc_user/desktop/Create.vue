@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {formatDay} from "@/utils/dates.ts";
 import {
+  type OcOcservUser,
   type OcservUserCreateOcservUserData,
-  OcservUserCreateOcservUserDataTrafficTypeEnum,
-  type OcservUserOcservUsersResponse
+  OcservUserCreateOcservUserDataTrafficTypeEnum
 } from "@/api";
 import {defineAsyncComponent, reactive, ref, watch} from "vue";
 import {requiredRule} from "@/utils/rules.ts";
@@ -11,16 +11,22 @@ import {useI18n} from "vue-i18n";
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
-const props = defineProps<{
-  data: OcservUserOcservUsersResponse
-  loading?: boolean
-  groups?: string[]
-  btnLoading: boolean
-  modelValue: boolean
-}>()
+const props = withDefaults(
+    defineProps<{
+      btnLoading: boolean
+      groups: string[] | undefined
+      modelValue: boolean
+      data?: OcOcservUser,
+      update?: boolean
+    }>(),
+    {
+      btnLoading: false,
+      update: false,
+    }
+)
+
 
 const emit = defineEmits(["update:modelValue", "doAction"])
-
 
 const {t} = useI18n()
 
@@ -36,20 +42,19 @@ const createUser = reactive<OcservUserCreateOcservUserData>({
   password: "",
   traffic_size: 10,
   traffic_type: OcservUserCreateOcservUserDataTrafficTypeEnum.TOTALLY_TRANSMIT,
-  expire_at: formattedFutureDate
+  expire_at: formattedFutureDate,
 })
-
 
 const rules = {
   required: (v: string) => requiredRule(v, t),
 }
 
 const addUser = () => {
-  emit("doAction", "create", {
-    data: createUser
+  emit("doAction", props.update ? "update" : "create", {
+    data: createUser,
+    uid: props?.data?.uid || null
   })
 }
-
 
 const resetCreateUser = () => {
   Object.assign(createUser, {
@@ -67,19 +72,28 @@ const close = () => {
   resetCreateUser()
 }
 
-const showModal = ref(false)
-
 watch(
-    () => props.modelValue,
-    (newVal) => {
-      showModal.value = newVal
-    }
+    () => props.data,
+    (data) => {
+      if (props.update && data) {
+        Object.assign(createUser, {
+          group: data.group,
+          password: data.password,
+          username: "",
+          traffic_size: data.traffic_size,
+          traffic_type: data.traffic_type,
+          expire_at: formatDay(data.expire_at)
+        })
+      }
+    },
+    {immediate: true, deep: true}
 )
+
 
 </script>
 
 <template>
-  <Modal :persistent="false" :show="showModal" width="750" @close="close">
+  <Modal :persistent="false" :show="modelValue" width="750" @close="close">
     <template #dialogTitle>
       {{ t("CREATE_OCSERV_USER") }}
     </template>
@@ -100,7 +114,7 @@ watch(
           </v-col>
 
 
-          <v-col cols="12" md="4" sm="6">
+          <v-col v-if="!update" cols="12" md="4" sm="6">
             <v-text-field
                 v-model="createUser.username"
                 :label="t('USERNAME')"
@@ -187,7 +201,7 @@ watch(
       <v-btn
           :disabled="!createUserValid"
           :loading="btnLoading"
-          :text="t('ADD_OCSERV_USER')"
+          :text="update ? t('UPDATE_OCSERV_USER'): t('ADD_OCSERV_USER')"
           class="me-1"
           color="success"
           variant="outlined"

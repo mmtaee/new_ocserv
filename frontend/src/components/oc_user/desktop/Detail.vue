@@ -11,7 +11,7 @@ defineProps<{
   item: OcOcservUser,
 }>()
 
-const emit = defineEmits(["closeDialogs"])
+const emit = defineEmits(["update:modelValue"])
 
 const {t} = useI18n()
 
@@ -22,7 +22,7 @@ const {t} = useI18n()
       :persistent="false"
       :show="modelValue"
       width="450"
-      @close="emit('closeDialogs')"
+      @close="emit('update:modelValue', false)"
   >
     <template #dialogTitle>
       <span class="text-capitalize">{{ t("OCSERV_USER_DETAIL_TITLE") }} </span>
@@ -63,7 +63,7 @@ const {t} = useI18n()
           class="me-2"
           color="grey"
           variant="outlined"
-          @click="emit('closeDialogs')"
+          @click="emit('update:modelValue', false)"
       />
     </template>
   </Modal>

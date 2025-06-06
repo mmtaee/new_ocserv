@@ -5,12 +5,19 @@ import {useI18n} from "vue-i18n";
 import type {OcservDataInterface} from "@/utils/interfaces.ts";
 
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
-const props = defineProps<{
-  lockDialog: boolean,
-  item: OcOcservUser,
-}>()
 
-const emit = defineEmits(["closeDialogs", "doAction"])
+const props = defineProps({
+  lockDialog: {
+    type: Boolean,
+    default: false,
+  },
+  item: {
+    type: Object as PropType<OcOcservUser>,
+    required: true,
+  },
+})
+
+const emit = defineEmits(["update:modelValue", "doAction"])
 
 const {t} = useI18n()
 
@@ -32,7 +39,7 @@ const lock = () => {
       :persistent="false"
       :show="lockDialog"
       width="450"
-      @close="emit('closeDialogs')"
+      @close="emit('update:modelValue', false)"
   >
     <template #dialogTitle>
       <span v-if="item.is_locked" class="text-capitalize">{{ t("OCSERV_USER_UNLOCK_TITLE") }}</span>
@@ -52,7 +59,7 @@ const lock = () => {
           class="me-2"
           color="grey"
           variant="outlined"
-          @click="emit('closeDialogs')"
+          @click="emit('update:modelValue', false)"
       />
       <v-btn
           :text="item.is_locked ? t('UNLOCK') : t('LOCK')"
