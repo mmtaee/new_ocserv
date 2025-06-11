@@ -72,22 +72,25 @@ const close = () => {
   resetCreateUser()
 }
 
-watch(
-    () => props.data,
-    (data) => {
-      if (props.update && data) {
-        Object.assign(createUser, {
-          group: data.group,
-          password: data.password,
-          username: "",
-          traffic_size: data.traffic_size,
-          traffic_type: data.traffic_type,
-          expire_at: formatDay(data.expire_at)
-        })
-      }
-    },
-    {immediate: true, deep: true}
-)
+
+if (props.update) {
+  watch(
+      () => props.data,
+      (data) => {
+        if (data) {
+          Object.assign(createUser, {
+            group: data.group,
+            password: data.password,
+            username: "",
+            traffic_size: data.traffic_size,
+            traffic_type: data.traffic_type,
+            expire_at: formatDay(data.expire_at)
+          })
+        }
+      },
+      {immediate: true, deep: true}
+  )
+}
 
 
 </script>

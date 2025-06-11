@@ -7,7 +7,8 @@ ENV GOOS=linux
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl unzip && rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+RUN apt-get install -y curl unzip
 
 RUN curl -L https://github.com/gabriel-vasile/mimetype/archive/refs/tags/v1.4.3.zip -o mimetype-v1.4.3.zip && \
     unzip mimetype-v1.4.3.zip -d /app && \
@@ -21,15 +22,15 @@ RUN go mod download
 
 RUN go build -o ocserv_api main.go
 
-#FROM ubuntu:24.04
-FROM debian:12-slim
+FROM ubuntu:24.04
+#FROM debian:12-slim
 
 ENV SECRET_KEY_FILE_NAME=/tmp/init_secret
 ENV LOG_FILE_PATH=/var/log/ocserv/ocserv.log
 
-RUN apt update && apt install -y --no-install-recommends ocserv ca-certificates procps gnutls-bin build-essential iptables openssl less  &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt update
+
+RUN apt install -y --no-install-recommends ocserv ca-certificates procps gnutls-bin build-essential iptables openssl less jq
 
 RUN mkdir /app /db
 

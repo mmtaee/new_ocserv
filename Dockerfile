@@ -21,7 +21,7 @@ ENV SECRET_KEY_FILE_NAME=/tmp/init_secret
 ENV LOG_FILE_PATH=/var/log/ocserv/ocserv.log
 
 # dnsutils use for dig command in entrypoint
-RUN apt update && apt install -y --no-install-recommends ocserv ca-certificates procps gnutls-bin build-essential iptables openssl less dnsutils &&\
+RUN apt update && apt install -y --no-install-recommends ocserv ca-certificates procps gnutls-bin build-essential iptables openssl less dnsutils jq &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

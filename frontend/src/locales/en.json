@@ -169,5 +169,7 @@
   "MAX_TRAFFIC_SIZE": "Maximum traffic size",
   "MAX_TRAFFIC_SIZE_HINT": "No maximum traffic limit for free type",
   "OCSERV_USER_EDIT_TITLE": "Ocserv user edit title",
-  "UPDATE_OCSERV_USER": "Update Ocserv user"
+  "UPDATE_OCSERV_USER": "Update Ocserv user",
+  "OCSERV_USER_DELETE_TITLE": "Ocserv user delete title",
+  "DELETE_USER_QUESTION": "Are you sure you want to delete this user?"
 }

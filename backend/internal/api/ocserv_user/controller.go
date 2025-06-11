@@ -231,8 +231,8 @@ func (ctrl *Controller) Delete(c echo.Context) error {
 // @Success      200  {object}  nil
 // @Router       /oc_users/{username}/disconnect [post]
 func (ctrl *Controller) Disconnect(c echo.Context) error {
-	userUID := c.Param("username")
-	err := ctrl.ocservUserRepo.DisconnectUser(c.Request().Context(), userUID)
+	username := c.Param("username")
+	err := ctrl.ocservUserRepo.DisconnectUser(c.Request().Context(), username)
 	if err != nil {
 		return ctrl.request.BadRequest(c, err)
 	}

@@ -21,6 +21,10 @@ const props = defineProps({
   hide_action: {
     type: Boolean,
     default: false
+  },
+  color: {
+    type: String,
+    default: "primary"
   }
 })
 
@@ -47,7 +51,7 @@ const close = () => {
       @update:modelValue="close"
   >
     <v-card>
-      <v-card-title class="bg-primary">
+      <v-card-title :class="`bg-${color}`">
         <slot name="dialogTitle"/>
       </v-card-title>
 

@@ -7,7 +7,7 @@ import type {OcservDataInterface} from "@/utils/interfaces.ts";
 const Modal = defineAsyncComponent(() => import("@/components/common/ModalLayout.vue"))
 
 const props = defineProps({
-  lockDialog: {
+  deleteDialog: {
     type: Boolean,
     default: false,
   },
@@ -21,14 +21,12 @@ const emit = defineEmits(["update:modelValue", "doAction"])
 
 const {t} = useI18n()
 
-const lock = () => {
+const deleteUser = () => {
   let data: OcservDataInterface = {
-    data: {
-      lock: !props.item.is_locked,
-    },
     uid: props.item.uid,
+    data: null
   }
-  emit("doAction", "lock", data)
+  emit("doAction", "delete", data)
 }
 
 </script>
@@ -37,20 +35,18 @@ const lock = () => {
   <Modal
       :divider="false"
       :persistent="false"
-      :show="lockDialog"
+      :show="deleteDialog"
+      color="error"
       width="450"
       @close="emit('update:modelValue', false)"
   >
     <template #dialogTitle>
-      <span v-if="item.is_locked" class="text-capitalize">{{ t("OCSERV_USER_UNLOCK_TITLE") }}</span>
-      <span v-else class="text-capitalize">{{ t("OCSERV_USER_LOCK_TITLE") }}</span>
-
+      <span class="text-capitalize">{{ t("OCSERV_USER_DELETE_TITLE") }}</span>
     </template>
 
     <template #dialogText>
       <div class="text-grey-darken-2 text-h6 mb-3 mt-2"> {{ t("USERNAME") }}: {{ item.username }}</div>
-      <div v-if="item.is_locked"> {{ t("UNLOCK_USER_QUESTION") }}</div>
-      <div v-else> {{ t("LOCK_USER_QUESTION") }}</div>
+      <div class="text-error"> {{ t("DELETE_USER_QUESTION") }}</div>
     </template>
 
     <template #dialogAction>
@@ -62,11 +58,11 @@ const lock = () => {
           @click="emit('update:modelValue', false)"
       />
       <v-btn
-          :text="item.is_locked ? t('UNLOCK') : t('LOCK')"
+          :text="t('DELETE')"
           class="me-1"
-          color="success"
+          color="error"
           variant="outlined"
-          @click="lock"
+          @click="deleteUser"
       />
     </template>
   </Modal>

@@ -2,9 +2,10 @@ package oc
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"log"
 	"os/exec"
+	"strings"
 )
 
 type OcctlService struct {
@@ -45,16 +46,14 @@ func (o *OcctlService) WithContext(ctx context.Context) *OcctlService {
 
 // GetOnlineUsers list of online users
 func (o *OcctlService) GetOnlineUsers() ([]string, error) {
-	// occtl -j show users | awk -F'"' '/"username"/ { print $4 }'
-	// occtl -j show users | grep '"username"' | sed -E 's/.*"username": ?"([^"]+)".*/\1/'
 	var (
-		ocUsers []OcservUser
-		users   []string
-		result  []byte
-		err     error
+		//ocUsers []OcservUser
+		users  []string
+		result []byte
+		err    error
 	)
 
-	command := "-j show users | jq -r '.[].username'"
+	command := "-j show users | jq -r '.[].Username'"
 
 	if o.ctx == nil {
 		result, err = doExec(command)
@@ -66,14 +65,13 @@ func (o *OcctlService) GetOnlineUsers() ([]string, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(result, &ocUsers)
-	if err != nil {
-		return nil, err
+	for _, line := range strings.Split(string(result), "\n") {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" {
+			users = append(users, trimmed)
+		}
 	}
 
-	for _, user := range ocUsers {
-		users = append(users, user.Username)
-	}
 	return users, nil
 }
 
@@ -84,7 +82,8 @@ func (o *OcctlService) DisconnectUser(username string) (string, error) {
 		err    error
 	)
 
-	command := fmt.Sprintf("disconnect %s", username)
+	command := fmt.Sprintf("disconnect user %s", username)
+	log.Println("disconnect user command:", command)
 	if o.ctx == nil {
 		result, err = doExec(command)
 	} else {

@@ -11,11 +11,11 @@ import {defineAsyncComponent, ref} from "vue";
 import {bytesToGB} from "@/utils/convertors.ts";
 import type {OcservDataInterface} from "@/utils/interfaces.ts";
 
-
 const Pagination = defineAsyncComponent(() => import("@/components/common/Pagination.vue"))
 const Create = defineAsyncComponent(() => import("@/components/oc_user/desktop/Create.vue"))
 const Detail = defineAsyncComponent(() => import("@/components/oc_user/desktop/Detail.vue"))
 const Lock = defineAsyncComponent(() => import("@/components/oc_user/desktop/Lock.vue"))
+const Delete = defineAsyncComponent(() => import("@/components/oc_user/desktop/Delete.vue"))
 
 const props = defineProps<{
   data: OcservUserOcservUsersResponse
@@ -32,6 +32,7 @@ const detailDialog = ref(false)
 const addDialog = ref(false)
 const lockDialog = ref(false)
 const editDialog = ref(false)
+const deleteDialog = ref(false)
 // const activitiesDialog = ref(false)
 // const statisticsDialog = ref(false)
 
@@ -69,17 +70,17 @@ const fetchOcGroups = () => {
 }
 
 const doAction = (action: string, data: OcservDataInterface) => {
-  console.log("doAction", action, data)
   emit("doAction", action, data)
 }
 
-// const addUser = (user: OcservUserCreateOcservUserData) => {
-//   emit("addUser", user)
-// }
-//
-// const updateUser = (user: OcOcservUser) => {
-//   emit("updateUser", user)
-// }
+const disconnect = (item: OcOcservUser) => {
+  doAction("disconnect", {
+    uid: item.uid,
+    data: {
+      username: item.username
+    }
+  })
+}
 
 
 const selectedItemFill = (item: OcOcservUser) => {
@@ -95,6 +96,7 @@ const closeDialogs = () => {
   detailDialog.value = false
   lockDialog.value = false
   editDialog.value = false
+  deleteDialog.value = false
 }
 
 defineExpose({closeDialogs})
@@ -210,7 +212,7 @@ defineExpose({closeDialogs})
                 <v-list-item-title>{{ t('MORE_DETAIL') }}</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="item.is_online">
+              <v-list-item v-if="item.is_online" @click="disconnect(item)">
                 <!--TODO: disconnect action here-->
                 <v-list-item-title>{{ t('DISCONNECT') }}</v-list-item-title>
               </v-list-item>
@@ -223,12 +225,16 @@ defineExpose({closeDialogs})
                 <v-list-item-title>{{ t('EDIT') }}</v-list-item-title>
               </v-list-item>
 
-              <v-list-item>
-                <v-list-item-title>{{ t('ACTIVITIES') }}</v-list-item-title>
-              </v-list-item>
+              <!--              <v-list-item>-->
+              <!--                <v-list-item-title>{{ t('ACTIVITIES') }}</v-list-item-title>-->
+              <!--              </v-list-item>-->
 
-              <v-list-item>
-                <v-list-item-title>{{ t('STATISTICS') }}</v-list-item-title>
+              <!--              <v-list-item>-->
+              <!--                <v-list-item-title>{{ t('STATISTICS') }}</v-list-item-title>-->
+              <!--              </v-list-item>-->
+
+              <v-list-item class="text-error" @click="selectedItemFill(item);deleteDialog=true">
+                <v-list-item-title>{{ t('DELETE') }}</v-list-item-title>
               </v-list-item>
 
             </v-list>
@@ -239,6 +245,7 @@ defineExpose({closeDialogs})
           <Pagination
               :page="data.meta.page"
               :pageCount="pageCount"
+              :pageSize="data.meta.page_size"
               :totalRecords="data.meta.total_records"
               @reFetch="fetchOcUser"
           />
@@ -274,6 +281,12 @@ defineExpose({closeDialogs})
       :data="selectedItem"
       :groups="groups"
       :update="true"
+      @doAction="doAction"
+  />
+
+  <Delete
+      v-model="deleteDialog"
+      :item="selectedItem"
       @doAction="doAction"
   />
 

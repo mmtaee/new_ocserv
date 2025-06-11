@@ -9,14 +9,12 @@ import {
   type OcservUserUpdateOcservUserData
 } from "@/api";
 import {getAuthorization} from "@/utils/request.ts";
-import {useI18n} from "vue-i18n";
 import type {OcservDataInterface} from "@/utils/interfaces.ts";
 
 
 const DesktopView = defineAsyncComponent(() => import("@/components/oc_user/desktop/index.vue"))
 const MobileView = defineAsyncComponent(() => import("@/components/oc_user/mobile/index.vue"))
 
-const {t} = useI18n()
 const useIsMobile = useIsMobileStore()
 const loading = ref(true)
 const btnLoading = ref(false)
@@ -25,23 +23,37 @@ const pageCount = ref(0)
 const ocservUsers = reactive<OcservUserOcservUsersResponse>({
   meta: {
     page: 1,
-    page_size: 5,
+    page_size: 25,
     total_records: 0
   },
   result: undefined
 })
 
+const currentStep = reactive(
+    {
+      page: 1,
+      page_size: 25,
+      desc: false
+    }
+)
+
+
 const groups = reactive<string[]>([])
 const childRef = ref()
 
+const api = new OcservUsersApi()
+
 onBeforeMount(() => {
-  fetchOcUser(ocservUsers.meta.page, ocservUsers.meta.page_size, false)
+  fetchOcUser(currentStep.page, currentStep.page_size, currentStep.desc)
   fetchOcGroups()
 })
 
 const fetchOcUser = (page: number, pageSize: number, desc: boolean) => {
+  currentStep.page = page
+  currentStep.page_size = pageSize
+  currentStep.desc = desc
+
   loading.value = true
-  const api = new OcservUsersApi()
   api.ocUsersGet(
       {
         ...getAuthorization(),
@@ -65,7 +77,6 @@ const fetchOcGroups = () => {
 
 const createUser = (createData: OcservUserCreateOcservUserData) => {
   btnLoading.value = true
-  const api = new OcservUsersApi()
   api.ocUsersPost({
     ...getAuthorization(),
     request: createData,
@@ -80,8 +91,6 @@ const createUser = (createData: OcservUserCreateOcservUserData) => {
 
 const updateUser = (uid: string, user: OcservUserUpdateOcservUserData) => {
   btnLoading.value = true
-
-  const api = new OcservUsersApi()
   api.ocUsersUidPatch({
     uid: uid,
     ...getAuthorization(),
@@ -104,7 +113,6 @@ const updateUser = (uid: string, user: OcservUserUpdateOcservUserData) => {
 
 const lockOrUnlock = (uid: string, data: OcservUserLockOcservUserData) => {
   btnLoading.value = true
-  const api = new OcservUsersApi()
   api.ocUsersUidLockPost({
     uid: uid,
     ...getAuthorization(),
@@ -124,6 +132,41 @@ const lockOrUnlock = (uid: string, data: OcservUserLockOcservUserData) => {
 
 
 const deleteUser = (uid: string) => {
+  btnLoading.value = true
+  api.ocUsersUidDelete({
+    uid,
+    ...getAuthorization()
+  }).then(() => {
+    const result = ocservUsers.result
+    if (!result) return
+
+    if (ocservUsers.meta.total_records > result.length) {
+      fetchOcUser(currentStep.page, currentStep.page_size, false)
+    } else {
+      const index = result.findIndex((u) => u.uid === uid)
+      if (index >= 0) {
+        result.splice(index, 1)
+      }
+    }
+
+    childRef.value?.closeDialogs()
+  }).finally(() => {
+    btnLoading.value = false
+  })
+}
+
+const disconnect = (uid: string, username: string) => {
+  api.ocUsersUsernameDisconnectPost({
+    username,
+    ...getAuthorization()
+  }).then(() => {
+    const result = ocservUsers.result
+    if (!result) return
+    const index = result.findIndex((u) => u.uid === uid)
+    if (index >= 0) {
+      result[index].is_online = false
+    }
+  })
 }
 
 const doAction = (action: string, data: OcservDataInterface) => {
@@ -146,6 +189,13 @@ const doAction = (action: string, data: OcservDataInterface) => {
     case "delete":
       if (data.uid) {
         deleteUser(data.uid)
+        break
+      }
+      throw new Error('uid not implemented.')
+
+    case "disconnect":
+      if (data.uid) {
+        disconnect(data.uid, data.data.username)
         break
       }
       throw new Error('uid not implemented.')

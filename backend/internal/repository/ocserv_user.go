@@ -166,9 +166,14 @@ func (o *OcservUserRepository) UpdateUser(ctx context.Context, ocUser *oc.Ocserv
 func (o *OcservUserRepository) DeleteUser(ctx context.Context, userID string) error {
 	err := o.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		var ocUser oc.OcservUser
+
 		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
 			Where("uid = ?", userID).
 			First(&ocUser).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&ocUser).Error; err != nil {
 			return err
 		}
 
@@ -178,11 +183,16 @@ func (o *OcservUserRepository) DeleteUser(ctx context.Context, userID string) er
 
 		return nil
 	})
+
 	return err
 }
 
 func (o *OcservUserRepository) DisconnectUser(ctx context.Context, username string) error {
-	_, err := o.ocOcctlRepo.WithContext(ctx).DisconnectUser(username)
+	s, err := o.ocOcctlRepo.WithContext(ctx).DisconnectUser(username)
+
+	log.Println("err: ", err)
+	log.Println("result: ", s)
+
 	if err != nil {
 		return errors.New("failed to disconnect user " + username)
 	}

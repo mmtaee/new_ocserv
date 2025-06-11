@@ -8,7 +8,11 @@ const props = defineProps({
     default: 0
   },
   pageCount: Number,
-  page: Number
+  page: Number,
+  pageSize: {
+    type: Number,
+    default: 5
+  },
 })
 
 const emit = defineEmits(["reFetch"])
@@ -23,6 +27,14 @@ watch(
     (newVal) => {
       pageNumber.value = newVal || 1
     }
+)
+
+watch(
+    () => props.pageSize,
+    (newVal) => {
+      itemPerPage.value = newVal || 5
+    },
+    {immediate: true}
 )
 
 </script>
